@@ -5,8 +5,8 @@ import {
 } from "../../apps/material/helper";
 import { convertPostIdToFaustId, getAllFaustIds } from "./helpers/general";
 import { Manifestation } from "./types/entities";
-import { useConfig } from "./config";
 import { AvailabilityV3 } from "../fbs/model/availabilityV3";
+import { useConfig } from "./config";
 
 const UseReservableManifestations = ({
   manifestations,
@@ -46,6 +46,7 @@ const UseReservableManifestations = ({
 
       // If we for some reason do not get any data, we return empty arrays.
       if (!data) {
+        console.log('No availability found!', data);
         return { reservable: [], unReservable: [] };
       }
 
@@ -56,7 +57,7 @@ const UseReservableManifestations = ({
         : m;
       // Get manifestations that are reservable.
       const reservable = filterableManifestations.filter((manifestation) =>
-        data.some(
+        data?.some(
           (item) =>
             item.reservable &&
             item.recordId === convertPostIdToFaustId(manifestation.pid)
@@ -64,7 +65,7 @@ const UseReservableManifestations = ({
       );
       // Get manifestations that are unReservable.
       const unReservable = filterableManifestations.filter((manifestation) =>
-        data.some(
+        data?.some(
           (item) =>
             !item.reservable &&
             item.recordId === convertPostIdToFaustId(manifestation.pid)
