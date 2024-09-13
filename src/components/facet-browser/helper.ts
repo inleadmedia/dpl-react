@@ -135,6 +135,8 @@ export const getFacetFieldTranslation = (name: FacetFieldEnum) => {
       return "facetWorkTypesText";
     case FacetFieldEnum.Year.toLowerCase():
       return "facetYearText";
+    case FacetField.Age:
+      return "facetAgeText";
     default:
       return invalidSwitchCase<string>(name as never);
   }
