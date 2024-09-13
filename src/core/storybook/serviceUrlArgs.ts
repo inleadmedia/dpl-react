@@ -58,7 +58,7 @@ export const argTypes = {
     table: {
       type: { summary: "text" },
       defaultValue: {
-        summary: "https://temp.fbi-api.dbc.dk/next-present/graphql"
+        summary: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next-present/graphql"
       }
     }
   },
@@ -69,7 +69,7 @@ export const argTypes = {
     table: {
       type: { summary: "text" },
       defaultValue: {
-        summary: "https://temp.fbi-api.dbc.dk/next/graphql"
+        summary: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next/graphql"
       }
     }
   },
@@ -79,7 +79,7 @@ export const argTypes = {
     table: {
       type: { summary: "text" },
       defaultValue: {
-        summary: "https://temp.fbi-api.dbc.dk/next-present/graphql"
+        summary: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next-present/graphql"
       }
     }
   }
