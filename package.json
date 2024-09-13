@@ -114,6 +114,7 @@
     "happy-dom": "^14.12.3",
     "istanbul-lib-coverage": "^3.2.2",
     "markdownlint-cli2": "^0.4.0",
+    "mini-css-extract-plugin": "^2.9.1",
     "mutationobserver-shim": "^0.3.7",
     "nyc": "^17.0.0",
     "orval": "^6.26.0",
@@ -123,7 +124,8 @@
     "postcss-scss": "^4.0.9",
     "prettier": "^2.6.2",
     "replace-in-file": "^6.3.2",
-    "sass": "^1.77.8",
+    "sass": "^1.78.0",
+    "sass-loader": "^16.0.1",
     "source-map-support": "^0.5.21",
     "style-loader": "^4.0.0",
     "stylelint": "^15.11.0",
@@ -142,7 +144,6 @@
   },
   "//dependencies": {
     "@danskernesdigitalebibliotek/dpl-design-system": "Is being used for being able to see the dpl-design-system styling in Storybook and potentially use icons",
-    "@danskernesdigitalebibliotek/dpl-design-system": "2024.33.0-a94d6181a38deec2ab5b3723b9436372c0027d4a",
     "prop-types": "Since we use former ddb-react components that depend on prop-types we keep this. Should be removed when usage of prop-types is deprecated."
   },
   "dependencies": {
