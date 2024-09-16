@@ -35,7 +35,13 @@ const UseReservableManifestations = ({
 
     const fetchAvailability = async (m: Manifestation[]) => {
       // Fetch availability data.
-      const data = await getAvailability({ faustIds, config });
+      let data: AvailabilityV3[] | null = null;
+      try {
+        data = await getAvailability({ faustIds, config });
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error("`getAvailability` error:", error);
+      }
 
       // If we for some reason do not get any data, we return empty arrays.
       if (!data) {

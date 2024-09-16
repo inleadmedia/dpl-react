@@ -19,7 +19,6 @@ import { mapFacetToFilter } from "./helper";
 const useFilterHandler = () => {
   const dispatch = useDispatch();
   const filters = useSelector((state: RootState) => state.filter) as Filter;
-
   const clearFilter = useCallback(() => {
     removeQueryParametersFromUrl("filters");
     dispatch(clear());
