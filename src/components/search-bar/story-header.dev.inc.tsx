@@ -40,7 +40,7 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({ search, userProfile }) => {
   const t = useText();
 
   useEffect(() => {
-    if (window.googleTranslateElementInit) return;
+    if (window.google.translate.TranslateElement) return;
 
     const addScript = document.createElement("script");
     addScript.setAttribute(
