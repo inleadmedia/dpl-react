@@ -8,10 +8,24 @@ import crossIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icon
 import expandIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/collection/ExpandMore.svg";
 import { useEffect, useState } from "react";
 
+import "./header-styles-extended.scss";
+import languageIcon from "./icon/language-icon.svg";
+import { useText } from "../../core/utils/text";
+
 export interface StoryHeaderProps {
   search?: React.ReactNode;
   userProfile?: React.ReactNode;
 }
+
+const googleTranslateElementInit = () => {
+  new window.google.translate.TranslateElement(
+    {
+      pageLanguage: "da",
+      autoDisplay: false
+    },
+    "google_translate_element"
+  );
+};
 
 const StoryHeader: React.FC<StoryHeaderProps> = ({ search, userProfile }) => {
   // the component below is copied from the Design system repository:
@@ -23,6 +37,19 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({ search, userProfile }) => {
   // replaced by {children}
   const [isEnabledAdvancedSearch, setIsEnabledAdvancedSearch] = useState(true);
   const headerMenuRef = React.useRef<HTMLDivElement>(null);
+  const t = useText();
+
+  useEffect(() => {
+    if (window.google?.translate?.TranslateElement) return;
+
+    const addScript = document.createElement("script");
+    addScript.setAttribute(
+      "src",
+      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+    );
+    document.body.appendChild(addScript);
+    window.googleTranslateElementInit = googleTranslateElementInit;
+  }, []);
 
   useEffect(() => {
     if (headerMenuRef.current) {
@@ -127,17 +154,32 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({ search, userProfile }) => {
                 </li>
               </ul>
             </div>
-            {userProfile || (
-              <button type="button" className="header__button">
-                <img src={profileIcon} alt="Profile" />
-                <span className="header__button-text">Login</span>
-              </button>
-            )}
+            <div className="header__menu-navigation-buttons">
+              <div className="header__select-wrapper header__button">
+                <img
+                  className="header__select-icon"
+                  src={languageIcon}
+                  alt="language icon"
+                />
+                <div className="header__select" id="google_translate_element" />
+              </div>
 
-            <a href="/" className="header__button">
-              <img src={heartIcon} alt="List of bookmarks" />
-              <span className="header__button-text">Liked</span>
-            </a>
+              {userProfile || (
+                <button type="button" className="header__button">
+                  <img src={profileIcon} alt="Profile" />
+                  <span className="header__button-text">
+                    {t("searchHeaderLoginText")}
+                  </span>
+                </button>
+              )}
+
+              <a href="/" className="header__button">
+                <img src={heartIcon} alt="List of bookmarks" />
+                <span className="header__button-text">
+                  {t("searchHeaderFavoritesText")}
+                </span>
+              </a>
+            </div>
           </nav>
           {(React.isValidElement(search) &&
             React.cloneElement(search, { isEnabledAdvancedSearch })) || (
