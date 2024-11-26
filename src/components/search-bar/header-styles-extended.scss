@@ -1,5 +1,5 @@
 .header {
-  &__menu-first{
+  &__menu-first {
     display: flex;
     flex-direction: column-reverse;
   }
@@ -31,7 +31,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    .goog-te-gadget .goog-te-combo  {
+    .goog-te-gadget .goog-te-combo {
       margin-top: 0;
     }
     &::-ms-expand {
@@ -40,7 +40,7 @@
     span {
       display: none;
     }
-    .skiptranslate{
+    .skiptranslate {
       color: transparent;
     }
   }
