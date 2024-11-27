@@ -8,7 +8,6 @@ import crossIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icon
 import expandIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/collection/ExpandMore.svg";
 import { useEffect, useState } from "react";
 import { useText } from "../../core/utils/text";
-import Translations from "../../apps/search-header/translations/Translations";
 
 export interface StoryHeaderProps {
   search?: React.ReactNode;
@@ -130,8 +129,6 @@ const StoryHeader: React.FC<StoryHeaderProps> = ({ search, userProfile }) => {
                 </li>
               </ul>
             </div>
-
-            <Translations />
 
             {userProfile || (
               <button type="button" className="header__button">
