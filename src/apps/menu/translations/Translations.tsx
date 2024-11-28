@@ -60,7 +60,7 @@ const Translations: React.FC = () => {
             src={languageIcon}
             alt="language icon"
           />
-          <span className="header__translations-label" id="google-translate-element-label">Select language</span>
+          <span className="header__translations-label" id="google-translate-element-label">Vælg sprog</span>
           <div className="header__translations-select" id="google-translate-element" />
         </label>
       </div>
