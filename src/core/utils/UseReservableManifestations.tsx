@@ -6,6 +6,7 @@ import {
 import { convertPostIdToFaustId, getAllFaustIds } from "./helpers/general";
 import { Manifestation } from "./types/entities";
 import { useConfig } from "./config";
+import { AvailabilityV3 } from "../fbs/model/availabilityV3";
 
 const UseReservableManifestations = ({
   manifestations,
