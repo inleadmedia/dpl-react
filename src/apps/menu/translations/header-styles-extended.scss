@@ -16,10 +16,10 @@
   }
 
   &__translations-button {
-    line-height: 1.1;
+    line-height: 1.2;
     text-align: center;
     align-self: flex-end;
-    padding-bottom: 5px;
+    padding-bottom: 4px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -57,9 +57,23 @@
   }
 }
 
+@media(max-width: 1024px) {
+  .header__translations-icon {
+    margin-bottom: 3px;
+  }
+
+  .header__translations-button {
+    padding-bottom: 6px;
+  }
+}
+
 @media(max-width: 768px) {
   .header__translations-label {
     display: none;
+  }
+
+  .header__translations-icon {
+    margin-bottom: 6px;
   }
 
   .header__translations-button {
