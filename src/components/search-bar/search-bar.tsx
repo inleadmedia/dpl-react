@@ -42,6 +42,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setIsHeaderDropdownOpen((prev) => !prev);
   };
 
+
+  const branches = React.useMemo(() => {
+    return JSON.parse(document.querySelector("[data-branches-config]")?.getAttribute("data-branches-config") || "[]");
+  }, [document.querySelector("[data-branches-config]")]);
+
   return (
     <>
       {/* The downshift combobox uses prop spreading by design & associated control is destructured too */}
@@ -91,6 +96,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
           }
         }}
       />
+      {
+        branches.length > 0
+          ?
+            <select className="header__menu-search-branch-select" name="" id="">
+              <option value="">{ "Branch not selected" }</option>
+              { branches.map((branch: any) => {
+                return <option value={ branch.branchId }>{ branch.title }</option>
+              }) }
+            </select>
+          : null
+      }
       <input
         type="image"
         src={expandIcon}
