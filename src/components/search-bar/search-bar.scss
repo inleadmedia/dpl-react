@@ -1,0 +1,22 @@
+.header__menu-search-branch-select {
+  font-family: "Noto Sans", sans-serif;
+  position: absolute;
+  top: 0;
+  right: 96px; // 24px dropdown icon size + 24 dropdown left position + 12px gap between dropdown and search icons + 24px search icon size + 12px gap between search icon and select
+  height: 100%;
+  background: none;
+  border: none;
+  border-left: 1px solid #dbdbdb;
+  border-right: 1px solid #dbdbdb;
+  outline: none;
+
+  // Hide default select arrow
+  /* for Firefox */
+  -moz-appearance: none;
+  /* for Chrome */
+  -webkit-appearance: none;
+
+  &::-ms-expand {
+    display: none;
+  }
+}
