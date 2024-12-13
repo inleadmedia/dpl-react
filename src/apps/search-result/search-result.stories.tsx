@@ -1,3 +1,4 @@
+import querystring from "querystring";
 import type { Meta, StoryObj } from "@storybook/react";
 import serviceUrlArgs, {
   argTypes as serviceUrlArgTypes
@@ -218,12 +219,15 @@ export default meta;
 
 type Story = StoryObj<typeof SearchResultEntry>;
 
+const initialQueryParams = querystring.parse(window.location.search.split("?")[1] || "");
+const initialSearchQuery: string = (initialQueryParams.q || "").toString();
+
 export const Primary: Story = {
   args: {
     ...serviceUrlArgs,
     ...globalTextArgs,
     ...globalConfigArgs,
-    q: "harry",
+    q: initialSearchQuery || "harry",
     pageSizeDesktop: 50,
     pageSizeMobile: 20,
     authUrl: "",
