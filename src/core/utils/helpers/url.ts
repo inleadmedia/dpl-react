@@ -4,12 +4,13 @@ export const getCurrentLocation = () => String(window.location);
 
 export const appendQueryParametersToUrl = (
   url: URL,
-  parameters: { [key: string]: string }
+  parameters: { [key: string]: string | undefined }
 ) => {
   // We need to clone url in order not to manipulate the incoming object.
   const processedUrl = new URL(url);
   Object.keys(parameters).forEach((key) => {
-    processedUrl.searchParams.set(key, encodeURI(parameters[key]));
+    if (parameters[key] !== undefined)
+      processedUrl.searchParams.set(key, encodeURI(parameters[key]));
   });
 
   return processedUrl;
@@ -97,14 +98,16 @@ export const constructMaterialUrl = (
   return materialUrl;
 };
 
-export const constructSearchUrl = (searchUrl: URL, q: string) =>
+export const constructSearchUrl = (searchUrl: URL, q: string, branchId?: string) =>
   appendQueryParametersToUrl(searchUrl, {
-    q
+    q,
+    branchId
   });
 
-export const constructAdvancedSearchUrl = (advancedSearchUrl: URL, q: string) =>
+export const constructAdvancedSearchUrl = (advancedSearchUrl: URL, q: string, branchId?: string) =>
   appendQueryParametersToUrl(advancedSearchUrl, {
-    advancedSearchCql: q
+    advancedSearchCql: q,
+    branchId
   });
 
 export const constructSearchUrlWithFilter = (args: {
