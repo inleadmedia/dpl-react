@@ -73,7 +73,7 @@ const SearchResultEntry: React.FC<SearchResultEntryProps> = ({
 }) => {
   // If a q string has been defined as a data attribute use that
   // otherwise use the one from the url query parameter.
-  const { q: searchQuery } = getParams({ q });
+  const { q: searchQuery, branchId } = getParams({ q, branchId: "" });
   // Get number of result items to be shown.
   // If the number of items has been defined with data attributes use those
   // otherwise get them from the configuration.

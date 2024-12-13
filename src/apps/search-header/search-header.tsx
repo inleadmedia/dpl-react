@@ -1,3 +1,4 @@
+import querystring from "querystring";
 import React, { useEffect, useState } from "react";
 import { useCombobox, UseComboboxStateChange } from "downshift";
 import { useClickAway } from "react-use";
@@ -30,13 +31,19 @@ import { statistics } from "../../core/statistics/statistics";
 import HeaderDropdown from "../../components/header-dropdown/HeaderDropdown";
 import useFilterHandler from "../search-result/useFilterHandler";
 
+const initialQueryParams = querystring.parse(window.location.search.split("?")[1] || "");
+const initialSearchQuery: string = (initialQueryParams.q || "").toString();
+const initialBranchId: string = (initialQueryParams.branchId || "").toString();
+
 const SearchHeader: React.FC = () => {
   const t = useText();
   const u = useUrls();
   const searchUrl = u("searchUrl");
   const materialUrl = u("materialUrl");
   const advancedSearchUrl = u("advancedSearchUrl");
-  const [q, setQ] = useState<string>("");
+  const [searchBranch, setSearchBranch] = useState<string>(initialBranchId);
+  const [queryModified, setQueryModified] = useState<boolean>(false);
+  const [q, setQ] = useState<string>(initialSearchQuery);
   const [qWithoutQuery, setQWithoutQuery] = useState<string>(q);
   const [suggestItems, setSuggestItems] = useState<
     SuggestionsFromQueryStringQuery["suggest"]["result"] | []
@@ -122,7 +129,7 @@ const SearchHeader: React.FC = () => {
   }, [data]);
 
   useEffect(() => {
-    if (qWithoutQuery.length > 2) {
+    if (qWithoutQuery.length > 2 && (qWithoutQuery !== initialSearchQuery || queryModified)) {
       setIsAutosuggestOpen(true);
     } else {
       setIsAutosuggestOpen(false);
@@ -304,7 +311,7 @@ const SearchHeader: React.FC = () => {
   });
 
   const [redirectUrl, setRedirectUrl] = useState<URL>(
-    constructSearchUrl(searchUrl, q)
+    constructSearchUrl(searchUrl, q, searchBranch)
   );
 
   useEffect(() => {
@@ -317,11 +324,11 @@ const SearchHeader: React.FC = () => {
       q.trim() !== '""' &&
       q.trim() !== '"'
     ) {
-      setRedirectUrl(constructAdvancedSearchUrl(advancedSearchUrl, q));
+      setRedirectUrl(constructAdvancedSearchUrl(advancedSearchUrl, q, searchBranch));
     } else {
-      setRedirectUrl(constructSearchUrl(searchUrl, q));
+      setRedirectUrl(constructSearchUrl(searchUrl, q, searchBranch));
     }
-  }, [q, advancedSearchUrl, searchUrl]);
+  }, [q, advancedSearchUrl, searchUrl, searchBranch]);
 
   return (
     <div className="header__menu-second">
@@ -333,10 +340,16 @@ const SearchHeader: React.FC = () => {
           getInputProps={getInputProps}
           getLabelProps={getLabelProps}
           qWithoutQuery={qWithoutQuery}
-          setQWithoutQuery={setQWithoutQuery}
+          setQWithoutQuery={(query: string) => {
+            setQWithoutQuery(query);
+            setQueryModified(true);
+          }}
           isHeaderDropdownOpen={isHeaderDropdownOpen}
           setIsHeaderDropdownOpen={setIsHeaderDropdownOpen}
           redirectUrl={redirectUrl}
+          onBlur={() => setTimeout(() => setIsAutosuggestOpen(false), 100) }
+          initialBranchId={ searchBranch }
+          onBranchChange={ setSearchBranch }
         />
         <Autosuggest
           textData={textData}
