@@ -24,6 +24,9 @@ export interface SearchBarProps {
   searchNoValidCharactersErrorText?: string;
   searchHeaderDropdownText?: string;
   searchHeaderInputLabelText?: string;
+  onBlur?: () => void;
+  initialBranchId?: string;
+  onBranchChange?: (branchId: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -35,12 +38,19 @@ const SearchBar: React.FC<SearchBarProps> = ({
   setQWithoutQuery,
   isHeaderDropdownOpen,
   setIsHeaderDropdownOpen,
-  redirectUrl
+  redirectUrl,
+  onBlur,
+  initialBranchId,
+  onBranchChange
 }) => {
   const t = useText();
   const handleDropdownMenu = () => {
     setIsHeaderDropdownOpen((prev) => !prev);
   };
+
+  const branches = React.useMemo(() => {
+    return JSON.parse(document.querySelector("[data-branches-config]")?.getAttribute("data-branches-config") || "[]");
+  }, [document.querySelector("[data-branches-config]")]);
 
   return (
     <>
@@ -67,12 +77,31 @@ const SearchBar: React.FC<SearchBarProps> = ({
           }
         }}
         {...getInputProps({
+          onBlur: onBlur,
           onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             setQWithoutQuery(e.target.value);
           }
         })}
       />
       {/* eslint-enable react/jsx-props-no-spreading */}
+      {
+        branches.length > 0
+          ?
+            <select
+              className="header__menu-search-branch-select"
+              defaultValue={ initialBranchId || "" }
+              onChange={ (event) => {
+                if (onBranchChange )
+                  onBranchChange(event?.target?.value || "");
+              }}
+            >
+              <option value="">{ t("Branch not selected") }</option>
+              { branches.map((branch: any) => {
+                return <option key={ branch.branchId } value={ branch.branchId }>{ branch.title }</option>
+              }) }
+            </select>
+          : null
+      }
       <input
         type="image"
         src={searchIcon}
