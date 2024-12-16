@@ -5398,6 +5398,9 @@ export type ManifestationsSimpleFieldsFragment = {
     | { __typename: "Corporation"; display: string; nameSort: string }
     | { __typename: "Person"; display: string; nameSort: string }
   >;
+  cover?: {
+    detail: string;
+  };
   identifiers: Array<{ __typename?: "Identifier"; value: string }>;
   contributors: Array<
     | {
@@ -6720,6 +6723,9 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
   catalogueCodes {
     nationalBibliography
     otherCatalogues
+  }
+  cover {
+    detail
   }
 }
     ${WithLanguagesFragmentDoc}`;
