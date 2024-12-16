@@ -23,6 +23,7 @@ export type CoverProps = {
   idType?: GetCoverCollectionType;
   shadow?: "small" | "medium";
   linkAriaLabelledBy?: string;
+  customCoverUrl?: string;
 };
 
 export const Cover = ({
@@ -36,7 +37,8 @@ export const Cover = ({
   bestRepresentation,
   idType = "pid",
   shadow,
-  linkAriaLabelledBy
+  linkAriaLabelledBy,
+  customCoverUrl
 }: CoverProps) => {
   const [imageLoaded, setImageLoaded] = useState<boolean | null>(null);
   const handleSetImageLoaded = useCallback(() => {
@@ -56,7 +58,7 @@ export const Cover = ({
     sizes: [dataSize]
   });
 
-  const coverSrc = getCoverUrl({
+  const coverSrc = customCoverUrl || getCoverUrl({
     coverData: data,
     bestRepresentation,
     size: dataSize
