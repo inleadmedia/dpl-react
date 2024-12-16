@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   getAllFaustIds,
   getManifestationType
@@ -13,8 +13,8 @@ import MaterialButtonLoading from "../generic/MaterialButtonLoading";
 import MaterialButtonDisabled from "../generic/MaterialButtonDisabled";
 import { useText } from "../../../../core/utils/text";
 import { usePatronData } from "../../../../core/utils/helpers/usePatronData";
-import useGetAvailability from "../../../../core/utils/useGetAvailability";
 import { useConfig } from "../../../../core/utils/config";
+import { useGetHoldings } from "../../../../apps/material/helper";
 
 export interface MaterialButtonsPhysicalProps {
   manifestations: Manifestation[];
@@ -30,25 +30,36 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
   const t = useText();
   const config = useConfig();
   const faustIds = getAllFaustIds(manifestations);
-  // We extract loading of Availability here, as it isn't possible within
-  // UseReservableManifestations. React query uses cached version of the data
-  // so we can determine if the request inside UseReservableManifestations is
-  // loading this way.
-  const { isLoading: isLoadingAvailability } = useGetAvailability({
+  let { data: holdings, isLoading: isLoadingHoldings } = useGetHoldings({
     faustIds,
+    blacklist: "availability",
     config
   });
-  const { reservableManifestations } = UseReservableManifestations({
-    manifestations
-  });
-  const { data: userData, isLoading } = usePatronData();
+
+  const blacklistedGroup = useMemo(() => {
+    // @ts-ignore-next-line
+    return (document.querySelector("[data-blacklisted-reservation-groups]")?.getAttribite("data-blacklisted-reservation-groups") || "")
+      .split(",")
+      .filter(Boolean);
+  }, []);
+
+  const blacklistedBranches = config("blacklistedAvailabilityBranchesConfig", { transformer: "stringToArray" });
+  const availableForReservation = (holdings || []).filter(group => {
+    return group.reservable === true && group.holdings.filter(holding => {
+      return blacklistedBranches.includes(holding.branch.branchId) === false && holding.materials.filter((material) => {
+        return material.available === true && blacklistedGroup.includes(material?.materialGroup?.name) === false;
+      }).length !== 0;
+    }).length !== 0;
+  }).length !== 0;
+
+  const { data: userData, isLoading: isLoadingPatron } = usePatronData();
   const isUserBlocked = !!(userData?.patron && isBlocked(userData?.patron));
 
-  if (isLoading || isLoadingAvailability) {
+  if (isLoadingHoldings || isLoadingPatron) {
     return <MaterialButtonLoading />;
   }
 
-  if (!reservableManifestations || reservableManifestations.length < 1) {
+  if (availableForReservation !== true) {
     return <MaterialButtonDisabled size={size} label={t("cantReserveText")} />;
   }
 
