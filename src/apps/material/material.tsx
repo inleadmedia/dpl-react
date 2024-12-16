@@ -1,7 +1,8 @@
+import lodash from "lodash";
 import CreateIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/collection/Create.svg";
 import Receipt from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/collection/Receipt.svg";
 import VariousIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/collection/Various.svg";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDeepCompareEffect } from "react-use";
 import DisclosureControllable from "../../components/Disclosures/DisclosureControllable";
 import DisclosureSummary from "../../components/Disclosures/DisclosureSummary";
@@ -54,6 +55,29 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
   const { data: userData } = usePatronData();
   const [isUserBlocked, setIsUserBlocked] = useState<boolean | null>(null);
   const { track } = useStatistics();
+  const customFields = useMemo(() => {
+    // @ts-ignore-next-line
+    let fields: any = document.querySelector('div[data-dpl-app="material"]')?.dataset?.eonextExtFields;
+    if (!fields)
+      return [];
+
+    try {
+      fields = JSON.parse(fields);
+
+      return Object.keys(fields).map(fieldLabel => {
+        return {
+          label: fieldLabel,
+          getter: (materialData: object) => {
+            return (fields[fieldLabel] || "").trim().split(",").filter(Boolean).map((pointer: string) => {
+              return lodash.get(materialData, pointer);
+            }).join(", ");
+          }
+        };
+      });
+    } catch (error) {
+      console.warn("Cannot parse data-eonext-ext-fields attribute! Data: ", fields, error);
+    }
+  }, [wid]);
 
   useEffect(() => {
     setIsUserBlocked(!!(userData?.patron && isBlocked(userData.patron)));
@@ -144,7 +168,15 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     manifestation: selectedManifestations[0],
     work,
     t
-  });
+  }).concat((customFields || []).map((customField: object) => {
+    return {
+      // @ts-ignore-next-line
+      label: customField.label,
+      // @ts-ignore-next-line
+      value: customField.getter(work)
+    };
+  }));
+
   const infomediaIds = getInfomediaIds(selectedManifestations);
 
   // Get disclosure URL parameter from the current URL to see if it should be open.
