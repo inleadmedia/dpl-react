@@ -121,7 +121,7 @@ const SearchHeader: React.FC = () => {
 
   // Autosuggest opening and closing based on input text length.
   useEffect(() => {
-    if (data && data.suggest.result.length > 0) {
+    if (data && data.suggest.result.length > 0 && (qWithoutQuery !== initialSearchQuery || queryModified)) {
       setIsAutosuggestOpen(true);
     } else {
       setIsAutosuggestOpen(false);
