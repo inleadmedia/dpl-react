@@ -12,7 +12,7 @@
     font-size: 12px;
     cursor: initial;
     position: relative;
-    border-right: 1px solid #dbdbdb;;
+    border-right: 1px solid #dbdbdb;
   }
 
   &__translations-button {
@@ -57,7 +57,7 @@
   }
 }
 
-@media(max-width: 1024px) {
+@media (max-width: 1024px) {
   .header__translations-icon {
     margin-bottom: 3px;
   }
@@ -67,7 +67,7 @@
   }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   .header__translations-label {
     display: none;
   }

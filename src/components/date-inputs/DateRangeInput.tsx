@@ -54,6 +54,7 @@ const DateRangeInput: FC<DateRangeInputProps> = ({
         >
           {label}
         </label>
+        {/* @ts-ignore: TS hallucinates about wrong react component. */}
         <Flatpickr
           id="date-range"
           value={value}
