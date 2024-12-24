@@ -6851,6 +6851,9 @@ ${ManifestationsSimpleFragmentDoc}`;
 export const WorkMediumFragmentDoc = `
     fragment WorkMedium on Work {
   ...WorkSmall
+  marc {
+    content
+  }
   materialTypes {
     materialTypeSpecific {
       display

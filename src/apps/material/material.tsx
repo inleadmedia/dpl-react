@@ -55,25 +55,75 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
   const { data: userData } = usePatronData();
   const [isUserBlocked, setIsUserBlocked] = useState<boolean | null>(null);
   const { track } = useStatistics();
-  const customFields = useMemo(() => {
+  const [customFields, setCustomFields] = useState<any>({});
+
+  useEffect(() => {
     // @ts-ignore-next-line
     let fields: any = document.querySelector('div[data-dpl-app="material"]')?.dataset?.eonextExtFields;
     if (!fields)
-      return [];
+      return;
 
     try {
       fields = JSON.parse(fields);
 
-      return Object.keys(fields).map(fieldLabel => {
-        return {
-          label: fieldLabel,
-          getter: (materialData: object) => {
-            return (fields[fieldLabel] || "").trim().split(",").filter(Boolean).map((pointer: string) => {
-              return lodash.get(materialData, pointer);
-            }).join(", ");
+      let processedFields: any = {};
+      Object.keys(fields).map(fieldLabel => {
+        let fieldType = "detail";
+        let fieldValue = (fields[fieldLabel] || "").trim();
+
+        if (fieldLabel.startsWith("%") && fieldLabel.endsWith("%")) {
+          fieldType = "description";
+          fieldLabel = fieldLabel.substring(1, fieldLabel.length - 1);
+
+          if (fieldLabel.endsWith(".options")) {
+            fieldLabel = fieldLabel.split(".options")[0];
+
+            let targetField = processedFields.description.find((fieldData: any) => fieldData?.label === fieldLabel);
+            if (targetField) {
+              try {
+                Object.assign(targetField.options, JSON.parse(fieldValue));
+              } catch (error) {
+                console.warn("Cannot parse filed options: ", fieldLabel, fieldValue);
+              }
+            }
+
+            return;
           }
-        };
+        }
+
+        processedFields[fieldType] = processedFields[fieldType] || [];
+        processedFields[fieldType].push({
+          label: fieldLabel,
+          options: fieldType === "description" ? {
+            concat: "append",
+            url: "#"
+          } : null,
+          getter: (materialData: any) => {
+            return fieldValue.split(",").filter(Boolean).map((pointer: string) => {
+              pointer = pointer.trim();
+
+              let type: string = "graphql";
+              if (pointer.includes(":"))
+                [type, pointer] = pointer.split(":");
+
+              let data = "";
+              if (type === "marc") {
+                data = lodash.get(materialData?.parsedMarc, pointer);
+              } else if (type === "graphql") {
+                data = lodash.get(materialData, pointer);
+              } else {
+                console.warn(`Unknown getter type: "${ type }, pointer: "${ pointer }"`);
+              }
+
+              if (Array.isArray(data))
+                data = data.filter(Boolean).join(", ");
+
+              return data;
+            }).filter(Boolean).join(", ");
+          }
+        });
       });
+      setCustomFields(processedFields);
     } catch (error) {
       console.warn("Cannot parse data-eonext-ext-fields attribute! Data: ", fields, error);
     }
@@ -168,7 +218,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     manifestation: selectedManifestations[0],
     work,
     t
-  }).concat((customFields || []).map((customField: object) => {
+  }).concat((customFields?.detail || []).map((customField: object) => {
     return {
       // @ts-ignore-next-line
       label: customField.label,
@@ -226,7 +276,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           />
         )}
       </MaterialHeader>
-      <MaterialDescription pid={pid} work={work} />
+      <MaterialDescription pid={pid} work={work} customFields={ customFields?.description } />
       {/* Since we cannot trust the editions for global manifestations */}
       {/* we limit them to only occur if the loaded work is global */}
       {workType === "local" && (
