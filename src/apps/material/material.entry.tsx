@@ -186,10 +186,28 @@ export interface MaterialEntryProps
   wid: WorkId;
 }
 
+const extendedFields = {
+  // Custom detail fields
+  "Custom original title": "graphql:titles.original[0]",
+  "Marc lang code":"marc:041.a, marc:041.c",
+  // Custom description fields
+  // Use "Series", "Subject", "Fiction nonfiction" or "Film adaptation" to extend existing field or any other value to create the new one (will be added after the existing fields).
+  // %[fieldName].options% - reserved keyword to pass field options
+  // Property options might have following values:
+  // options.concat<String> - One of "prepend", "append" (default: "append")
+  // options.url<String> - Absolute or relative url with possible templating "${tag}". E.g.: /search?q=${tag}.
+  "%Series%": "marc:041.a",
+  "%Subject%": "marc:041.c, marc:041.a",
+  "%Subject.options%": '{ "concat": "prepend", "url": "/search?q=${tag}" }',
+  "%Original title%": "graphql:titles.original[0]"
+};
+
 const WrappedMaterialEntry: React.FC<MaterialEntryProps> = ({ wid }) => (
-  <GuardedApp app="material">
-    <Material wid={wid} />
-  </GuardedApp>
+  <div data-dpl-app="material" data-eonext-ext-fields={ JSON.stringify(extendedFields) }>
+    <GuardedApp app="material" >
+      <Material wid={wid} />
+    </GuardedApp>
+  </div>
 );
 
 export default withConfig(withUrls(withText(WrappedMaterialEntry)));
