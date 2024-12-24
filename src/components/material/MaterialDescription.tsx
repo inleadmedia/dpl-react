@@ -19,15 +19,32 @@ import SeriesList from "../card-item-list/card-list-item/series-list";
 export interface MaterialDescriptionProps {
   pid: Pid;
   work: Work;
+  customFields: any;
 }
 
-const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work }) => {
+const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customFields }) => {
   const { itemRef, hasBeenVisible: showItem } = useItemHasBeenVisible();
   const t = useText();
   const u = useUrls();
   const searchUrl = u("searchUrl");
   const materialUrl = u("materialUrl");
   const { fictionNonfiction, series, subjects, relations, dk5MainEntry } = work;
+  let processedCustomFields = React.useMemo(() => {
+    return customFields.map((fieldData: any) => {
+      let values = fieldData.getter(work).split(", ");
+
+      return {
+        label: fieldData.label,
+        options: fieldData.options,
+        tags: values.map((tag: string) => {
+          return {
+            term: tag,
+            url: new URL(fieldData.options.url.replace(/\$\{\s*tag\s*\}/ig, tag), window.location.href)
+          }
+        })
+      }
+    });
+  }, [customFields, work]);
 
   const isFiction = materialIsFiction(work);
 
@@ -63,6 +80,29 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work }) => {
         }
       ]
     : [];
+
+  let knownFileds: any = {
+    "Series": seriesMembersList,
+    "Subject": subjectsList,
+    "Fiction nonfiction": fictionNonfictionList,
+    "Film adaptation": filmAdaptationsList
+  };
+
+  processedCustomFields = processedCustomFields.filter((fieldData: any) => {
+    if (knownFileds[fieldData.label] !== undefined) {
+      if (fieldData.options.concat === "prepend") {
+        // @ts-ignore-next-line
+        [].splice.apply(knownFileds[fieldData.label], [0, 0].concat(fieldData.tags));
+      } else { // append
+        // @ts-ignore-next-line
+        [].splice.apply(knownFileds[fieldData.label], [knownFileds[fieldData.label].length, 0].concat(fieldData.tags));
+      }
+
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <section
@@ -119,6 +159,17 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work }) => {
               linkList={filmAdaptationsList}
               dataCy="material-description-film-adaptations"
             />
+
+            {
+              processedCustomFields.map((customField: any) => {
+                return <HorizontalTermLine
+                  key={ customField.label }
+                  title={ customField.label }
+                  linkList={ customField.tags }
+                  dataCy="material-description-film-adaptations"
+                />
+              })
+            }
           </div>
         </>
       )}

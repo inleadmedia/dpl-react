@@ -27,6 +27,31 @@ const getData = (
   return null;
 };
 
+function parseMarcField(workData: any) {
+  if (workData?.marc?.content) {
+    try {
+      let marcNode = document.createElement("div");
+      marcNode.innerHTML = workData?.marc?.content;
+
+      let parsedMarc: any = {};
+      [].forEach.call(marcNode.querySelectorAll("[tag]"), (tagNode: HTMLElement) => {
+        let tag = tagNode.getAttribute("tag") || "";
+        parsedMarc[tag] = parsedMarc[tag] || {};
+
+        [].forEach.call(tagNode.querySelectorAll("[code]"), (codeNode: HTMLElement) => {
+          let code = codeNode.getAttribute("code") || "";
+          parsedMarc[tag][code] = parsedMarc[tag][code] || [];
+          parsedMarc[tag][code].push(codeNode.innerText);
+        });
+      });
+
+      workData.parsedMarc = parsedMarc;
+    } catch (error) {
+      console.warn("Invalid marc field XML", workData);
+    }
+  }
+}
+
 export const useGetWork = (
   wid: WorkId
 ):
@@ -47,11 +72,13 @@ export const useGetWork = (
 
   const localWorkData = getData(localWork, "local");
   if (localWorkData) {
+    parseMarcField(localWorkData?.data?.work);
     return localWorkData;
   }
 
   const globalWorkData = getData(globalWork, "global");
   if (globalWorkData) {
+    parseMarcField(globalWorkData?.data?.work);
     return globalWorkData;
   }
 
