@@ -49,7 +49,23 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   const branches = React.useMemo(() => {
-    return JSON.parse(document.querySelector("[data-branches-config]")?.getAttribute("data-branches-config") || "[]");
+    let branchSelectorEnabled = (document.querySelector("[data-show-search-branch-selection]")?.getAttribute("data-show-search-branch-selection") || "") === "true";
+    if (branchSelectorEnabled === false)
+      return [];
+
+    let branchesForSelect = JSON.parse(document.querySelector("[data-branches-config]")?.getAttribute("data-branches-config") || "[]");
+    let excludedBranches = (document.querySelector("[data-blacklisted-search-branches-config]")?.getAttribute("data-blacklisted-search-branches-config") || "")
+      .split(",")
+      .map((branch: string) => branch.trim())
+      .filter(Boolean);
+
+    if (excludedBranches.length !== 0) {
+      branchesForSelect = branchesForSelect.filter((branch: any) => {
+        return excludedBranches.includes(branch.branchId) === false;
+      });
+    }
+
+    return branchesForSelect;
   }, [document.querySelector("[data-branches-config]")]);
 
   return (
@@ -91,7 +107,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               className="header__menu-search-branch-select"
               defaultValue={ initialBranchId || "" }
               onChange={ (event) => {
-                if (onBranchChange )
+                if (onBranchChange)
                   onBranchChange(event?.target?.value || "");
               }}
             >

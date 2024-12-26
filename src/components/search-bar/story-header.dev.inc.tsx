@@ -10,7 +10,9 @@ import { useText } from "../../core/utils/text";
 
 /* eslint-disable */
 const exampleCMSData = {
-  "data-branches-config": '[{"branchId":"DK-733006","title":"Hash\\u00f8j Skole"},{"branchId":"DK-733010","title":"Dalmose Servicepunkt Dagli\\u2019 Brugsen"},{"branchId":"DK-733000","title":"Slagelse Bibliotek"},{"branchId":"DK-733001","title":"Kors\\u00f8r Bibliotek"},{"branchId":"DK-733003","title":"Vemmelev Servicepunkt Dagli\\u2019Brugsen"},{"branchId":"DK-733002","title":"Sk\\u00e6lsk\\u00f8r Bibliotek"},{"branchId":"DK-661103","title":"L\\u00e6sekreds"}]'
+  "data-branches-config": '[{"branchId":"DK-733006","title":"Hash\\u00f8j Skole"},{"branchId":"DK-733010","title":"Dalmose Servicepunkt Dagli\\u2019 Brugsen"},{"branchId":"DK-733000","title":"Slagelse Bibliotek"},{"branchId":"DK-733001","title":"Kors\\u00f8r Bibliotek"},{"branchId":"DK-733003","title":"Vemmelev Servicepunkt Dagli\\u2019Brugsen"},{"branchId":"DK-733002","title":"Sk\\u00e6lsk\\u00f8r Bibliotek"},{"branchId":"DK-661103","title":"L\\u00e6sekreds"}]',
+  "data-blacklisted-search-branches-config": "DK-733006,DK-733010",
+  "data-show-search-branch-selection": "true"
 };
 /* eslint-enable */
 
