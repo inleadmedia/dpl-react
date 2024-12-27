@@ -30,7 +30,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   const materialUrl = u("materialUrl");
   const { fictionNonfiction, series, subjects, relations, dk5MainEntry } = work;
   let processedCustomFields = React.useMemo(() => {
-    return customFields.map((fieldData: any) => {
+    return (customFields || []).map((fieldData: any) => {
       let values = fieldData.getter(work).split(", ");
 
       return {
