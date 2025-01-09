@@ -36,7 +36,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
       return {
         label: fieldData.label,
         options: fieldData.options,
-        tags: values.map((tag: string) => {
+        tags: values.filter(Boolean).map((tag: string) => {
           return {
             term: tag,
             url: new URL(fieldData.options.url.replace(/\$\{\s*tag\s*\}/ig, tag), window.location.href)
