@@ -186,20 +186,65 @@ export interface MaterialEntryProps
   wid: WorkId;
 }
 
-const extendedFields = {
+/*const extendedFields = {
   // Custom detail fields
-  "Custom original title": "graphql:titles.original[0]",
+  "Type": "marc:001.a",
+  "Type.options": '{ "concat": "prepend" }',
+  "Edition": "",
+  "Edition.options": '{ "hidden": true }',
+  "Custom original title": "graphql:titles.full[0]",
   "Marc lang code":"marc:041.a, marc:041.c",
+  "Language": "",
+  "Language.options": '{ "hidden": true }',
   // Custom description fields
-  // Use "Series", "Subject", "Fiction nonfiction" or "Film adaptation" to extend existing field or any other value to create the new one (will be added after the existing fields).
+  // Use localized name from the description page to extend existing field or any other value to create the new one (will be added after the existing fields).
   // %[fieldName].options% - reserved keyword to pass field options
   // Property options might have following values:
-  // options.concat<String> - One of "prepend", "append" (default: "append")
+  // options.concat<String> - One of "prepend", "append" or "override" (default: "append")
   // options.url<String> - Absolute or relative url with possible templating "${tag}". E.g.: /search?q=${tag}.
-  "%Series%": "marc:041.a",
-  "%Subject%": "marc:041.c, marc:041.a",
-  "%Subject.options%": '{ "concat": "prepend", "url": "/search?q=${tag}" }',
+  // options.hidden<Boolean> - Hide the line with defined label
+  //"%Series%": "marc:041.a",
+  "%Emnetal%": "marc:041.c, marc:041.a",
+  "%Emnetal.options%": '{ "concat": "prepend", "url":  }',
+  "%Fictional%": "",
+  "%Fictional.options%": '{ "hidden": true }',
   "%Original title%": "graphql:titles.original[0]"
+};*/
+
+const extendedFields = {
+  "detail": {
+    "Type": {
+      "data": ["marc:001.a", "marc:001.c"],
+      "insert": "prepend"
+    },
+    "Edition": {
+      "hidden": true
+    },
+    "Language": {
+      "hidden": true
+    },
+    "Custom original title": {
+      "data": ["graphql:titles.full[0]"]
+    },
+    "Contents": {
+      "data": ["marc:001.a", "marc:001.c"],
+      "insert": "fallback",
+      "type": "list"
+    }
+  },
+  "description": {
+    "Emnetal": {
+      "data": ["marc:001.c", "marc:001.a"],
+      "insert": "replace",
+      "url": "/search?q=${tag}"
+    },
+    "Fictional": {
+      "hidden": true
+    },
+    "Original title": {
+      "data": ["graphql:titles.full[0]"]
+    }
+  }
 };
 
 const WrappedMaterialEntry: React.FC<MaterialEntryProps> = ({ wid }) => (

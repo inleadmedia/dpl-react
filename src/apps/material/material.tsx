@@ -37,6 +37,10 @@ import {
   getManifestationsOrderByTypeAndYear,
   isParallelReservation
 } from "./helper";
+import {
+  ListItemType,
+  ListData
+} from "../../components/material/MaterialDetailsList";
 import MaterialDisclosure from "./MaterialDisclosure";
 import ReservationFindOnShelfModals from "./ReservationFindOnShelfModals";
 
@@ -59,47 +63,57 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
 
   useEffect(() => {
     // @ts-ignore-next-line
-    let fields: any = document.querySelector('div[data-dpl-app="material"]')?.dataset?.eonextExtFields;
-    if (!fields)
+    let extendedFields: any = document.querySelector('div[data-dpl-app="material"]')?.dataset?.eonextExtFields;
+    if (!extendedFields)
       return;
 
     try {
-      fields = JSON.parse(fields);
+      extendedFields = JSON.parse(extendedFields);
 
-      let processedFields: any = {};
-      Object.keys(fields).map(fieldLabel => {
-        let fieldType = "detail";
-        let fieldValue = (fields[fieldLabel] || "").trim();
+      Object.keys(extendedFields).forEach(sectionName => {
+        Object.keys(extendedFields[sectionName]).forEach(fieldLabel => {
+          extendedFields[sectionName][fieldLabel].label = fieldLabel;
+          extendedFields[sectionName][fieldLabel].merge = (originalData: any, customData: any, options: any) => {
 
-        if (fieldLabel.startsWith("%") && fieldLabel.endsWith("%")) {
-          fieldType = "description";
-          fieldLabel = fieldLabel.substring(1, fieldLabel.length - 1);
-
-          if (fieldLabel.endsWith(".options")) {
-            fieldLabel = fieldLabel.split(".options")[0];
-
-            let targetField = processedFields.description.find((fieldData: any) => fieldData?.label === fieldLabel);
-            if (targetField) {
-              try {
-                Object.assign(targetField.options, JSON.parse(fieldValue));
-              } catch (error) {
-                console.warn("Cannot parse filed options: ", fieldLabel, fieldValue);
+            if (!Array.isArray(originalData)) {
+              if (lodash.isString(originalData)) {
+                originalData = originalData.split(", ").filter(Boolean);
+              } else {
+                originalData = [originalData];
               }
             }
 
-            return;
-          }
-        }
+            let mergedData = [];
+            switch (extendedFields[sectionName][fieldLabel].insert) {
+              case "prepend":
+                mergedData = customData.concat(originalData);
+              break;
+              case "replace":
+                mergedData = customData;
+              break;
+              case "fallback":
+                if (originalData.length === 0) {
+                  mergedData = customData;
+                } else {
+                  mergedData = originalData;
+                }
+              break;
+              default: // append
+                mergedData = originalData.concat(customData);
+              break;
+            }
 
-        processedFields[fieldType] = processedFields[fieldType] || [];
-        processedFields[fieldType].push({
-          label: fieldLabel,
-          options: fieldType === "description" ? {
-            concat: "append",
-            url: "#"
-          } : null,
-          getter: (materialData: any) => {
-            return fieldValue.split(",").filter(Boolean).map((pointer: string) => {
+            mergedData = mergedData.filter(Boolean);
+
+            let outputType = extendedFields[sectionName][fieldLabel].type || options?.outputType || "text";
+            if (outputType === "list") {
+              return mergedData;
+            }
+
+            return mergedData.join(", ");
+          },
+          extendedFields[sectionName][fieldLabel].getter = (materialData: any) => {
+            return (extendedFields[sectionName][fieldLabel]?.data || []).filter(Boolean).map((pointer: string) => {
               pointer = pointer.trim();
 
               let type: string = "graphql";
@@ -119,13 +133,14 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
                 data = data.filter(Boolean).join(", ");
 
               return data;
-            }).filter(Boolean).join(", ");
+            }).filter(Boolean).join(", ").split(", ");
           }
         });
       });
-      setCustomFields(processedFields);
+
+      setCustomFields(extendedFields);
     } catch (error) {
-      console.warn("Cannot parse data-eonext-ext-fields attribute! Data: ", fields, error);
+      console.warn("Cannot parse data-eonext-ext-fields attribute! Data: ", extendedFields, error);
     }
   }, [wid]);
 
@@ -214,18 +229,31 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
   } = data as { work: Work };
 
   const pid = getWorkPid(work);
-  const detailsListData = getDetailsListData({
+  let detailsListData = getDetailsListData({
     manifestation: selectedManifestations[0],
     work,
     t
-  }).concat((customFields?.detail || []).map((customField: object) => {
-    return {
-      // @ts-ignore-next-line
-      label: customField.label,
-      // @ts-ignore-next-line
-      value: customField.getter(work)
-    };
-  }));
+  });
+
+  Object.values(customFields?.detail || {}).forEach((customField: any) => {
+    let dataIndex = detailsListData.findIndex((originalListElement: any) => originalListElement?.label === customField?.label);
+    let customFieldValue = customField.getter(work);
+
+    if (dataIndex === -1) {
+      dataIndex = detailsListData.push({
+        label: customField.label,
+        value: customFieldValue
+      }) - 1;
+    } else {
+      detailsListData[dataIndex].value = customField.merge(detailsListData[dataIndex].value, customFieldValue);
+    }
+
+    if (customField.type === "list")
+      detailsListData[dataIndex].type = ListItemType.List;
+
+    if (detailsListData[dataIndex].value.length === 0 || customField.hidden === true)
+      detailsListData.splice(dataIndex, 1);
+  });
 
   const infomediaIds = getInfomediaIds(selectedManifestations);
 
