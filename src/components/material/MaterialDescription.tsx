@@ -29,17 +29,16 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   const searchUrl = u("searchUrl");
   const materialUrl = u("materialUrl");
   const { fictionNonfiction, series, subjects, relations, dk5MainEntry } = work;
-  let processedCustomFields = React.useMemo(() => {
-    return (customFields || []).map((fieldData: any) => {
-      let values = fieldData.getter(work).split(", ");
+  let descriptionTermFields = React.useMemo(() => {
+    return Object.values(customFields || {}).map((fieldData: any) => {
+      let values = fieldData.getter(work);
 
       return {
-        label: fieldData.label,
-        options: fieldData.options,
+        ...fieldData,
         tags: values.filter(Boolean).map((tag: string) => {
           return {
             term: tag,
-            url: new URL(fieldData.options.url.replace(/\$\{\s*tag\s*\}/ig, tag), window.location.href)
+            url: new URL((fieldData.url || "#").replace(/\$\{\s*tag\s*\}/ig, tag), window.location.href)
           }
         })
       }
@@ -82,27 +81,46 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     : [];
 
   let knownFileds: any = {
-    "Series": seriesMembersList,
-    "Subject": subjectsList,
-    "Fiction nonfiction": fictionNonfictionList,
-    "Film adaptation": filmAdaptationsList
+    [t("inSameSeriesText")]: {
+      label: t("inSameSeriesText"),
+      tags: seriesMembersList,
+      cy: "material-description-series-members"
+    },
+    [t("identifierText")]: {
+      label: t("identifierText"),
+      tags: subjectsList,
+      cy: "material-description-identifier"
+    },
+    [t("fictionNonfictionText")]: {
+      label: t("fictionNonfictionText"),
+      tags: fictionNonfictionList,
+      cy: "material-description-fiction-nonfiction"
+    },
+    [t("filmAdaptationsText")]: {
+      label: t("filmAdaptationsText"),
+      tags: filmAdaptationsList,
+      cy: "material-description-film-adaptations"
+    }
   };
 
-  processedCustomFields = processedCustomFields.filter((fieldData: any) => {
+  descriptionTermFields = descriptionTermFields.filter((fieldData: any) => {
+    if (fieldData.hidden === true) {
+      fieldData.tags = [];
+
+      if (knownFileds[fieldData.label] !== undefined)
+        knownFileds[fieldData.label].tags = [];
+    }
+
     if (knownFileds[fieldData.label] !== undefined) {
-      if (fieldData.options.concat === "prepend") {
-        // @ts-ignore-next-line
-        [].splice.apply(knownFileds[fieldData.label], [0, 0].concat(fieldData.tags));
-      } else { // append
-        // @ts-ignore-next-line
-        [].splice.apply(knownFileds[fieldData.label], [knownFileds[fieldData.label].length, 0].concat(fieldData.tags));
-      }
+      fieldData.tags = fieldData.merge(knownFileds[fieldData.label].tags || [], fieldData.tags || [], { outputType: "list" });
 
       return false;
     }
 
     return true;
   });
+
+  descriptionTermFields = Object.values(knownFileds).concat(descriptionTermFields);
 
   return (
     <section
@@ -139,34 +157,14 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
               workId={work.workId}
               dataCy="material-description-series"
             />
-            <HorizontalTermLine
-              title={t("inSameSeriesText")}
-              linkList={seriesMembersList}
-              dataCy="material-description-series-members"
-            />
-            <HorizontalTermLine
-              title={t("identifierText")}
-              linkList={subjectsList}
-              dataCy="material-description-identifier"
-            />
-            <HorizontalTermLine
-              title={t("fictionNonfictionText")}
-              linkList={fictionNonfictionList}
-              dataCy="material-description-fiction-nonfiction"
-            />
-            <HorizontalTermLine
-              title={t("filmAdaptationsText")}
-              linkList={filmAdaptationsList}
-              dataCy="material-description-film-adaptations"
-            />
 
             {
-              processedCustomFields.map((customField: any) => {
+              descriptionTermFields.map((customField: any) => {
                 return <HorizontalTermLine
                   key={ customField.label }
                   title={ customField.label }
                   linkList={ customField.tags }
-                  dataCy="material-description-film-adaptations"
+                  dataCy={ customField.cy || "material-description-custom" }
                 />
               })
             }
