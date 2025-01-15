@@ -8,10 +8,12 @@ const CardListItemCover: React.FC<CardListItemCoverProps> = ({
   alt,
   url,
   tint,
-  linkAriaLabelledBy
+  linkAriaLabelledBy,
+  customCoverUrl
 }) => {
   return (
     <Cover
+      customCoverUrl={customCoverUrl}
       animate
       ids={ids}
       bestRepresentation={bestRepresentation}
