@@ -124,7 +124,7 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
 
   const customCoverUrl = useMemo(() => {
     // @ts-ignore-next-line
-    let _customCoverField: string = document.querySelector('div[data-dpl-app="material"]')?.dataset?.eonextExtCovers || "";
+    let _customCoverField: string = document.querySelector('[data-eonext-ext-covers]')?.dataset?.eonextExtCovers || "";
     if (!_customCoverField)
       return;
 
