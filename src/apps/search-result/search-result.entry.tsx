@@ -83,7 +83,7 @@ const SearchResultEntry: React.FC<SearchResultEntryProps> = ({
   });
 
   return (
-    <div>
+    <div data-eonext-ext-covers="manifestations.latest.cover.detail">
       {/* We still want to render the app, even if the search query is an empty string */}
       {(searchQuery || searchQuery === "") && (
         <GuardedApp app="search-result">
