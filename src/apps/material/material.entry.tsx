@@ -254,43 +254,46 @@ export interface MaterialEntryProps
 */
 
 const extendedFields = {
+  description: {
+    Type: {
+      data: ["marc:001.a", "marc:001.c"],
+      insert: "prepend"
+    },
+    Emnetal: {
+      data: ["marc:088.a"],
+      insert: "replace",
+      url: "/search?q=${tag}"
+    },
+    "Skøn-/faglitteratur": {
+      hidden: true
+    },
+    Emneord: {
+      data: ["marc:631.a"],
+      insert:"prepend",
+      url:"/search?q=${tag}"
+    }
+  },
   detail: {
     Type: {
       data: ["marc:001.a", "marc:001.c"],
       insert: "prepend"
     },
-    Edition: {
-      hidden: true
+    Stemmer: {
+      data: ["marc:509.a"]
     },
-    Language: {
-      hidden: true
+    "Stemmer forkortet": {
+      data: ["marc:509.b"]
     },
-    "Custom original title": {
-      data: ["graphql:titles.full[0]"]
-    },
-    Contents: {
-      data: ["marc:001.a", "marc:001.c"],
-      insert: "fallback",
-      type: "list"
-    }
-  },
-  description: {
-    Emnetal: {
-      data: ["marc:001.c", "marc:001.a"],
-      insert: "replace",
-      url: "/search?q=${tag}"
-    },
-    Fictional: {
-      hidden: true
-    },
-    "Original title": {
-      data: ["graphql:titles.full[0]"]
+    Indhold: {
+      data: ["marc:795.a","marc:530.a"],
+      type: "list",
+      insert:"fallback"
     }
   }
 };
 
 const WrappedMaterialEntry: React.FC<MaterialEntryProps> = ({ wid }) => (
-  <div data-dpl-app="material" data-eonext-ext-fields={ JSON.stringify(extendedFields) }>
+  <div data-dpl-app="material" data-eonext-ext-fields={ JSON.stringify(extendedFields) } data-eonext-ext-covers="cover.detail">
     <GuardedApp app="material" >
       <Material wid={wid} />
     </GuardedApp>
