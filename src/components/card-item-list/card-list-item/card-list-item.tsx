@@ -1,4 +1,3 @@
-import lodash from "lodash";
 import React, { useCallback, useId, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useText } from "../../../core/utils/text";
@@ -111,15 +110,6 @@ const CardListItem: React.FC<CardListItemProps> = ({
     );
   };
 
-  const customCoverUrl = useMemo(() => {
-    // @ts-ignore-next-line
-    let _customCoverField: string = document.querySelector('[data-eonext-ext-covers]')?.dataset?.eonextExtCovers || "";
-    if (!_customCoverField)
-      return;
-
-    return lodash.get(item, _customCoverField);
-  }, [item]);
-
   return (
     // We know that is not following a11y recommendations to have an onclick
     // handler on a non-interactive element.
@@ -144,7 +134,6 @@ const CardListItem: React.FC<CardListItemProps> = ({
       <div className="card-list-item__cover">
         {showItem && (
           <CardListItemCover
-            customCoverUrl={customCoverUrl}
             ids={manifestationPids}
             // We'll try to prioritize book covers or else use FBI's recommended manifestation.
             bestRepresentation={bookManifestation ?? bestRepresentation}

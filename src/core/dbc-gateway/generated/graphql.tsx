@@ -4987,6 +4987,9 @@ export type SuggestionsFromQueryStringQuery = {
           bestRepresentation: {
             __typename?: "Manifestation";
             pid: string;
+            cover: {
+              detail: string
+            };
             languages?: {
               __typename?: "Languages";
               main?: Array<{
@@ -7262,6 +7265,9 @@ export const SuggestionsFromQueryStringDocument = `
           }
           bestRepresentation {
             pid
+            cover {
+              detail
+            }
             ...WithLanguages
           }
         }
