@@ -87,6 +87,7 @@ const ReservationDetails: FC<ReservationDetailsProps & MaterialProps> = ({
             description={description}
             materialType={materialType}
             series={material.series}
+            work={material}
           >
             {state === readyForPickupState && (
               <div className="status-label status-label--info">

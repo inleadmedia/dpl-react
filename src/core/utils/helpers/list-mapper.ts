@@ -160,6 +160,7 @@ export const mapManifestationToBasicDetailsType = (
     title: fullText,
     year,
     description,
+    cover: material.cover,
     series:
       series &&
       series.length > 0 &&
