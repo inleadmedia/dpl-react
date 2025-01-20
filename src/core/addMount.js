@@ -12,6 +12,7 @@ function addMount({ appName, app }) {
   if (!window.dplReact?.apps) {
     return;
   }
+
   // window.dplReact.apps is our container for all of our available applications.
   window.dplReact.apps = {
     ...window.dplReact.apps,

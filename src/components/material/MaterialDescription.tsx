@@ -45,8 +45,6 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     });
   }, [customFields, work]);
 
-  const isFiction = materialIsFiction(work);
-
   const seriesMembersList =
     (series &&
       series[0]?.members.map((member) => {
@@ -81,6 +79,13 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     : [];
 
   let knownFileds: any = {
+    [t("subjectNumberText")]: !materialIsFiction(work) && dk5MainEntry ? {
+      label: t("subjectNumberText"),
+      tags: [{
+        url: constructSearchUrl(searchUrl, dk5MainEntry.display),
+        term: dk5MainEntry.display
+      }]
+    } : null,
     [t("inSameSeriesText")]: {
       label: t("inSameSeriesText"),
       tags: seriesMembersList,
@@ -107,12 +112,12 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     if (fieldData.hidden === true) {
       fieldData.tags = [];
 
-      if (knownFileds[fieldData.label] !== undefined)
+      if (knownFileds[fieldData.label] != null)
         knownFileds[fieldData.label].tags = [];
     }
 
-    if (knownFileds[fieldData.label] !== undefined) {
-      fieldData.tags = fieldData.merge(knownFileds[fieldData.label].tags || [], fieldData.tags || [], { outputType: "list" });
+    if (knownFileds[fieldData.label] != null) {
+      knownFileds[fieldData.label].tags = fieldData.merge(knownFileds[fieldData.label].tags || [], fieldData.tags || [], { outputType: "list" });
 
       return false;
     }
@@ -120,7 +125,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     return true;
   });
 
-  descriptionTermFields = Object.values(knownFileds).concat(descriptionTermFields);
+  descriptionTermFields = Object.values(knownFileds).concat(descriptionTermFields).filter(Boolean);
 
   return (
     <section
@@ -139,17 +144,6 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
             </p>
           )}
           <div className="material-description__links mt-32">
-            {!isFiction && dk5MainEntry && (
-              <HorizontalTermLine
-                title={t("subjectNumberText")}
-                linkList={[
-                  {
-                    url: constructSearchUrl(searchUrl, dk5MainEntry.display),
-                    term: dk5MainEntry.display
-                  }
-                ]}
-              />
-            )}
             <SeriesList
               series={series}
               searchUrl={searchUrl}

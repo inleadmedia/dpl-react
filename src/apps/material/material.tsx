@@ -74,14 +74,8 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
         Object.keys(extendedFields[sectionName]).forEach(fieldLabel => {
           extendedFields[sectionName][fieldLabel].label = fieldLabel;
           extendedFields[sectionName][fieldLabel].merge = (originalData: any, customData: any, options: any) => {
-
-            if (!Array.isArray(originalData)) {
-              if (lodash.isString(originalData)) {
-                originalData = originalData.split(", ").filter(Boolean);
-              } else {
-                originalData = [originalData];
-              }
-            }
+            if (!Array.isArray(originalData))
+              originalData = [originalData];
 
             let mergedData = [];
             switch (extendedFields[sectionName][fieldLabel].insert) {
@@ -103,7 +97,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
               break;
             }
 
-            mergedData = mergedData.filter(Boolean);
+            mergedData = mergedData.filter((datum: any) => datum && ("" + datum).trim());
 
             let outputType = extendedFields[sectionName][fieldLabel].type || options?.outputType || "text";
             if (outputType === "list") {
@@ -113,27 +107,35 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
             return mergedData.join(", ");
           },
           extendedFields[sectionName][fieldLabel].getter = (materialData: any) => {
-            return (extendedFields[sectionName][fieldLabel]?.data || []).filter(Boolean).map((pointer: string) => {
+            let data: any = [];
+
+            (extendedFields[sectionName][fieldLabel]?.data || []).filter(Boolean).forEach((pointer: string) => {
               pointer = pointer.trim();
 
               let type: string = "graphql";
               if (pointer.includes(":"))
                 [type, pointer] = pointer.split(":");
 
-              let data = "";
+              let fieldData = "";
               if (type === "marc") {
-                data = lodash.get(materialData?.parsedMarc, pointer);
+                fieldData = lodash.get(materialData?.parsedMarc, pointer);
               } else if (type === "graphql") {
-                data = lodash.get(materialData, pointer);
+                fieldData = lodash.get(materialData, pointer);
               } else {
                 console.warn(`Unknown getter type: "${ type }, pointer: "${ pointer }"`);
               }
 
-              if (Array.isArray(data))
-                data = data.filter(Boolean).join(", ");
+              if (!fieldData)
+                return;
 
-              return data;
-            }).filter(Boolean).join(", ").split(", ");
+              if (Array.isArray(fieldData)) {
+                data = data.concat(fieldData);
+              } else {
+                data.push(fieldData);
+              }
+            });
+
+            return data.filter((datum: any) => datum && ("" + datum).trim() !== "");
           }
         });
       });
