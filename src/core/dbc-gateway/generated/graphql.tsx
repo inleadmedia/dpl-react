@@ -2518,6 +2518,9 @@ export type ManifestationBasicDetailsFragment = {
       isoCode: string;
     }> | null;
   } | null;
+  cover: {
+    detail: string
+  };
 };
 
 export type GetManifestationViaMaterialByFaustQueryVariables = Exact<{
@@ -2565,6 +2568,9 @@ export type GetManifestationViaMaterialByFaustQuery = {
         isoCode: string;
       }> | null;
     } | null;
+    cover: {
+      detail: string
+    };
   } | null;
 };
 
@@ -2619,6 +2625,9 @@ export type GetManifestationViaBestRepresentationByFaustQuery = {
               isoCode: string;
             }> | null;
           } | null;
+          cover: {
+            detail: string
+          };
         };
       };
     };
@@ -4987,6 +4996,9 @@ export type SuggestionsFromQueryStringQuery = {
           bestRepresentation: {
             __typename?: "Manifestation";
             pid: string;
+            cover: {
+              detail: string
+            };
             languages?: {
               __typename?: "Languages";
               main?: Array<{
@@ -6569,6 +6581,9 @@ export const ManifestationBasicDetailsFragmentDoc = `
       display
     }
   }
+  cover {
+    detail
+  }
   creators {
     display
   }
@@ -7262,6 +7277,9 @@ export const SuggestionsFromQueryStringDocument = `
           }
           bestRepresentation {
             pid
+            cover {
+              detail
+            }
             ...WithLanguages
           }
         }

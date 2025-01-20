@@ -1,4 +1,4 @@
-import { first } from "lodash";
+import lodash, { first } from "lodash";
 import {
   CoverImageUrls,
   Cover as CoverType
@@ -36,6 +36,14 @@ export const getCoverUrl = ({
   bestRepresentation?: Manifestation;
   size: CoverServiceSizes;
 }) => {
+  // @ts-ignore-next-line
+  let _customCoverField: string = document.querySelector('[data-eonext-ext-covers]')?.getAttribute("data-eonext-ext-covers") || "";
+  if (_customCoverField) {
+    let coverUrl = lodash.get(bestRepresentation, _customCoverField);
+    if (coverUrl)
+      return coverUrl;
+  }
+
   if (!coverData) {
     return null;
   }

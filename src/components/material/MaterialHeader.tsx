@@ -1,4 +1,3 @@
-import lodash from "lodash";
 import React, { useId, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useDeepCompareEffect } from "react-use";
@@ -122,20 +121,10 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [manifestationMaterialTypes]);
 
-  const customCoverUrl = useMemo(() => {
-    // @ts-ignore-next-line
-    let _customCoverField: string = document.querySelector('[data-eonext-ext-covers]')?.dataset?.eonextExtCovers || "";
-    if (!_customCoverField)
-      return;
-
-    return lodash.get(work, _customCoverField);
-  }, [work]);
-
   return (
     <header className="material-header">
       <div className="material-header__cover">
         <Cover
-          customCoverUrl={customCoverUrl}
           ids={coverPids}
           bestRepresentation={bestRepresentation}
           size="xlarge"

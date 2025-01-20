@@ -13,6 +13,7 @@ export interface ModalDetailsHeaderProps {
   periodical?: string | null;
   series?: string | null;
   children?: ReactNode;
+  work?: any;
 }
 
 const ModalDetailsHeader: FC<ModalDetailsHeaderProps> = ({
@@ -25,7 +26,8 @@ const ModalDetailsHeader: FC<ModalDetailsHeaderProps> = ({
   isbnForCover,
   periodical,
   series,
-  children
+  children,
+  work
 }) => {
   const coverIds = [pid || isbnForCover];
 
@@ -39,6 +41,8 @@ const ModalDetailsHeader: FC<ModalDetailsHeaderProps> = ({
               idType={pid ? "pid" : "isbn"}
               size="large"
               animate={false}
+              // @ts-ignore-next-line
+              bestRepresentation={work}
               alt={description || ""}
             />
           </span>
