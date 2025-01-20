@@ -8,7 +8,7 @@ const googleTranslateElementInit = () => {
   new window.google.translate.TranslateElement(
     {
       pageLanguage: "da",
-      includedLanguages: "en,de,nl,bg,ro,bs,hr,cs,et,el,tr,ku,ckb,ur,th,vi,zh-CN,zh-TW,yue,tl,sw,uk,ru,no,sv,fi,is,kl,fo,kl",
+      includedLanguages: "en,de,nl,bg,ro,bs,hr,cs,et,el,tr,ku,ckb,ur,th,vi,zh-CN,zh-TW,yue,tl,sw,uk,ru,no,sv,fi,is,kl,fo,kl,fr,es,it,pt,pl,ka,lt,lv",
       autoDisplay: false
     },
     container
