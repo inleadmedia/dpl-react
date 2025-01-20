@@ -94,6 +94,8 @@ const RecommendedMaterial: React.FC<RecommendedMaterialProps> = ({
       <Cover
         ids={[pid]}
         url={materialFullUrl}
+        // @ts-ignore-next-line
+        bestRepresentation={bestRepresentation}
         size="large"
         animate
         alt=""

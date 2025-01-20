@@ -37,7 +37,7 @@ export const getCoverUrl = ({
   size: CoverServiceSizes;
 }) => {
   // @ts-ignore-next-line
-  let _customCoverField: string = document.querySelector('[data-eonext-ext-covers]')?.dataset?.eonextExtCovers || "";
+  let _customCoverField: string = document.querySelector('[data-eonext-ext-covers]')?.getAttribute("data-eonext-ext-covers") || "";
   if (_customCoverField) {
     let coverUrl = lodash.get(bestRepresentation, _customCoverField);
     if (coverUrl)

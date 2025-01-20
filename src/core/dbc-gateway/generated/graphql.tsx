@@ -2529,6 +2529,9 @@ export type ManifestationBasicDetailsFragment = {
       isoCode: string;
     }> | null;
   } | null;
+  cover: {
+    detail: string
+  };
 };
 
 export type GetManifestationViaMaterialByFaustQueryVariables = Exact<{
@@ -2576,6 +2579,9 @@ export type GetManifestationViaMaterialByFaustQuery = {
         isoCode: string;
       }> | null;
     } | null;
+    cover: {
+      detail: string
+    };
   } | null;
 };
 
@@ -2630,6 +2636,9 @@ export type GetManifestationViaBestRepresentationByFaustQuery = {
               isoCode: string;
             }> | null;
           } | null;
+          cover: {
+            detail: string
+          };
         };
       };
     };
@@ -6586,6 +6595,9 @@ export const ManifestationBasicDetailsFragmentDoc = `
     materialTypeSpecific {
       display
     }
+  }
+  cover {
+    detail
   }
   creators {
     display
