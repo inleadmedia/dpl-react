@@ -35,9 +35,7 @@ export interface SearchHeaderEntryProps
     GlobalUrlEntryPropsInterface {}
 
 const SearchHeaderEntry: React.FC<SearchHeaderEntryProps> = () => {
-  return <div data-eonext-ext-covers="cover.detail">
-    <SearchHeader />
-  </div>
+  return <SearchHeader />
 };
 
 export default withUrls(withText(SearchHeaderEntry));
