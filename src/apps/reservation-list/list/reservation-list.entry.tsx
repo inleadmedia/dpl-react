@@ -96,9 +96,7 @@ const ReservationListEntry: FC<ReservationListEntryWithPageSizeProps> = ({
     },
     "pageSizeReservationList"
   );
-  return <div data-eonext-ext-covers="cover.detail">
-    <ReservationList pageSize={pageSize} />
-  </div>;
+  return <ReservationList pageSize={pageSize} />;
 };
 
 export default withConfig(
