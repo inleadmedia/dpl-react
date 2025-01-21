@@ -96,7 +96,7 @@ export const argTypes = {
   }
 };
 
-export default {
+const envOptions = {
   [serviceUrlKeys.fbs]:
     process.env.FBS_BASEURL ?? "https://fbs-openplatform.dbc.dk",
   [serviceUrlKeys.publizon]:
@@ -116,3 +116,55 @@ export default {
     "https://temp.fbi-api.dbc.dk/next-present/graphql",
   developmentOptions: process.env.USE_DEVELOPMENT_OPTIONS
 };
+
+export default envOptions;
+
+if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true") {
+  const extendedCovers = "cover.detail";
+  const extendedFields = {
+    description: {
+      Type: {
+        data: ["marc:001.a", "marc:001.c"],
+        insert: "prepend"
+      },
+      Emnetal: {
+        data: ["marc:088.a"],
+        insert: "replace",
+        url: "/search?q=${tag}"
+      },
+      "Skøn-/faglitteratur": {
+        hidden: true
+      },
+      Emneord: {
+        data: ["marc:631.a"],
+        insert:"prepend",
+        url:"/search?q=${tag}"
+      }
+    },
+    detail: {
+      Type: {
+        data: ["marc:001.a", "marc:001.c"],
+        insert: "prepend"
+      },
+      Stemmer: {
+        data: ["marc:509.a"]
+      },
+      "Stemmer forkortet": {
+        data: ["marc:509.b"]
+      },
+      Indhold: {
+        data: ["marc:795.a","marc:530.a"],
+        type: "list",
+        insert:"fallback"
+      }
+    }
+  };
+
+  const complexSearch = {
+    terms: [{ label: "Marc 088a", term: "localclassification" }]
+  };
+
+  document.body.setAttribute("data-eonext-ext-covers", extendedCovers);
+  document.body.setAttribute("data-eonext-ext-fields", JSON.stringify(extendedFields));
+  document.body.setAttribute("data-eonext-ext-complex-search", JSON.stringify(complexSearch));
+}
