@@ -79,9 +79,7 @@ const LoanListEntry: FC<LoanListEntryWithPageSizeProps> = ({
     "pageSizeLoanList"
   );
 
-  return <div data-eonext-ext-covers="cover.detail">
-    <LoanList pageSize={pageSize} />
-  </div>;
+  return <LoanList pageSize={pageSize} />;
 };
 export default withConfig(
   withUrls(withText(withIsPatronBlockedHoc(LoanListEntry)))

@@ -63,7 +63,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
 
   useEffect(() => {
     // @ts-ignore-next-line
-    let extendedFields: any = document.querySelector('div[data-dpl-app="material"]')?.dataset?.eonextExtFields;
+    let extendedFields: any = document.querySelector('[data-eonext-ext-fields]')?.dataset?.eonextExtFields;
     if (!extendedFields)
       return;
 

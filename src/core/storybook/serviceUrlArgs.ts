@@ -113,5 +113,6 @@ export default {
     "https://temp.fbi-api.dbc.dk/next/graphql",
   [serviceUrlKeys.fbiGlobal]:
     process.env.GRAPHQL_API_BASEURL ??
-    "https://temp.fbi-api.dbc.dk/next-present/graphql"
+    "https://temp.fbi-api.dbc.dk/next-present/graphql",
+  developmentOptions: process.env.USE_DEVELOPMENT_OPTIONS
 };

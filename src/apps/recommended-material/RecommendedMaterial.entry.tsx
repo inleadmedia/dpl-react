@@ -18,11 +18,9 @@ export interface RecommendedMaterialEntryProps {
 const RecommendedMaterialEntry: React.FC<
   RecommendedMaterialEntryProps & GlobalEntryTextProps
 > = ({ wid, materialType }) => (
-  <div data-eonext-ext-covers="cover.detail">
-    <GuardedApp app="recommended-material">
-      <RecommendedMaterial wid={wid} materialType={materialType} />
-    </GuardedApp>
-  </div>
+  <GuardedApp app="recommended-material">
+    <RecommendedMaterial wid={wid} materialType={materialType} />
+  </GuardedApp>
 );
 
 export default withConfig(withUrls(withText(RecommendedMaterialEntry)));

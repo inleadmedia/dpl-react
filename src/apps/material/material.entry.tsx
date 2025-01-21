@@ -253,51 +253,10 @@ export interface MaterialEntryProps
   }
 */
 
-const extendedFields = {
-  description: {
-    Type: {
-      data: ["marc:001.a", "marc:001.c"],
-      insert: "prepend"
-    },
-    Emnetal: {
-      data: ["marc:088.a"],
-      insert: "replace",
-      url: "/search?q=${tag}"
-    },
-    "Skøn-/faglitteratur": {
-      hidden: true
-    },
-    Emneord: {
-      data: ["marc:631.a"],
-      insert:"prepend",
-      url:"/search?q=${tag}"
-    }
-  },
-  detail: {
-    Type: {
-      data: ["marc:001.a", "marc:001.c"],
-      insert: "prepend"
-    },
-    Stemmer: {
-      data: ["marc:509.a"]
-    },
-    "Stemmer forkortet": {
-      data: ["marc:509.b"]
-    },
-    Indhold: {
-      data: ["marc:795.a","marc:530.a"],
-      type: "list",
-      insert:"fallback"
-    }
-  }
-};
-
 const WrappedMaterialEntry: React.FC<MaterialEntryProps> = ({ wid }) => (
-  <div data-dpl-app="material" data-eonext-ext-fields={ JSON.stringify(extendedFields) } data-eonext-ext-covers="cover.detail">
-    <GuardedApp app="material" >
-      <Material wid={wid} />
-    </GuardedApp>
-  </div>
+  <GuardedApp app="material" >
+    <Material wid={wid} />
+  </GuardedApp>
 );
 
 export default withConfig(withUrls(withText(WrappedMaterialEntry)));
