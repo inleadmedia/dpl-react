@@ -77,6 +77,8 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
             if (!Array.isArray(originalData))
               originalData = [originalData];
 
+            originalData = originalData.filter(Boolean);
+
             let mergedData = [];
             switch (extendedFields[sectionName][fieldLabel].insert) {
               case "prepend":
