@@ -31,7 +31,13 @@ import { statistics } from "../../core/statistics/statistics";
 import HeaderDropdown from "../../components/header-dropdown/HeaderDropdown";
 import useFilterHandler from "../search-result/useFilterHandler";
 
-const initialQueryParams = querystring.parse(window.location.search.split("?")[1] || "");
+const initialQueryParams: any = querystring.parse(window.location.search.split("?")[1] || "");
+if ("q" in initialQueryParams) {
+  try {
+    initialQueryParams.q = decodeURIComponent(initialQueryParams.q);
+  } catch (error){}
+}
+
 const initialSearchQuery: string = (initialQueryParams.q || "").toString();
 const initialBranchId: string = (initialQueryParams.branchId || "").toString();
 
