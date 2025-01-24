@@ -167,4 +167,20 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
   document.body.setAttribute("data-eonext-ext-covers", extendedCovers);
   document.body.setAttribute("data-eonext-ext-fields", JSON.stringify(extendedFields));
   document.body.setAttribute("data-eonext-ext-complex-search", JSON.stringify(complexSearch));
+
+  const translationControls = "google_translate, drupal_translate";
+  //const translationControls = "drupal_translate";
+  const translationLanguages = {
+    da: {
+      name: "Danish",
+      path:"/da/frontpage"
+    },
+    kl: {
+      name: "Greenlandic",
+      path: "/kl/frontpage"
+    }
+  };
+
+  document.body.setAttribute("data-eonext-translation-type", translationControls);
+  document.body.setAttribute("data-eonext-translation-languages", JSON.stringify(translationLanguages));
 }

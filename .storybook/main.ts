@@ -26,7 +26,9 @@ const config = {
 
   docs: {
     autodocs: "tag"
-  }
+  },
+
+  staticDirs: [{ from: "../public", to: "/modules/custom/eonext_translation/assets" }]
 };
 
 export default config;
