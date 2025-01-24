@@ -38,7 +38,7 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
 
   const blacklistedGroup = useMemo(() => {
     // @ts-ignore-next-line
-    return (document.querySelector("[data-blacklisted-reservation-groups]")?.getAttribite("data-blacklisted-reservation-groups") || "")
+    return (document.querySelector("[data-blacklisted-reservation-groups]")?.getAttribute("data-blacklisted-reservation-groups") || "")
       .split(",")
       .filter(Boolean);
   }, []);
