@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import AdvancedSearchBranchSelect from "./AdvancedSearchBranchSelect";
 import AdvancedSearchRow from "./AdvancedSearchRow";
 import {
   AdvancedSearchFilterData,
@@ -47,7 +48,7 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
   setOnShelf,
   onLocationChange,
   onSublocationChange,
-  locationFilter
+  locationFilter,
 }) => {
   const t = useText();
   const [isFormMode, setIsFormMode] = useState<boolean>(true);
@@ -64,6 +65,10 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
 
   const handleOnShelfChange = (checked: boolean) => {
     setOnShelf(checked);
+  };
+
+  const setSelectedBranch = (branchId: string) => {
+    setInternalSearchObject(Object.assign(structuredClone(internalSearchObject), { branchId: branchId }));
   };
 
   // If a new search object is passed in, override the internal state to reflect
@@ -103,13 +108,15 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
   };
   const handleSearchButtonClick = () => {
     if (rawCql.trim() !== "" && !isFormMode) {
-      setSearchQuery(rawCql);
+      setSearchObject(internalSearchObject);
+      //setSearchQuery(rawCql);
       // Half a second makes sure search result is rendered before scrolling to it.
       setTimeout(() => {
         scrollToResults();
       }, 500);
       return;
     }
+
     setSearchObject(internalSearchObject);
     // Half a second makes sure search result is rendered before scrolling to it.
     setTimeout(() => {
@@ -143,6 +150,9 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
           <h1 className="text-header-h2 advanced-search__title capitalize-first">
             {t("advancedSearchTitleText")}
           </h1>
+
+          <AdvancedSearchBranchSelect branchId={internalSearchObject?.branchId} onChange={setSelectedBranch} />
+
           <div className="input-and-preview">
             <div className="input-and-preview__input">
               {internalSearchObject.rows.map((row, index) => {
