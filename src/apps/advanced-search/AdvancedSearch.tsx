@@ -124,7 +124,8 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ pageSize }) => {
     // Replace any existing CQL query with the advanced search query to avoid
     // mixing the two.
     setQueryParametersInUrl({
-      advancedSearchQuery: JSON.stringify(searchObject)
+      advancedSearchQuery: JSON.stringify(searchObject),
+      branchId: searchObject.branchId || ""
     });
     removeQueryParametersFromUrl("advancedSearchCql");
     setExecutedQuery(cql);
@@ -161,6 +162,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ pageSize }) => {
           showContentOnly={showResultOnly}
           onShelf={onShelf}
           locationFilter={locationFilter}
+          branchId={searchObject?.branchId}
         />
       )}
     </div>

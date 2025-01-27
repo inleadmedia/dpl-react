@@ -111,7 +111,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   onBranchChange(event?.target?.value || "");
               }}
             >
-              <option value="">{ t("Branch not selected") }</option>
+              <option value="">{ t("Search in all branches") }</option>
               { branches.map((branch: any) => {
                 return <option key={ branch.branchId } value={ branch.branchId }>{ branch.title }</option>
               }) }

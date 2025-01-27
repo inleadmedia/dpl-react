@@ -78,6 +78,7 @@ export type AdvancedSearchFilterData = {
 export type AdvancedSearchQuery = {
   rows: AdvancedSearchRowData[];
   filters: AdvancedSearchFilterData;
+  branchId?: string;
 };
 
 export const initialAdvancedSearchQuery: AdvancedSearchQuery = {
