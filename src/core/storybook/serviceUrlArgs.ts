@@ -210,4 +210,6 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
   document.body.setAttribute("data-show-search-branch-selection", showSearchBranchSelection);
   document.body.setAttribute("data-branches-config", JSON.stringify(branchesConfig));
   document.body.setAttribute("data-blacklisted-search-branches-config", blacklistedSearchBranches);
+
+  document.body.setAttribute("data-blacklisted-reservation-groups", "an");
 }
