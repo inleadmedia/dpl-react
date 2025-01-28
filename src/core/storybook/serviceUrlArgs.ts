@@ -122,8 +122,21 @@ export default envOptions;
 if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true") {
   const extendedCovers = "cover.detail";
   const extendedFields = {
+    additionalDescription: {
+      label: "Additional description",
+      body: ["marc:504.a"],
+      tags: [{
+        label: "Custom tags",
+        data: ["marc:001.a", "marc:001.c"],
+        url:"/search?q=${tag}"
+      }]
+    },
+    aliases: {
+      Subject: ["Tags"],
+      Spog: ["Language"]
+    },
     description: {
-      Type: {
+      Subject: {
         data: ["marc:001.a", "marc:001.c"],
         insert: "prepend"
       },
@@ -142,7 +155,7 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
       }
     },
     detail: {
-      Type: {
+      Spog: {
         data: ["marc:001.a", "marc:001.c"],
         insert: "prepend"
       },

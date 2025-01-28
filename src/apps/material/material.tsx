@@ -9,6 +9,7 @@ import DisclosureSummary from "../../components/Disclosures/DisclosureSummary";
 import DigitalModal from "../../components/material/digital-modal/DigitalModal";
 import InfomediaModal from "../../components/material/infomedia/InfomediaModal";
 import { hasCorrectAccess } from "../../components/material/material-buttons/helper";
+import MaterialAdditionalDescription from "../../components/material/MaterialAdditionalDescription";
 import MaterialDescription from "../../components/material/MaterialDescription";
 import MaterialDetailsList from "../../components/material/MaterialDetailsList";
 import MaterialHeader from "../../components/material/MaterialHeader";
@@ -48,6 +49,74 @@ export interface MaterialProps {
   wid: WorkId;
 }
 
+function extendedFieldsDataGetter(pointers: string[], materialData: any) {
+  let data: any = [];
+
+  (pointers || []).filter(Boolean).forEach((pointer: string) => {
+    pointer = pointer.trim();
+
+    let type: string = "graphql";
+    if (pointer.includes(":"))
+      [type, pointer] = pointer.split(":");
+
+    let fieldData = "";
+    if (type === "marc") {
+      fieldData = lodash.get(materialData?.parsedMarc, pointer);
+    } else if (type === "graphql") {
+      fieldData = lodash.get(materialData, pointer);
+    } else {
+      console.warn(`Unknown getter type: "${ type }, pointer: "${ pointer }"`);
+    }
+
+    if (!fieldData)
+      return;
+
+    if (Array.isArray(fieldData)) {
+      data = data.concat(fieldData);
+    } else {
+      data.push(fieldData);
+    }
+  });
+
+  return data.filter((datum: any) => datum && ("" + datum).trim() !== "");
+}
+
+function extendedFieldsDataMerge(filedData: any, originalData: any, customData: any, options: any) {
+  if (!Array.isArray(originalData))
+    originalData = [originalData];
+
+  originalData = originalData.filter(Boolean);
+
+  let mergedData = [];
+  switch (filedData.insert) {
+    case "prepend":
+      mergedData = customData.concat(originalData);
+    break;
+    case "replace":
+      mergedData = customData;
+    break;
+    case "fallback":
+      if (originalData.length === 0) {
+        mergedData = customData;
+      } else {
+        mergedData = originalData;
+      }
+    break;
+    default: // append
+      mergedData = originalData.concat(customData);
+    break;
+  }
+
+  mergedData = mergedData.filter((datum: any) => datum && ("" + datum).trim());
+
+  let outputType = filedData.type || options?.outputType || "text";
+  if (outputType === "list") {
+    return mergedData;
+  }
+
+  return mergedData.join(", ");
+}
+
 const Material: React.FC<MaterialProps> = ({ wid }) => {
   const t = useText();
   const [selectedManifestations, setSelectedManifestations] = useState<
@@ -69,77 +138,44 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
 
     try {
       extendedFields = JSON.parse(extendedFields);
+      extendedFields.aliases = extendedFields.aliases || {};
 
       Object.keys(extendedFields).forEach(sectionName => {
-        Object.keys(extendedFields[sectionName]).forEach(fieldLabel => {
-          extendedFields[sectionName][fieldLabel].label = fieldLabel;
-          extendedFields[sectionName][fieldLabel].merge = (originalData: any, customData: any, options: any) => {
-            if (!Array.isArray(originalData))
-              originalData = [originalData];
+        if (["description", "detail"].includes(sectionName)) {
+          Object.keys(extendedFields[sectionName]).forEach(fieldLabel => {
+            extendedFields[sectionName][fieldLabel].label = fieldLabel;
+            extendedFields[sectionName][fieldLabel].merge = extendedFieldsDataMerge.bind(null, extendedFields[sectionName][fieldLabel]);
+            extendedFields[sectionName][fieldLabel].getter = extendedFieldsDataGetter.bind(null, extendedFields[sectionName][fieldLabel]?.data);
+            extendedFields[sectionName][fieldLabel].findLabelIndex = (targetList: string[]) => {
+              return targetList.findIndex((targetLabel: string) => {
+                // Matched original
+                if (targetLabel === fieldLabel)
+                  return true;
 
-            originalData = originalData.filter(Boolean);
+                // Matched alias
+                return (extendedFields.aliases[fieldLabel] || []).some((alias: string) => {
+                  return targetLabel === alias;
+                });
+              });
+            };
 
-            let mergedData = [];
-            switch (extendedFields[sectionName][fieldLabel].insert) {
-              case "prepend":
-                mergedData = customData.concat(originalData);
-              break;
-              case "replace":
-                mergedData = customData;
-              break;
-              case "fallback":
-                if (originalData.length === 0) {
-                  mergedData = customData;
-                } else {
-                  mergedData = originalData;
-                }
-              break;
-              default: // append
-                mergedData = originalData.concat(customData);
-              break;
-            }
+            extendedFields[sectionName][fieldLabel].findLabel = (targetList: string[]) => {
+              const index = extendedFields[sectionName][fieldLabel].findLabelIndex(targetList);
+              if (index === -1)
+                return null;
 
-            mergedData = mergedData.filter((datum: any) => datum && ("" + datum).trim());
+              return targetList[index];
+            };
+          });
+        } else if (sectionName === "additionalDescription") {
+          extendedFields[sectionName].merge = extendedFieldsDataMerge.bind(null, extendedFields[sectionName]);
+          extendedFields[sectionName].getter = extendedFieldsDataGetter.bind(null, extendedFields[sectionName]?.body);
 
-            let outputType = extendedFields[sectionName][fieldLabel].type || options?.outputType || "text";
-            if (outputType === "list") {
-              return mergedData;
-            }
-
-            return mergedData.join(", ");
-          },
-          extendedFields[sectionName][fieldLabel].getter = (materialData: any) => {
-            let data: any = [];
-
-            (extendedFields[sectionName][fieldLabel]?.data || []).filter(Boolean).forEach((pointer: string) => {
-              pointer = pointer.trim();
-
-              let type: string = "graphql";
-              if (pointer.includes(":"))
-                [type, pointer] = pointer.split(":");
-
-              let fieldData = "";
-              if (type === "marc") {
-                fieldData = lodash.get(materialData?.parsedMarc, pointer);
-              } else if (type === "graphql") {
-                fieldData = lodash.get(materialData, pointer);
-              } else {
-                console.warn(`Unknown getter type: "${ type }, pointer: "${ pointer }"`);
-              }
-
-              if (!fieldData)
-                return;
-
-              if (Array.isArray(fieldData)) {
-                data = data.concat(fieldData);
-              } else {
-                data.push(fieldData);
-              }
-            });
-
-            return data.filter((datum: any) => datum && ("" + datum).trim() !== "");
-          }
-        });
+          (extendedFields[sectionName].tags || []).forEach((tag: any) => {
+            tag.merge = extendedFieldsDataMerge.bind(null, tag);
+            tag.getter = extendedFieldsDataGetter.bind(null, tag?.data);
+          });
+        }
       });
 
       setCustomFields(extendedFields);
@@ -239,8 +275,9 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     t
   });
 
+  const originalListElementLabels = detailsListData.map((originalListElement: any) => originalListElement?.label);
   Object.values(customFields?.detail || {}).forEach((customField: any) => {
-    let dataIndex = detailsListData.findIndex((originalListElement: any) => originalListElement?.label === customField?.label);
+    let dataIndex = customField.findLabelIndex(originalListElementLabels);
     let customFieldValue = customField.getter(work);
 
     if (dataIndex === -1) {
@@ -308,6 +345,11 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           />
         )}
       </MaterialHeader>
+      {
+        customFields.additionalDescription
+          ? <MaterialAdditionalDescription work={work} fieldsOptions={ customFields.additionalDescription } />
+          : null
+      }
       <MaterialDescription pid={pid} work={work} customFields={ customFields?.description } />
       {/* Since we cannot trust the editions for global manifestations */}
       {/* we limit them to only occur if the loaded work is global */}

@@ -109,15 +109,17 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   };
 
   descriptionTermFields = descriptionTermFields.filter((fieldData: any) => {
+    let matchedLabel = fieldData.findLabel(Object.keys(knownFileds));
+
     if (fieldData.hidden === true) {
       fieldData.tags = [];
 
-      if (knownFileds[fieldData.label] != null)
+      if (matchedLabel && knownFileds[matchedLabel] != null)
         knownFileds[fieldData.label].tags = [];
     }
 
-    if (knownFileds[fieldData.label] != null) {
-      knownFileds[fieldData.label].tags = fieldData.merge(knownFileds[fieldData.label].tags || [], fieldData.tags || [], { outputType: "list" });
+    if (matchedLabel && knownFileds[matchedLabel] != null) {
+      knownFileds[matchedLabel].tags = fieldData.merge(knownFileds[matchedLabel].tags || [], fieldData.tags || [], { outputType: "list" });
 
       return false;
     }
