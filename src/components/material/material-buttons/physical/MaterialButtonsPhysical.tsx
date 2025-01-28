@@ -43,21 +43,27 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
       .filter(Boolean);
   }, []);
 
-  const blacklistedBranches = config("blacklistedAvailabilityBranchesConfig", { transformer: "stringToArray" });
-  const availableForReservation = (holdings || []).filter(group => {
-    return group.reservable === true && group.holdings.filter(holding => {
-      return blacklistedBranches.includes(holding.branch.branchId) === false && holding.materials.filter((material) => {
-        return material.available === true && blacklistedGroup.includes(material?.materialGroup?.name) === false;
-      }).length !== 0;
-    }).length !== 0;
-  }).length !== 0;
-
   const { data: userData, isLoading: isLoadingPatron } = usePatronData();
   const isUserBlocked = !!(userData?.patron && isBlocked(userData?.patron));
 
   if (isLoadingHoldings || isLoadingPatron) {
     return <MaterialButtonLoading />;
   }
+
+  const blacklistedBranches = config("blacklistedAvailabilityBranchesConfig", { transformer: "stringToArray" });
+  const availableForReservation = !holdings || holdings.length === 0 || (holdings || []).filter(group => {
+    if (group.reservable !== true)
+      return false;
+
+    if ((group.holdings || []).length === 0)
+      return true;
+
+    return group.holdings.filter(holding => {
+      return blacklistedBranches.includes(holding.branch.branchId) === false && holding.materials.filter((material) => {
+        return blacklistedGroup.includes(material?.materialGroup?.name) === false;
+      }).length !== 0;
+    }).length !== 0;
+  }).length !== 0;
 
   if (availableForReservation !== true) {
     return <MaterialButtonDisabled size={size} label={t("cantReserveText")} />;
