@@ -28,7 +28,6 @@ const MaterialAdditionalDescription: React.FC<MaterialAdditionalDescriptionProps
     };
   }, [work, fieldsOptions]);
 
-  console.log('fieldsOptions', fieldsOptions);
   return (
     <section className="material-description">
       <h2 className="text-header-h4 pb-24">
