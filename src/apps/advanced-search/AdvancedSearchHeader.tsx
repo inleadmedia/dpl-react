@@ -151,10 +151,10 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
             {t("advancedSearchTitleText")}
           </h1>
 
-          <AdvancedSearchBranchSelect branchId={internalSearchObject?.branchId} onChange={setSelectedBranch} />
 
           <div className="input-and-preview">
             <div className="input-and-preview__input">
+              <AdvancedSearchBranchSelect branchId={internalSearchObject?.branchId} onChange={setSelectedBranch} />
               {internalSearchObject.rows.map((row, index) => {
                 return (
                   <AdvancedSearchRow
