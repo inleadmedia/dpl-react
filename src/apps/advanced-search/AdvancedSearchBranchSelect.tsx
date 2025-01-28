@@ -34,7 +34,7 @@ const AdvancedSearchBranchSelect: React.FC<AdvancedSearchBranchSelectProps> = ({
     return null;
 
   return <section className="advanced-search__filters">
-    <div className="dpl-cms__branch-select advanced-search__filter">
+    <div className="dpl-cms__branch-select input-with-dropdown">
       <div className="dropdown dropdown--grey-borders input-with-dropdown__dropdown">
         <select
           className="dropdown__select dropdown__select--inline focus-styling"
