@@ -24,9 +24,12 @@ const MaterialAdditionalDescription: React.FC<MaterialAdditionalDescriptionProps
             };
           })
         };
-      })
+      }).filter((tagData: any) => tagData.tags.length > 0)
     };
   }, [work, fieldsOptions]);
+
+  if (!fieldsOptions || (!data.body && data.tags.length === 0))
+    return null;
 
   return (
     <section className="material-description">
