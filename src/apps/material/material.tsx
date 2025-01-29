@@ -345,12 +345,11 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           />
         )}
       </MaterialHeader>
-      {
-        customFields.additionalDescription
-          ? <MaterialAdditionalDescription work={work} fieldsOptions={ customFields.additionalDescription } />
-          : null
-      }
-      <MaterialDescription pid={pid} work={work} customFields={ customFields?.description } />
+
+      <div className="material-description-group">
+        <MaterialAdditionalDescription work={work} fieldsOptions={ customFields.additionalDescription } />
+        <MaterialDescription pid={pid} work={work} customFields={ customFields?.description } />
+      </div>
       {/* Since we cannot trust the editions for global manifestations */}
       {/* we limit them to only occur if the loaded work is global */}
       {workType === "local" && (
