@@ -124,10 +124,10 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
   const extendedFields = {
     additionalDescription: {
       label: "Additional description",
-      body: ["marc:504.a"],
+      body: ["extraMarc:504.a"],
       tags: [{
         label: "Custom tags",
-        data: ["marc:001.a", "marc:001.c"],
+        data: ["extraMarc:001.a", "extraMarc:001.c"],
         url:"/search?q=${tag}"
       }]
     },
@@ -212,4 +212,7 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
   document.body.setAttribute("data-blacklisted-search-branches-config", blacklistedSearchBranches);
 
   document.body.setAttribute("data-blacklisted-reservation-groups", "an");
+
+  const agencyConfig = { id: "911130" };
+  document.body.setAttribute("data-agency-config", JSON.stringify(agencyConfig));
 }

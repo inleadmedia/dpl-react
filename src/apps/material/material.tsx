@@ -62,6 +62,8 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any) {
     let fieldData = "";
     if (type === "marc") {
       fieldData = lodash.get(materialData?.parsedMarc, pointer);
+    } else if (type === "extraMarc") {
+      fieldData = lodash.get(materialData?.parsedExtraMarc, pointer);
     } else if (type === "graphql") {
       fieldData = lodash.get(materialData, pointer);
     } else {
@@ -117,20 +119,21 @@ function extendedFieldsDataMerge(filedData: any, originalData: any, customData: 
   return mergedData.join(", ");
 }
 
+function hasExtraMarc(pointers: string[]) {
+  return (pointers || []).some((pointer: string) => pointer.startsWith("extraMarc:"));
+}
+
 const Material: React.FC<MaterialProps> = ({ wid }) => {
   const t = useText();
   const [selectedManifestations, setSelectedManifestations] = useState<
     Manifestation[] | null
   >(null);
-  const [selectedPeriodical, setSelectedPeriodical] =
-    useState<PeriodicalEdition | null>(null);
-  const { data, isLoading, workType } = useGetWork(wid);
+  const [selectedPeriodical, setSelectedPeriodical] = useState<PeriodicalEdition | null>(null);
   const { data: userData } = usePatronData();
   const [isUserBlocked, setIsUserBlocked] = useState<boolean | null>(null);
   const { track } = useStatistics();
-  const [customFields, setCustomFields] = useState<any>({});
 
-  useEffect(() => {
+  const customFields = useMemo(() => {
     // @ts-ignore-next-line
     let extendedFields: any = document.querySelector('[data-eonext-ext-fields]')?.dataset?.eonextExtFields;
     if (!extendedFields)
@@ -139,6 +142,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     try {
       extendedFields = JSON.parse(extendedFields);
       extendedFields.aliases = extendedFields.aliases || {};
+      extendedFields._withExtraMarc = false;
 
       Object.keys(extendedFields).forEach(sectionName => {
         if (["description", "detail"].includes(sectionName)) {
@@ -146,6 +150,10 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
             extendedFields[sectionName][fieldLabel].label = fieldLabel;
             extendedFields[sectionName][fieldLabel].merge = extendedFieldsDataMerge.bind(null, extendedFields[sectionName][fieldLabel]);
             extendedFields[sectionName][fieldLabel].getter = extendedFieldsDataGetter.bind(null, extendedFields[sectionName][fieldLabel]?.data);
+            if (hasExtraMarc(extendedFields[sectionName][fieldLabel]?.data)) {
+              extendedFields._withExtraMarc = true;
+            }
+
             extendedFields[sectionName][fieldLabel].findLabelIndex = (targetList: string[]) => {
               return targetList.findIndex((targetLabel: string) => {
                 // Matched original
@@ -170,19 +178,29 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
         } else if (sectionName === "additionalDescription") {
           extendedFields[sectionName].merge = extendedFieldsDataMerge.bind(null, extendedFields[sectionName]);
           extendedFields[sectionName].getter = extendedFieldsDataGetter.bind(null, extendedFields[sectionName]?.body);
+          if (hasExtraMarc(extendedFields[sectionName]?.body)) {
+            extendedFields._withExtraMarc = true;
+          }
 
           (extendedFields[sectionName].tags || []).forEach((tag: any) => {
             tag.merge = extendedFieldsDataMerge.bind(null, tag);
             tag.getter = extendedFieldsDataGetter.bind(null, tag?.data);
+            if (hasExtraMarc(tag?.data)) {
+              extendedFields._withExtraMarc = true;
+            }
           });
         }
       });
 
-      setCustomFields(extendedFields);
+      return extendedFields;
     } catch (error) {
       console.warn("Cannot parse data-eonext-ext-fields attribute! Data: ", extendedFields, error);
     }
+
+    return {};
   }, [wid]);
+
+  const { data, isLoading, workType } = useGetWork(wid, customFields?._withExtraMarc);
 
   useEffect(() => {
     setIsUserBlocked(!!(userData?.patron && isBlocked(userData.patron)));

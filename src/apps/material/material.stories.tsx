@@ -694,7 +694,7 @@ const meta: Meta<typeof MaterialEntry> = {
     ...globalConfigArgs,
     searchUrl: "/search",
     materialUrl: "/work/:workid",
-    wid: "work-of:870970-basis:138340937",
+    wid: "work-of:870970-basis:138424103",
     smsNotificationsForReservationsEnabledConfig: "1",
     blacklistedPickupBranchesConfig:
       "FBS-751032,FBS-751031,FBS-751009,FBS-751027,FBS-751024,DK-775164",
