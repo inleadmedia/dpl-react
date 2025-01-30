@@ -7402,3 +7402,32 @@ export const usePlaceCopyMutation = <TError = unknown, TContext = unknown>(
     options
   );
 };
+
+const marcGetMarcByRecordIdDocument = `
+  query marcGetMarcByRecordId($recordId: String!) {
+    marc {
+      getMarcByRecordId(recordId: $recordId) {
+        id
+        agencyId
+        bibliographicRecordId
+        contentSerializationFormat
+        deleted
+        content
+      }
+    }
+  }
+`;
+
+export const useGetMaterialMarc = <TData = MarcRecord, TError = unknown>(
+  variables: MarcGetMarcByRecordIdArgs,
+  options?: UseQueryOptions<MarcRecord, TError, TData>
+) => {
+  return useQuery<MarcRecord, TError, TData>(
+    ["marcGetMarcByRecordId", variables],
+    fetcher<MarcRecord, MarcGetMarcByRecordIdArgs>(
+      marcGetMarcByRecordIdDocument,
+      variables
+    ),
+    options
+  );
+};
