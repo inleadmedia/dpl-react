@@ -42,7 +42,7 @@ const AdvancedSearchBranchSelect: React.FC<AdvancedSearchBranchSelectProps> = ({
           value={branchId}
           onChange={(e) => onChange && onChange(e.target.value)}
         >
-          <option value="">{ t("Search in all branches") }</option>
+          <option value="">{ t("searchInAllBranchesText") }</option>
           { branches.map((branch: any) => {
             return <option key={ branch.branchId } value={ branch.branchId }>{ branch.title }</option>
           }) }
