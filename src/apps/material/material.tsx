@@ -53,31 +53,35 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any) {
   let data: any = [];
 
   (pointers || []).filter(Boolean).forEach((pointer: string) => {
-    pointer = pointer.trim();
+    pointer.split("||").some(orPointer => {
+      orPointer = orPointer.trim();
 
-    let type: string = "graphql";
-    if (pointer.includes(":"))
-      [type, pointer] = pointer.split(":");
+      let type: string = "graphql";
+      if (orPointer.includes(":"))
+        [type, orPointer] = orPointer.split(":");
 
-    let fieldData = "";
-    if (type === "marc") {
-      fieldData = lodash.get(materialData?.parsedMarc, pointer);
-    } else if (type === "extraMarc") {
-      fieldData = lodash.get(materialData?.parsedExtraMarc, pointer);
-    } else if (type === "graphql") {
-      fieldData = lodash.get(materialData, pointer);
-    } else {
-      console.warn(`Unknown getter type: "${ type }, pointer: "${ pointer }"`);
-    }
+      let fieldData = "";
+      if (type === "marc") {
+        fieldData = lodash.get(materialData?.parsedMarc, orPointer);
+      } else if (type === "extraMarc") {
+        fieldData = lodash.get(materialData?.parsedExtraMarc, orPointer);
+      } else if (type === "graphql") {
+        fieldData = lodash.get(materialData, orPointer);
+      } else {
+        console.warn(`Unknown getter type: "${ type }, pointer: "${ orPointer }"`);
+      }
 
-    if (!fieldData)
-      return;
+      if (!fieldData)
+        return;
 
-    if (Array.isArray(fieldData)) {
-      data = data.concat(fieldData);
-    } else {
-      data.push(fieldData);
-    }
+      if (Array.isArray(fieldData)) {
+        data = data.concat(fieldData);
+      } else {
+        data.push(fieldData);
+      }
+
+      return true;
+    });
   });
 
   return data.filter((datum: any) => datum && ("" + datum).trim() !== "");

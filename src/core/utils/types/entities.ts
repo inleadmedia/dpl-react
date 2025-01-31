@@ -45,6 +45,8 @@ export type Work = Omit<
     }[];
     hasAdaptation: Relations["hasAdaptation"];
   };
+  parsedMarc?: any;
+  parsedExtraMarc?: any;
 };
 
 export type Patron = PatronV5;
