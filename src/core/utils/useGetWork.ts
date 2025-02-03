@@ -62,6 +62,32 @@ function parseMarcField(workData: any, extraMarc?: string) {
   });
 }
 
+function filterDuplicates(workData: any) {
+  if (!workData?.manifestations?.all)
+    return;
+
+  let manifestationsMap: any = {};
+
+  workData.manifestations.all.forEach((manifestation: any) => {
+    let [agency, faustNumber] = (manifestation.pid || "").split(":")
+    agency = agency.split("-")[0];
+
+    manifestationsMap[faustNumber] = manifestationsMap[faustNumber] || {};
+    manifestationsMap[faustNumber][agency] = manifestation;
+  });
+
+  workData.manifestations.all = Object.keys(manifestationsMap).map(faustNumber => {
+    let basis = Object.values(manifestationsMap[faustNumber]).find((manifestation: any) => {
+      return manifestation.pid.includes("basis")
+    });
+
+    if (basis)
+      return basis;
+
+    return Object.values(manifestationsMap[faustNumber])[0];
+  }).filter(Boolean);
+}
+
 export const useGetWork = (
   wid: WorkId,
   withExtraMarc: boolean
@@ -96,8 +122,9 @@ export const useGetWork = (
     if (!systemAgency)
       systemAgency = materialAgency
 
-    return [systemAgency, faustNumber].join(":");
+    return [systemAgency || materialAgency, faustNumber].join(":");
   }, [wid]);
+
 
   const marcData = useGetMaterialMarc({ recordId: marcId }, { enabled: withExtraMarc });
   // @ts-ignore-next-line
@@ -105,13 +132,17 @@ export const useGetWork = (
 
   const localWorkData = getData(localWork, "local");
   if (localWorkData) {
+    filterDuplicates(localWorkData?.data?.work);
     parseMarcField(localWorkData?.data?.work, extraMarc);
+
     return localWorkData;
   }
 
   const globalWorkData = getData(globalWork, "global");
   if (globalWorkData) {
+    filterDuplicates(globalWorkData?.data?.work);
     parseMarcField(globalWorkData?.data?.work, extraMarc);
+
     return globalWorkData;
   }
 
