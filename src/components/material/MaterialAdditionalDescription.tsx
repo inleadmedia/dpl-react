@@ -11,6 +11,9 @@ export interface MaterialAdditionalDescriptionProps {
 const MaterialAdditionalDescription: React.FC<MaterialAdditionalDescriptionProps> = ({ work, fieldsOptions }) => {
   const t = useText();
   const data = useMemo(() => {
+    if (!fieldsOptions)
+      return {};
+
     return {
       label: fieldsOptions.label,
       body: fieldsOptions.merge([], fieldsOptions.getter(work), { outputType: "text" }),
