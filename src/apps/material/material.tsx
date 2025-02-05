@@ -410,7 +410,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
       </MaterialHeader>
 
       <div className="material-description-group">
-        <MaterialAdditionalDescription work={work} fieldsOptions={ customFields.additionalDescription } />
+        <MaterialAdditionalDescription work={work} fieldsOptions={ customFields?.additionalDescription } />
         <MaterialDescription pid={pid} work={work} customFields={ customFields?.description } />
       </div>
       {/* Since we cannot trust the editions for global manifestations */}
