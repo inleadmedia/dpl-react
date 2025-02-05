@@ -49,42 +49,78 @@ export interface MaterialProps {
   wid: WorkId;
 }
 
-function extendedFieldsDataGetter(pointers: string[], materialData: any) {
-  let data: any = [];
+function stripPunctuationAndSpaces(string: string) {
+  return (string || "").replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
+}
 
-  (pointers || []).filter(Boolean).forEach((pointer: string) => {
-    pointer.split("||").some(orPointer => {
-      orPointer = orPointer.trim();
+function extendedFieldsDataGetter(pointers: string[], materialData: any, options: any) {
+  options = options || {};
 
-      let type: string = "graphql";
-      if (orPointer.includes(":"))
-        [type, orPointer] = orPointer.split(":");
+  let foundData: any = {
+    data: [],
+    filterBy: []
+  };
 
-      let fieldData = "";
-      if (type === "marc") {
-        fieldData = lodash.get(materialData?.parsedMarc, orPointer);
-      } else if (type === "extraMarc") {
-        fieldData = lodash.get(materialData?.parsedExtraMarc, orPointer);
-      } else if (type === "graphql") {
-        fieldData = lodash.get(materialData, orPointer);
-      } else {
-        console.warn(`Unknown getter type: "${ type }, pointer: "${ orPointer }"`);
-      }
+  [{
+    storage: "data",
+    pointers: pointers
+  }, {
+    storage: "filterBy",
+    pointers: options.filterBy
+  }].filter((datum: any) => {
+    return (datum.pointers || []).filter(Boolean).length > 0;
+  }).forEach((datum: any) => {
+    datum.pointers.forEach((pointer: string) => {
+      pointer.split("||").some((orPointer: string) => {
+        orPointer = orPointer.trim();
 
-      if (!fieldData)
-        return;
+        let type: string = "graphql";
+        if (orPointer.includes(":"))
+          [type, orPointer] = orPointer.split(":");
 
-      if (Array.isArray(fieldData)) {
-        data = data.concat(fieldData);
-      } else {
-        data.push(fieldData);
-      }
+        let fieldData = "";
+        if (type === "marc") {
+          fieldData = lodash.get(materialData?.parsedMarc, orPointer);
+        } else if (type === "extraMarc") {
+          fieldData = lodash.get(materialData?.parsedExtraMarc, orPointer);
+        } else if (type === "graphql") {
+          fieldData = lodash.get(materialData, orPointer);
+        } else {
+          console.warn(`Unknown getter type: "${ type }, pointer: "${ orPointer }"`);
+        }
 
-      return true;
+        if (!fieldData)
+          return;
+
+        if (Array.isArray(fieldData)) {
+          foundData[datum.storage] = foundData[datum.storage].concat(fieldData);
+        } else {
+          foundData[datum.storage].push(fieldData);
+        }
+
+        return true;
+      });
     });
   });
 
-  return data.filter((datum: any) => datum && ("" + datum).trim() !== "");
+  ["data", "filterBy"].forEach((storage: string) => {
+    foundData[storage] = foundData[storage].filter((dataChunk: any) => dataChunk && ("" + dataChunk).trim() !== "");
+  });
+
+
+  if (foundData.filterBy.length !== 0) {
+    foundData.filterBy =  foundData.filterBy.map((dataChunk: string) => {
+      return stripPunctuationAndSpaces(dataChunk);
+    });
+
+    console.log('before filter foundData.data', foundData.data, foundData.filterBy);
+    foundData.data = foundData.data.filter((dataChunk: string) => {
+      return foundData.filterBy.includes(stripPunctuationAndSpaces(dataChunk)) === false;
+    });
+    console.log('after filter foundData.data', foundData.data, foundData.filterBy);
+  }
+
+  return foundData.data;
 }
 
 function extendedFieldsDataMerge(filedData: any, originalData: any, customData: any, options: any) {
@@ -181,7 +217,12 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           });
         } else if (sectionName === "additionalDescription") {
           extendedFields[sectionName].merge = extendedFieldsDataMerge.bind(null, extendedFields[sectionName]);
-          extendedFields[sectionName].getter = extendedFieldsDataGetter.bind(null, extendedFields[sectionName]?.body);
+          extendedFields[sectionName].getter = (work: any) => {
+            return extendedFieldsDataGetter(extendedFields[sectionName]?.body, work, {
+              filterBy: extendedFields[sectionName]?.filterBodyBy
+            });
+          };
+
           if (hasExtraMarc(extendedFields[sectionName]?.body)) {
             extendedFields._withExtraMarc = true;
           }

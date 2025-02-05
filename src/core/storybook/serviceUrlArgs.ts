@@ -124,7 +124,8 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
   const extendedFields = {
     additionalDescription: {
       label: "Additional description",
-      body: ["extraMarc:504.a[1] || extraMarc:504.a[0]"],
+      body: ["extraMarc:504.a"],
+      filterBodyBy: ["graphql:abstract"],
       tags: [{
         label: "Custom tags",
         data: ["extraMarc:001.a", "extraMarc:001.c"],
