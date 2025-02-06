@@ -113,11 +113,9 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
       return stripPunctuationAndSpaces(dataChunk);
     });
 
-    console.log('before filter foundData.data', foundData.data, foundData.filterBy);
     foundData.data = foundData.data.filter((dataChunk: string) => {
       return foundData.filterBy.includes(stripPunctuationAndSpaces(dataChunk)) === false;
     });
-    console.log('after filter foundData.data', foundData.data, foundData.filterBy);
   }
 
   return foundData.data;
