@@ -128,6 +128,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({ pageSize }) => {
       branchId: searchObject.branchId || ""
     });
     removeQueryParametersFromUrl("advancedSearchCql");
+    setSearchQuery("");
     setExecutedQuery(cql);
   }, [searchObject]);
 
