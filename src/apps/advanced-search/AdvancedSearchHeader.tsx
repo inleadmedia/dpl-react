@@ -83,6 +83,11 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
     setPreviewCql(cql);
   }, [internalSearchObject]);
 
+  useEffect(() => {
+    if (isFormMode === false)
+      setSelectedBranch("");
+  }, [isFormMode]);
+
   const updateFiltersData = (filtersUpdate: {
     key: keyof AdvancedSearchFilterData;
     value: MultiselectOption[];
@@ -108,8 +113,7 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
   };
   const handleSearchButtonClick = () => {
     if (rawCql.trim() !== "" && !isFormMode) {
-      setSearchObject(internalSearchObject);
-      //setSearchQuery(rawCql);
+      setSearchQuery(rawCql);
       // Half a second makes sure search result is rendered before scrolling to it.
       setTimeout(() => {
         scrollToResults();
