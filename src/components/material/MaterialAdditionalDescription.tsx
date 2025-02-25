@@ -36,14 +36,16 @@ const MaterialAdditionalDescription: React.FC<MaterialAdditionalDescriptionProps
 
   return (
     <section className="material-description">
-      <h2 className="text-header-h4 pb-24">
-        {t(data.label)}
-      </h2>
-
       {data.body && (
-        <p className="text-body-large material-description__content">
-          {data.body}
-        </p>
+        <>
+          <h2 className="text-header-h4 pb-24">
+            {t(data.label)}
+          </h2>
+
+          <p className="text-body-large material-description__content">
+            {data.body}
+          </p>
+        </>
       )}
 
       <div className="material-description__links mt-32">
