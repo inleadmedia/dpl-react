@@ -24,6 +24,9 @@ import {
 import { Button } from "../../components/Buttons/Button";
 import CheckBox from "../../components/checkbox/Checkbox";
 import { LocationFilter } from "./LocationFilter";
+import {
+  removeQueryParametersFromUrl
+} from "../../core/utils/helpers/url";
 
 export type AdvancedSearchHeaderProps = {
   dataCy?: string;
@@ -84,8 +87,10 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
   }, [internalSearchObject]);
 
   useEffect(() => {
-    if (isFormMode === false)
+    if (isFormMode === false) {
       setSelectedBranch("");
+      removeQueryParametersFromUrl("branchId");
+    }
   }, [isFormMode]);
 
   const updateFiltersData = (filtersUpdate: {
