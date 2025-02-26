@@ -1,3 +1,4 @@
+import lodash from "lodash";
 import { useMemo } from "react";
 import { UseQueryResult } from "react-query";
 import {
@@ -29,14 +30,56 @@ const getData = (
   return null;
 };
 
-function parseMarcField(workData: any, extraMarc?: string) {
-  [{
+function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: any) {
+  let workPid = workData.workId.split("work-of:")[1];
+  let marcSources: any = [{
     rawMarc: workData?.marc?.content,
     target: "parsedMarc"
   }, {
     rawMarc: extraMarc,
     target: "parsedExtraMarc"
-  }].forEach((datum: any) => {
+  }];
+
+  if (workData.manifestations && shelfmarkOverride) {
+    (workData.manifestations.all || []).forEach((manifestation: any, index: number) => {
+      if (manifestation?.marc?.content) {
+        marcSources.push({
+          rawMarc: manifestation.marc.content,
+          target: `manifestations.all[${ index }].parsedMarc`,
+          onProcessed: () => {
+            if (manifestation.pid === workPid)
+              manifestation.parsedMarc = workData.parsedExtraMarc;
+
+            let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
+            if (overrideValue && manifestation.shelfmark) {
+              manifestation.shelfmark.shelfmark = overrideValue;
+            }
+          }
+        });
+      }
+
+      ["bestRepresentation", "latest"].forEach((manifestationType) => {
+        let manifestation = workData.manifestations[manifestationType];
+        if (manifestation?.marc?.content) {
+          marcSources.push({
+            rawMarc: manifestation.marc.content,
+            target: `manifestations.${ manifestationType }.parsedMarc`,
+            onProcessed: () => {
+              if (manifestation.pid === workPid)
+                manifestation.parsedMarc = workData.parsedExtraMarc;
+
+              let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
+              if (overrideValue && manifestation.shelfmark) {
+                manifestation.shelfmark.shelfmark = overrideValue;
+              }
+            }
+          });
+        }
+      });
+    });
+  }
+
+  marcSources.forEach((datum: any) => {
     if (datum.rawMarc) {
       try {
         let marcNode = document.createElement("div");
@@ -54,11 +97,14 @@ function parseMarcField(workData: any, extraMarc?: string) {
           });
         });
 
-        workData[datum.target] = parsedMarc;
+        lodash.set(workData, datum.target, parsedMarc);
       } catch (error) {
-        console.warn("Invalid marc field XML", workData);
+        console.warn("Invalid marc field XML:", error, workData);
       }
     }
+
+    if (datum.onProcessed)
+      datum.onProcessed();
   });
 }
 
@@ -90,7 +136,8 @@ function filterDuplicates(workData: any) {
 
 export const useGetWork = (
   wid: WorkId,
-  withExtraMarc: boolean
+  withExtraMarc: boolean,
+  shelfmarkOverride: any
 ):
   | ((
       | UseQueryResult<GetMaterialQuery, unknown>
@@ -133,7 +180,7 @@ export const useGetWork = (
   const localWorkData = getData(localWork, "local");
   if (localWorkData) {
     filterDuplicates(localWorkData?.data?.work);
-    parseMarcField(localWorkData?.data?.work, extraMarc);
+    parseMarcField(localWorkData?.data?.work, extraMarc, shelfmarkOverride);
 
     return localWorkData;
   }
@@ -141,7 +188,7 @@ export const useGetWork = (
   const globalWorkData = getData(globalWork, "global");
   if (globalWorkData) {
     filterDuplicates(globalWorkData?.data?.work);
-    parseMarcField(globalWorkData?.data?.work, extraMarc);
+    parseMarcField(globalWorkData?.data?.work, extraMarc, shelfmarkOverride);
 
     return globalWorkData;
   }
