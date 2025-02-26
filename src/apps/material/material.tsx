@@ -336,8 +336,8 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     t
   });
 
-  const originalListElementLabels = detailsListData.map((originalListElement: any) => originalListElement?.label);
   Object.values(customFields?.detail || {}).forEach((customField: any) => {
+    let originalListElementLabels = detailsListData.map((originalListElement: any) => originalListElement?.label);
     let dataIndex = customField.findLabelIndex(originalListElementLabels);
     let customFieldValue = customField.getter(work);
 
