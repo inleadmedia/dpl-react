@@ -122,6 +122,9 @@ export default envOptions;
 if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true") {
   const extendedCovers = "cover.detail";
   const extendedFields = {
+    shelfmarkOverride: {
+      data: "652.m[0]"
+    },
     additionalDescription: {
       label: "Additional description",
       body: ["extraMarc:504.a"],
