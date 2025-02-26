@@ -6838,6 +6838,9 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
   cover {
     detail
   }
+  marc {
+    content
+  }
 }
     ${WithLanguagesFragmentDoc}`;
 export const ManifestationsSimpleFragmentDoc = `
