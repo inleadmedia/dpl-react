@@ -2,7 +2,6 @@ import * as React from "react";
 import { FC, useEffect, useState } from "react";
 import { useText } from "../../core/utils/text";
 import { Manifestation } from "../../core/utils/types/entities";
-import { getFindOnShelfLocationText } from "./helper";
 import getWayfinder from "./getWayfinder";
 import Wayfinder from "../wayfinder/wayfinder";
 import {
@@ -56,14 +55,30 @@ const FindOnShelfManifestationListItem: FC<
     }
   }, [holdingData, numberAvailable]);
 
-  const shelfmarkFullText = shelfmark
-    ? `${shelfmark.shelfmark} ${shelfmark.postfix}`
-    : undefined;
+  let placementText: any = locationArray.filter(Boolean).map((locationText, index, arr) => {
+    return <>
+      <b className="find-on-shelf__item-location-text">{locationText}</b>
+      { index !== arr.length - 1 ? <span className="find-on-shelf__item-location-delimiter"> · </span> : null }
+    </>;
+  });
 
-  const locationArrayWithShelfmark = [
-    ...locationArray,
-    shelfmarkFullText
-  ].filter((el) => el);
+  if (shelfmark) {
+    placementText.push(<>
+      { placementText.length !== 0 ? <span className="find-on-shelf__item-location-delimiter"> · </span> : null }
+      <span className="find-on-shelf__item-location-shefmark">
+        {shelfmark.shelfmark} {shelfmark.postfix}
+      </span>
+    </>);
+  }
+
+  if (placementText.length !== 0 && author) {
+    placementText.push(<>
+      <span className="find-on-shelf__item-location-delimiter"> · </span>
+      <span className="find-on-shelf__item-location-author">
+        {author}
+      </span>
+    </>);
+  }
 
   return (
     <li className="find-on-shelf__row text-body-medium-regular" role="row">
@@ -74,10 +89,8 @@ const FindOnShelfManifestationListItem: FC<
           {publicationYear && ` (${publicationYear})`}
         </span>
       </p>
-      <span role="cell">
-        {locationArrayWithShelfmark.length
-          ? getFindOnShelfLocationText(locationArrayWithShelfmark, author)
-          : t("findOnShelfModalNoLocationSpecifiedText")}
+      <span className="find-on-shelf__item-location" role="cell">
+        {placementText ? placementText : t("findOnShelfModalNoLocationSpecifiedText")}
       </span>
       <span className="find-on-shelf__item-count-text" role="cell">
         {numberAvailable}{" "}
