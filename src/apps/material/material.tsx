@@ -32,12 +32,16 @@ import {
   divideManifestationsByMaterialType,
   getBestMaterialTypeForWork,
   getDetailsListData,
+  getFirstManifestation,
   getInfomediaIds,
   getManifestationsOrderByTypeAndYear,
   isParallelReservation
 } from "./helper";
 import MaterialDisclosure from "./MaterialDisclosure";
 import ReservationFindOnShelfModals from "./ReservationFindOnShelfModals";
+import PlayerModal from "../../components/material/player-modal/PlayerModal";
+import useReaderPlayer from "../../core/utils/useReaderPlayer";
+import OnlineInternalModal from "../../components/reservation/OnlineInternalModal";
 
 export interface MaterialProps {
   wid: WorkId;
@@ -54,6 +58,11 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
   const { data: userData } = usePatronData();
   const [isUserBlocked, setIsUserBlocked] = useState<boolean | null>(null);
   const { track } = useStatistics();
+  const {
+    type: readerPlayerType,
+    identifier,
+    orderId
+  } = useReaderPlayer(getFirstManifestation(selectedManifestations || []));
 
   useEffect(() => {
     setIsUserBlocked(!!(userData?.patron && isBlocked(userData.patron)));
@@ -163,6 +172,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
       >
         {manifestations.map((manifestation) => (
           <ReservationFindOnShelfModals
+            key={manifestation.pid}
             patron={userData?.patron}
             manifestations={[manifestation]}
             selectedPeriodical={selectedPeriodical}
@@ -170,7 +180,6 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
             setSelectedPeriodical={setSelectedPeriodical}
           />
         ))}
-
         {infomediaIds.length > 0 && !isAnonymous() && !isUserBlocked && (
           <InfomediaModal
             selectedManifestations={selectedManifestations}
@@ -191,6 +200,17 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
             selectedPeriodical={selectedPeriodical}
             work={work}
             setSelectedPeriodical={setSelectedPeriodical}
+          />
+        )}
+        {readerPlayerType === "player" && (
+          <>
+            {identifier && <PlayerModal identifier={identifier} />}
+            {orderId && <PlayerModal orderId={orderId} />}
+          </>
+        )}
+        {(readerPlayerType === "reader" || readerPlayerType === "player") && (
+          <OnlineInternalModal
+            selectedManifestations={selectedManifestations}
           />
         )}
       </MaterialHeader>

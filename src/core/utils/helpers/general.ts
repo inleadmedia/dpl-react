@@ -162,7 +162,7 @@ export const daysBetweenDates = (firstDate: string, secondDate: string) => {
 };
 
 export const usePrevious = <Type>(value: Type) => {
-  const ref = useRef<Type>();
+  const ref = useRef<Type>(null);
   useEffect(() => {
     ref.current = value;
   }, [value]);
@@ -554,6 +554,12 @@ export const getContributors = (short: boolean, creators: string[]) => {
     }
   }
   return creators[0];
+};
+
+export const formatDanishPhoneNumber = (phoneNumber: string) => {
+  return phoneNumber.match(/^\+\d{2}/)
+    ? phoneNumber // Keep the number unchanged if it already starts with +XX
+    : `+45${phoneNumber}`; // Prepend +45 if no country code is present
 };
 
 export default {};

@@ -2,6 +2,10 @@ import { WorkId } from "../types/ids";
 
 export const getCurrentLocation = () => String(window.location);
 
+export const getQueryParams = (url: URL): Record<string, string> => {
+  return Object.fromEntries(url.searchParams);
+};
+
 export const appendQueryParametersToUrl = (
   url: URL,
   parameters: { [key: string]: string }
@@ -44,8 +48,12 @@ export const removeQueryParametersFromUrl = (parameter: string) => {
   replaceCurrentLocation(processedUrl);
 };
 
-export const redirectTo = (url: URL): void => {
-  window.location.assign(String(url));
+export const redirectTo = (url: URL, isNewTab?: boolean): void => {
+  if (isNewTab) {
+    window.open(String(url), "_blank");
+  } else {
+    window.location.assign(String(url));
+  }
 };
 
 export const constructUrlWithPlaceholder = (
@@ -157,7 +165,7 @@ export const isUrlValid = (text: string) => {
   try {
     const url = new URL(text);
     return url.protocol === "http:" || url.protocol === "https:";
-  } catch (err) {
+  } catch {
     return false;
   }
 };
