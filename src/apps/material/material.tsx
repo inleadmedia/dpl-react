@@ -243,7 +243,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     return {};
   }, [wid]);
 
-  const { data, isLoading, workType } = useGetWork(wid, customFields?._withExtraMarc, customFields.shelfmarkOverride);
+  const { data, isLoading, workType } = useGetWork(wid, customFields?._withExtraMarc, customFields?.shelfmarkOverride);
 
   useEffect(() => {
     setIsUserBlocked(!!(userData?.patron && isBlocked(userData.patron)));

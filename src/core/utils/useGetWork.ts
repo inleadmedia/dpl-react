@@ -173,7 +173,7 @@ export const useGetWork = (
   }, [wid]);
 
 
-  const marcData = useGetMaterialMarc({ recordId: marcId }, { enabled: withExtraMarc });
+  const marcData = useGetMaterialMarc({ recordId: marcId }, { enabled: withExtraMarc || false });
   // @ts-ignore-next-line
   const extraMarc = marcData?.data?.marc?.getMarcByRecordId?.content;
 
