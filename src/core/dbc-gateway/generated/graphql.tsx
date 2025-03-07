@@ -1585,7 +1585,7 @@ export type SearchResponse = {
   /** A list of alternative search queries */
   didYouMean: Array<DidYouMean>;
   /** Alailable sorting options  */
-  sorting: Array<SearchSortingOption> | null;
+  sorting?: Array<SearchSortingOption> | null;
   /**
    * Make sure only to fetch this when needed
    * This may take seconds to complete
@@ -4099,6 +4099,7 @@ export type SearchWithPaginationQueryVariables = Exact<{
 
 export type SearchWithPaginationQuery = {
   __typename?: "Query";
+  withSearch?: boolean;
   search: {
     __typename?: "SearchResponse";
     hitcount: number;
@@ -5037,7 +5038,7 @@ export type SearchFacetQuery = {
   __typename?: "Query";
   search: {
     __typename?: "SearchResponse";
-    sorting: Array<SearchSortingOption> | null;
+    sorting?: Array<SearchSortingOption> | null;
     facets: Array<{
       __typename?: "FacetResult";
       name: string;
@@ -5057,14 +5058,15 @@ export type IntelligentFacetsQueryVariables = Exact<{
   facetsLimit: Scalars["Int"]["input"];
   valuesLimit: Scalars["Int"]["input"];
   filters: SearchFiltersInput;
-  sorting: string;
+  sorting?: string;
 }>;
 
 export type IntelligentFacetsQuery = {
   __typename?: "Query";
+  withSearch?: boolean;
   search: {
     __typename?: "SearchResponse";
-    sorting: Array<SearchSortingOption> | null;
+    sorting?: Array<SearchSortingOption> | null;
     intelligentFacets: Array<{
       __typename?: "FacetResult";
       name: string;
@@ -7187,9 +7189,11 @@ export const useRecommendFromFaustQuery = <
   );
 };
 
-export const SearchWithPaginationDocument = `
-    query searchWithPagination($q: SearchQueryInput!, $offset: Int!, $limit: PaginationLimitScalar!, $filters: SearchFiltersInput, $sorting: String) {
-  search(q: $q, filters: $filters, sorting: $sorting) {
+function getSearchWithPaginationQuery(options: any) {
+  var withSorting = options?.withSorting;
+  return `
+    query searchWithPagination($q: SearchQueryInput!, $offset: Int!, $limit: PaginationLimitScalar!, $filters: SearchFiltersInput ${ withSorting ? ", $sorting: String" : "" }) {
+  search(q: $q, filters: $filters${ withSorting ? ", sorting: $sorting" : "" }) {
     hitcount
     works(offset: $offset, limit: $limit) {
       ...WorkSmall
@@ -7197,6 +7201,7 @@ export const SearchWithPaginationDocument = `
   }
 }
     ${WorkSmallFragmentDoc}`;
+}
 
 export const useSearchWithPaginationQuery = <
   TData = SearchWithPaginationQuery,
@@ -7208,7 +7213,7 @@ export const useSearchWithPaginationQuery = <
   return useQuery<SearchWithPaginationQuery, TError, TData>(
     ["searchWithPagination", variables],
     fetcher<SearchWithPaginationQuery, SearchWithPaginationQueryVariables>(
-      SearchWithPaginationDocument,
+      getSearchWithPaginationQuery(options),
       variables
     ),
     options
@@ -7354,25 +7359,30 @@ export const useSearchFacetQuery = <TData = SearchFacetQuery, TError = unknown>(
   );
 };
 
-export const IntelligentFacetsDocument = `
-    query intelligentFacets($q: SearchQueryInput!, $facetsLimit: Int!, $valuesLimit: Int!, $filters: SearchFiltersInput!, $sorting: String) {
-  search(q: $q, filters: $filters, sorting: $sorting) {
-    sotring {
-      name
-      value
-    }
-    intelligentFacets(limit: $facetsLimit) {
-      name
-      type
-      values(limit: $valuesLimit) {
-        key
-        term
-        score
+function getIntelligentFacetsQuery(options: any) {
+  var withSorting = options?.withSorting;
+  return `
+      query intelligentFacets($q: SearchQueryInput!, $facetsLimit: Int!, $valuesLimit: Int!, $filters: SearchFiltersInput! ${ withSorting ? ", $sorting: String" : "" }) {
+    search(q: $q, filters: $filters ${ withSorting ? ", sorting: $sorting" : "" }) {
+      ${
+        withSorting ? `sorting {
+          name
+          value
+        }` : ""
+      }
+      intelligentFacets(limit: $facetsLimit) {
+        name
+        type
+        values(limit: $valuesLimit) {
+          key
+          term
+          score
+        }
       }
     }
   }
+      `;
 }
-    `;
 
 export const useIntelligentFacetsQuery = <
   TData = IntelligentFacetsQuery,
@@ -7384,7 +7394,7 @@ export const useIntelligentFacetsQuery = <
   return useQuery<IntelligentFacetsQuery, TError, TData>(
     ["intelligentFacets", variables],
     fetcher<IntelligentFacetsQuery, IntelligentFacetsQueryVariables>(
-      IntelligentFacetsDocument,
+      getIntelligentFacetsQuery(options),
       variables
     ),
     options

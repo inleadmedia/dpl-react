@@ -35,6 +35,7 @@ interface SearchResultProps {
   pageSize: number;
 }
 
+const withSorting = document.querySelector("[data-show-search-sorting]")?.getAttribute("data-show-search-sorting") === "true";
 const SearchResult: React.FC<SearchResultProps> = ({ q, pageSize }) => {
   const { filters, sorting, clearFilter, addFilterFromUrlParamListener } =
     useFilterHandler();
@@ -104,7 +105,11 @@ const SearchResult: React.FC<SearchResultProps> = ({ q, pageSize }) => {
       filters: createFilters(filters, cleanBranches),
       sorting: sorting?.key
     },
-    { enabled: q.length >= minimalQueryLength }
+    {
+      enabled: q.length >= minimalQueryLength,
+      // @ts-ignore-next-line
+      withSorting: withSorting
+    }
   );
 
   useEffect(() => {

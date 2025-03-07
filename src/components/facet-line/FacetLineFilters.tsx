@@ -2,8 +2,7 @@ import React, { memo } from "react";
 import useFilterHandler from "../../apps/search-result/useFilterHandler";
 import {
   FacetFieldEnum,
-  FacetValue
-  FacetField,
+  FacetValue,
   SearchSortingOption
 } from "../../core/dbc-gateway/generated/graphql";
 import { useModalButtonHandler } from "../../core/utils/modal";
@@ -32,11 +31,11 @@ const formatValuesToDropdown = (facet: string, values: FacetValue[]) => {
   });
 };
 
-const formatSortingOptionsToDropdown = (sortingOptions: SearchSortingOption[]) => {
-  return sortingOptions.map(option => {
+const formatSortingOptionsToDropdown = (sortingOptions: SearchSortingOption[] | null) => {
+  return (sortingOptions || []).map(option => {
     return {
-      label: option.name,
-      value: option.value
+      label: option.name.toString(),
+      value: option.value.toString()
     };
   });
 }
@@ -71,6 +70,7 @@ const FacetLineFilters: React.FunctionComponent<FacetLineFiltersProps> = ({
   };
 
   const onSortingChange = function(event: React.ChangeEvent<HTMLSelectElement>) {
+    // @ts-ignore-next-line
     setSorting((sorting || []).find(option => option.value === event.target.value));
   };
 

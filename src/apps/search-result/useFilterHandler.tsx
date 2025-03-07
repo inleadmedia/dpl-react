@@ -67,6 +67,7 @@ const useFilterHandler = () => {
   };
 
   const setSorting = (sorting: SearchSortingOption | undefined) => {
+    // @ts-ignore-next-line
     dispatch(add({ facet: "sorting", term: { key: sorting?.value || "", term: sorting?.name || ""  } }));
   };
 
