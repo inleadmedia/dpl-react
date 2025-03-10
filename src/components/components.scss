@@ -1,5 +1,5 @@
 @use "reset";
-@use "../../node_modules/@reach/dialog/styles";
+//@use "../../node_modules/@reach/dialog/styles";
 // Component specific styling should be included here:
 
 @use "../apps/search-result/no-results";
@@ -10,4 +10,4 @@
 @use "../apps/menu/translations/header-styles-extended";
 @use "./search-bar/search-bar";
 @use "../apps/advanced-search/advanced-search";
-@use "../apps/material/material.scss";
+@use "../apps/material/material";

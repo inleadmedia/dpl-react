@@ -202,7 +202,7 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
   document.body.setAttribute("data-eonext-translation-languages", JSON.stringify(translationLanguages));
 
   const showSearchBranchSelection = "true";
-  const showSearchSorting = "true";
+  const showSearchSorting = "false";
   const branchesConfig = [{
     branchId:"DK-830630",
     title:"Aalborg"

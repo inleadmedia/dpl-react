@@ -7592,6 +7592,7 @@ export const useGetMaterialMarc = <TData = MarcRecord, TError = unknown>(
     ),
     options
   );
+};
 
 export const operationNames = {
   Query: {
