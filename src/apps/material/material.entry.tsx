@@ -7,9 +7,12 @@ import { withUrls } from "../../core/utils/url";
 import Material from "./material";
 import GlobalUrlEntryPropsInterface from "../../core/utils/types/global-url-props";
 import { GlobalEntryTextProps } from "../../core/storybook/globalTextArgs";
+import { DeleteReservationModalArgs } from "../../core/storybook/deleteReservationModalArgs";
+import { PublizonErrorArgs } from "../../core/storybook/publizonErrorArgs";
 
 interface MaterialEntryTextProps {
   alreadyReservedText: string;
+  approveLoanText: string;
   approveReservationText: string;
   blockedButtonText: string;
   cantReserveText: string;
@@ -75,6 +78,7 @@ interface MaterialEntryTextProps {
   librariesHaveTheMaterialText: string;
   listenOnlineText: string;
   loadingText: string;
+  loanWithMaterialTypeText: string;
   loginToSeeReviewText: string;
   materialHeaderAllEditionsText: string;
   materialHeaderAuthorByText: string;
@@ -98,8 +102,24 @@ interface MaterialEntryTextProps {
   numberDescriptionText: string;
   numberInQueueText: string;
   okButtonText: string;
+  onlineInternalModalCloseAriaLabelText: string;
+  onlineInternalModalScreenReaderDescriptionText: string;
+  onlineInternalModalEnsureNotificationText: string;
+  onlineInternalResponseErrorSubtitleText: string;
+  onlineInternalResponseErrorTitleText: string;
+  onlineInternalResponseLoanedSubtitleText: string;
+  onlineInternalResponseLoanedTitleText: string;
+  onlineInternalResponseReservedSubtitleText: string;
+  onlineInternalResponseReservedTitleText: string;
+  onlineInternalErrorsText: string;
+  onlineInternalSuccessLoanedText: string;
+  onlineInternalSuccessManualBorrowingNoticeText: string;
+  onlineInternalSuccessReservedText: string;
   onlineLimitMonthAudiobookInfoText: string;
   onlineLimitMonthEbookInfoText: string;
+  onlineMaterialPlayerText: string;
+  onlineMaterialReaderText: string;
+  onlineMaterialTeaserText: string;
   openOrderAuthenticationErrorText: string;
   openOrderErrorMissingPincodeText: string;
   openOrderInvalidOrderText: string;
@@ -144,13 +164,15 @@ interface MaterialEntryTextProps {
   outOfText: string;
   periodicalSelectEditionText: string;
   periodicalSelectYearText: string;
-  reservationDetailsPickUpAtTitleText: string;
+  playerModalCloseButtonText: string;
+  playerModalDescriptionText: string;
   queueText: string;
   ratingIsText: string;
   readArticleText: string;
   receiveEmailWhenMaterialReadyText: string;
   receiveSmsWhenMaterialReadyText: string;
   reservableFromAnotherLibraryText: string;
+  reservationDetailsPickUpAtTitleText: string;
   reservationErrorsDescriptionText: string;
   reservationErrorsTitleText: string;
   reservationModalCloseModalAriaLabelText: string;
@@ -182,7 +204,9 @@ export interface MaterialEntryProps
   extends GlobalUrlEntryPropsInterface,
     MaterialEntryTextProps,
     GlobalEntryTextProps,
-    MaterialEntryConfigProps {
+    MaterialEntryConfigProps,
+    DeleteReservationModalArgs,
+    PublizonErrorArgs {
   wid: WorkId;
 }
 

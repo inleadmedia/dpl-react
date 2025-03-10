@@ -1,5 +1,6 @@
 import * as React from "react";
 import { FC } from "react";
+import { first } from "lodash";
 import { AccessUrl } from "../../../../core/dbc-gateway/generated/graphql";
 import InvalidUrlError from "../../../../core/errors/InvalidUrlError";
 import { statistics } from "../../../../core/statistics/statistics";
@@ -13,6 +14,9 @@ import MaterialButtonOnlineDigitalArticle from "./MaterialButtonOnlineDigitalArt
 import MaterialButtonOnlineExternal from "./MaterialButtonOnlineExternal";
 import MaterialButtonOnlineInfomediaArticle from "./MaterialButtonOnlineInfomediaArticle";
 import { ManifestationMaterialType } from "../../../../core/utils/types/material-type";
+import MaterialButtonsOnlineInternal from "./MaterialButtonsOnlineInternal";
+import { getReaderPlayerType } from "../../../reader-player/helper";
+import { getFirstManifestation } from "../../../../apps/material/helper";
 
 export interface MaterialButtonsOnlineProps {
   manifestations: Manifestation[];
@@ -37,17 +41,28 @@ const MaterialButtonsOnline: FC<MaterialButtonsOnlineProps> = ({
       trackedData: workId
     });
   };
+  const readerPlayerType = getReaderPlayerType(
+    getFirstManifestation(manifestations)
+  );
 
-  // Find 'Ereol' object or default to the first 'access' object
-  const accessElement =
-    manifestations[0].access.find((item) => item.__typename === "Ereol") ||
-    manifestations[0].access[0];
+  if (readerPlayerType === "player" || readerPlayerType === "reader") {
+    return (
+      <MaterialButtonsOnlineInternal
+        openModal
+        size={size}
+        manifestations={manifestations}
+        dataCy={`${dataCy}-internal`}
+      />
+    );
+  }
 
-  // If the access type is an external type we'll show corresponding button.
-  if (
-    hasCorrectAccess("Ereol", manifestations) ||
-    hasCorrectAccess("AccessUrl", manifestations)
-  ) {
+  // Check if the access type is external (e.g., Filmstriben or eReolen Global).
+  if (hasCorrectAccess("AccessUrl", manifestations)) {
+    const accessElement = first(first(manifestations)?.access);
+
+    if (!accessElement) {
+      throw new Error("No access element found.");
+    }
     const { origin, url: externalUrl } = accessElement as AccessUrl;
 
     //  We have experienced that externalUrl is not always valid.

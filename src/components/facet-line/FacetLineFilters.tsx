@@ -103,13 +103,13 @@ const FacetLineFilters: React.FunctionComponent<FacetLineFiltersProps> = ({
             : null
         }
         {facets &&
-          facets.map(({ name, values }) => {
+          facets.map(({ name, values }, index) => {
             if (values.length > 1) {
               const translatedName = getFacetFieldTranslation(
                 name as FacetFieldEnum
               );
               return (
-                <li className="facet-line__item">
+                <li key={index} className="facet-line__item">
                   <Dropdown
                     cyData={`facet-line-${name}-dropdown`}
                     placeholder={{
@@ -145,7 +145,7 @@ const FacetLineFilters: React.FunctionComponent<FacetLineFiltersProps> = ({
                   if (filters?.[name]?.[term]) return null;
 
                   return (
-                    <li className="facet-line__item">
+                    <li key={termObj.key} className="facet-line__item">
                       <ButtonTag
                         key={term}
                         onClick={onClickHandler}

@@ -28,7 +28,10 @@ import { PeriodicalEdition } from "./periodical/helper";
 import { useStatistics } from "../../core/statistics/useStatistics";
 import { statistics } from "../../core/statistics/statistics";
 import { useItemHasBeenVisible } from "../../core/utils/helpers/lazy-load";
-import { getManifestationLanguageIsoCode } from "../../apps/material/helper";
+import {
+  getManifestationLanguageIsoCode,
+  getWorkTitle
+} from "../../apps/material/helper";
 import { isPeriodical, shouldShowMaterialAvailabilityText } from "./helper";
 import useAvailabilityData from "../availability-label/useAvailabilityData";
 import { AccessTypeCodeEnum } from "../../core/dbc-gateway/generated/graphql";
@@ -46,10 +49,8 @@ interface MaterialHeaderProps {
 
 const MaterialHeader: React.FC<MaterialHeaderProps> = ({
   work: {
-    titles: { full: fullTitle },
     creators,
     manifestations: { all: manifestations, bestRepresentation },
-    mainLanguages,
     workId: wid
   },
   work,
@@ -74,13 +75,7 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
     );
   };
   const author = creatorsToString(flattenCreators(creators), t);
-  const containsDanish = mainLanguages.some((language) =>
-    language?.isoCode.toLowerCase().includes("dan")
-  );
-  const allLanguages = mainLanguages
-    .map((language) => language.display)
-    .join(", ");
-  const title = containsDanish ? fullTitle : `${fullTitle} (${allLanguages})`;
+  const title = getWorkTitle(work);
   const pid = getWorkPid(work);
   const coverPids = getManifestationsPids(selectedManifestations);
   const { track } = useStatistics();
@@ -92,12 +87,10 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
   );
   // We need availability in order to show availability text under action buttons
   const { isAvailable } = useAvailabilityData({
-    // "accessTypes" will always be physical here - shouldShowMaterialAvailabilityText() helper
-    // rules out all online materials.
-    accessTypes: [AccessTypeCodeEnum.Physical],
+    accessTypes: [AccessTypeCodeEnum.Physical, AccessTypeCodeEnum.Online],
     access: [undefined],
     faustIds: getAllFaustIds(selectedManifestations),
-    isbn: null, // Not needed for physical materials.
+    isbn: null, // Not needed.
     // "manifestText" is used inside the availability hook to check whether the material is an article
     // which we check inside shouldShowMaterialAvailabilityText() helper here.
     manifestText: "NOT AN ARTICLE"
@@ -179,6 +172,7 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                   />
                 </div>
                 {/* MaterialAvailabilityText is only shown for:
+                    - Online manifestations if the user is logged in
                     - physical manifestations
                     - that are not periodical or articles
                     - that are available in at least one local library branch
