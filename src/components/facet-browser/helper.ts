@@ -39,13 +39,14 @@ export const getPlaceHolderFacets = (facets: string[]) =>
 export const formatFacetTerms = (filters: {
   [key: string]: { [key: string]: FilterItemTerm };
 }) => {
-  return Object.keys(filters).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: Object.keys(filters[key])
-    }),
-    {}
-  );
+  let formatedFilters: any = {};
+  Object.keys(filters).forEach((filterName) => {
+    formatedFilters[filterName] = Object.keys(filters[filterName]).map((facetName) => {
+      return filters[filterName][facetName].key || filters[filterName][facetName].term;
+    });
+  });
+
+  return formatedFilters;
 };
 
 export const createFilters = (
