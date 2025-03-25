@@ -312,17 +312,28 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
       work.manifestations.all
     );
 
-    const urlTypeIsPresentInManifestations =
-      urlType && manifestationsByMaterialType[urlType]?.length > 0;
+    let _selectedManifestation;
+    let _bestMaterialType;
 
-    if (urlTypeIsPresentInManifestations) {
+    if (urlType && manifestationsByMaterialType[urlType]?.length > 0) {
       // Use the type from the URL if it's present in the manifestations
-      setSelectedManifestations(manifestationsByMaterialType[urlType]);
-    } else {
+      _selectedManifestation = manifestationsByMaterialType[urlType];
+    }
+
+    if (!_selectedManifestation) {
       // Otherwise, fallback to the best material type for the work
       const bestMaterialType = getBestMaterialTypeForWork(work);
-      setSelectedManifestations(manifestationsByMaterialType[bestMaterialType]);
-      setQueryParametersInUrl({ type: bestMaterialType });
+      _selectedManifestation = manifestationsByMaterialType[bestMaterialType];
+      _bestMaterialType = bestMaterialType;
+    }
+
+    if (!_selectedManifestation) {
+      _selectedManifestation = [work?.manifestations?.bestRepresentation];
+    }
+
+    setSelectedManifestations(_selectedManifestation);
+    if (_bestMaterialType) {
+      setQueryParametersInUrl({ type: _bestMaterialType });
     }
   }, [data]);
 
