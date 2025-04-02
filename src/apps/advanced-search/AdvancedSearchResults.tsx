@@ -125,13 +125,13 @@ const AdvancedSearchResult: React.FC<AdvancedSearchResultProps> = ({
           id="advanced-search-result"
           aria-live="polite"
         >
-          {isLoading && <>{t("loadingResultsText")}</>}
+          {isLoading && <span>{t("loadingResultsText")}</span>}
           {shouldShowResultHeadline && (
-            <>
+            <span>
               {t("showingMaterialsText", {
                 placeholders: { "@hitcount": hitcount }
               })}
-            </>
+            </span>
           )}
         </h2>
         {!showContentOnly && (
