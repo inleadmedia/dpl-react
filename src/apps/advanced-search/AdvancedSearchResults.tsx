@@ -146,12 +146,12 @@ const AdvancedSearchResult: React.FC<AdvancedSearchResultProps> = ({
                 setCopiedLinkToSearch(true);
               }}
             >
-              {!copiedLinkToSearch && t("advancedSearchLinkToThisSearchText")}
+              <span>{!copiedLinkToSearch && t("advancedSearchLinkToThisSearchText")}</span>
               {copiedLinkToSearch && (
-                <>
+                <span>
                   {t("copiedLinkToThisSearchText")}
                   <img className="inline-icon" src={CheckIcon} alt="" />{" "}
-                </>
+                </span>
               )}
             </button>
           </div>
