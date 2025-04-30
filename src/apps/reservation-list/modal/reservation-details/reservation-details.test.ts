@@ -22,7 +22,7 @@ describe("Reservation details modal", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cy.clock(clockDate).then((clock: any) => clock.bind(window));
 
-    cy.intercept("GET", "**/external/agencyid/patrons/patronid/v2**", {
+    cy.intercept("GET", "**/external/agencyid/patrons/patronid/v4**", {
       statusCode: 200,
       body: {
         authenticateStatus: "VALID",
@@ -191,7 +191,7 @@ describe("Reservation details modal", () => {
     // ID 43 2.b. Material types including accessibility of material
     // ID 17 2.b.ii "Ready for loan" if the reservation is ready for loan, or else it will not be shown
 
-    // ID 17 2.d. button: go to ereolen
+    // ID 17 2.d. button: View material
     cy.get(".modal")
       .find("[data-cy='view-material-button']")
       .eq(0)

@@ -27,6 +27,8 @@ import { LocationFilter } from "./LocationFilter";
 import {
   removeQueryParametersFromUrl
 } from "../../core/utils/helpers/url";
+import { useStatistics } from "../../core/statistics/useStatistics";
+import { statistics } from "../../core/statistics/statistics";
 
 export type AdvancedSearchHeaderProps = {
   dataCy?: string;
@@ -54,6 +56,7 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
   locationFilter,
 }) => {
   const t = useText();
+  const { track } = useStatistics();
   const [isFormMode, setIsFormMode] = useState<boolean>(true);
   // Keep an internal copy of the search object in a separate state. We only
   // want to update the outer state and perform a search when the user clicks
@@ -118,6 +121,11 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
   };
   const handleSearchButtonClick = () => {
     if (rawCql.trim() !== "" && !isFormMode) {
+      track("click", {
+        id: statistics.advancedSearchTerm.id,
+        name: statistics.advancedSearchTerm.name,
+        trackedData: rawCql
+      });
       setSearchQuery(rawCql);
       // Half a second makes sure search result is rendered before scrolling to it.
       setTimeout(() => {
@@ -125,6 +133,12 @@ const AdvancedSearchHeader: React.FC<AdvancedSearchHeaderProps> = ({
       }, 500);
       return;
     }
+
+    track("click", {
+      id: statistics.advancedSearchTerm.id,
+      name: statistics.advancedSearchTerm.name,
+      trackedData: previewCql
+    });
 
     setSearchObject(internalSearchObject);
     // Half a second makes sure search result is rendered before scrolling to it.

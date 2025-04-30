@@ -93,6 +93,16 @@ export const argTypes = {
           "https://temp.fbi-api.dbc.dk/next-present/graphql"
       }
     }
+  },
+  userinfoUrl: {
+    description: "Adgangsplatfomen userinfo url",
+    control: { type: "text" },
+    table: {
+      type: { summary: "text" },
+      defaultValue: {
+        summary: "https://login.bib.dk/userinfo"
+      }
+    }
   }
 };
 
@@ -105,16 +115,11 @@ const envOptions = {
   [serviceUrlKeys.cover]:
     process.env.COVERS_BASEURL ?? "https://cover.dandigbib.org",
   [serviceUrlKeys.materialList]: "https://prod.materiallist.dandigbib.org",
-  [serviceUrlKeys.fbi]:
-    process.env.GRAPHQL_API_BASEURL ??
-    "https://temp.fbi-api.dbc.dk/next-present/graphql",
-  [serviceUrlKeys.fbiLocal]:
-    process.env.GRAPHQL_API_BASEURL ??
-    "https://temp.fbi-api.dbc.dk/next/graphql",
-  [serviceUrlKeys.fbiGlobal]:
-    process.env.GRAPHQL_API_BASEURL ??
-    "https://temp.fbi-api.dbc.dk/next-present/graphql",
-  developmentOptions: process.env.USE_DEVELOPMENT_OPTIONS
+  [serviceUrlKeys.fbi]: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next-present/graphql",
+  [serviceUrlKeys.fbiLocal]: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next/graphql",
+  [serviceUrlKeys.fbiGlobal]: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next-present/graphql",
+  developmentOptions: process.env.USE_DEVELOPMENT_OPTIONS,
+  userinfoUrl: "https://login.bib.dk/userinfo"
 };
 
 export default envOptions;

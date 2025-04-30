@@ -5,6 +5,9 @@
 type Statistics = Record<string, { id: number; name: string }>;
 
 export const statistics: Statistics = {
+  // advanced search
+  advancedSearchTerm: { id: 9, name: "Avanceret søgning søgeterm" },
+
   // Search flow
   searchQuery: { id: 10, name: "OSS" },
   searchResultCount: { id: 11, name: "OSS Results" },
@@ -27,7 +30,16 @@ export const statistics: Statistics = {
   // Loaner status, user profile
   renewSelectedMaterials: { id: 55, name: "Forny valgte materialer" },
   renewAllMaterials: { id: 56, name: "Forny alle materialer" },
-  addToFavorites: { id: 61, name: "Tilføj til liste" }
+  addToFavorites: { id: 61, name: "Tilføj til liste" },
+
+  // Material
+  orderFromAnotherLibrary: { id: 70, name: "Bestil fra andet bibliotek" },
+  orderDigitalCopy: { id: 35, name: "Bestil digital kopi" },
+  findOnShelf: { id: 108, name: "Klik på ”Find på hylden”" },
+  reserveSpecificManifestation: {
+    id: 109,
+    name: "Klik på specifik manifestation"
+  }
 };
 
 export default {};

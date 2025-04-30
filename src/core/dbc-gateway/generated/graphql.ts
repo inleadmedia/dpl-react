@@ -236,6 +236,18 @@ export type ComplexSearchFiltersInput = {
   sublocation?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 
+export type ComplexSearchIndex = {
+  __typename?: "ComplexSearchIndex";
+  /** Can be used for faceting */
+  facet: Scalars["Boolean"]["output"];
+  /** The name of a Complex Search index */
+  index: Scalars["String"]["output"];
+  /** Can be used for searching */
+  search: Scalars["Boolean"]["output"];
+  /** Can be used for sorting */
+  sort: Scalars["Boolean"]["output"];
+};
+
 /** The search response */
 export type ComplexSearchResponse = {
   __typename?: "ComplexSearchResponse";
@@ -371,8 +383,19 @@ export type Cover = {
   detail117?: Maybe<Scalars["String"]["output"]>;
   detail207?: Maybe<Scalars["String"]["output"]>;
   detail500?: Maybe<Scalars["String"]["output"]>;
+  large?: Maybe<CoverDetails>;
+  medium?: Maybe<CoverDetails>;
   origin?: Maybe<Scalars["String"]["output"]>;
+  small?: Maybe<CoverDetails>;
   thumbnail?: Maybe<Scalars["String"]["output"]>;
+  xSmall?: Maybe<CoverDetails>;
+};
+
+export type CoverDetails = {
+  __typename?: "CoverDetails";
+  height?: Maybe<Scalars["Int"]["output"]>;
+  url?: Maybe<Scalars["String"]["output"]>;
+  width?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type CreatorInterface = {
@@ -938,19 +961,18 @@ export type Manifestations = {
   __typename?: "Manifestations";
   all: Array<Manifestation>;
   bestRepresentation: Manifestation;
+  bestRepresentations: Array<Manifestation>;
   first: Manifestation;
   latest: Manifestation;
   mostRelevant: Array<Manifestation>;
-};
-
-export type Marc = {
-  __typename?: "Marc";
-  /** Gets the MARC record collection for the given record identifier, containing either standalone or head and/or section and volume records. */
-  getMarcByRecordId?: Maybe<MarcRecord>;
-};
-
-export type MarcGetMarcByRecordIdArgs = {
-  recordId: Scalars["String"]["input"];
+  /**
+   * A list of manifestations that matched the search query.
+   *
+   * This field is populated only when a work is retrieved within a search context.
+   * Each entry is a SearchHit object representing a manifestation that matched the search criteria.
+   * Only one manifestation per unit is returned.
+   */
+  searchHits?: Maybe<Array<SearchHit>>;
 };
 
 export type MarcRecord = {
@@ -1180,6 +1202,7 @@ export type Note = {
 
 export enum NoteTypeEnum {
   ConnectionToOtherWorks = "CONNECTION_TO_OTHER_WORKS",
+  ContainsAiGeneratedContent = "CONTAINS_AI_GENERATED_CONTENT",
   DescriptionOfMaterial = "DESCRIPTION_OF_MATERIAL",
   Dissertation = "DISSERTATION",
   Edition = "EDITION",
@@ -1194,7 +1217,8 @@ export enum NoteTypeEnum {
   References = "REFERENCES",
   RestrictionsOnUse = "RESTRICTIONS_ON_USE",
   TechnicalRequirements = "TECHNICAL_REQUIREMENTS",
-  TypeOfScore = "TYPE_OF_SCORE"
+  TypeOfScore = "TYPE_OF_SCORE",
+  WithdrawnPublication = "WITHDRAWN_PUBLICATION"
 }
 
 export enum OrderTypeEnum {
@@ -1285,6 +1309,8 @@ export type PublicationYear = {
 export type Query = {
   __typename?: "Query";
   complexSearch: ComplexSearchResponse;
+  /** All indexes in complex search */
+  complexSearchIndexes?: Maybe<Array<ComplexSearchIndex>>;
   complexSuggest: ComplexSuggestResponse;
   debug?: Maybe<Debug>;
   infomedia: InfomediaResponse;
@@ -1292,8 +1318,6 @@ export type Query = {
   localSuggest: LocalSuggestResponse;
   manifestation?: Maybe<Manifestation>;
   manifestations: Array<Maybe<Manifestation>>;
-  /** Field for presenting bibliographic records in MARC format */
-  marc: Marc;
   mood: MoodQueries;
   /** Get recommendations */
   recommend: RecommendationResponse;
@@ -1582,6 +1606,13 @@ export type SearchFiltersInput = {
   sublocation?: InputMaybe<Array<Scalars["String"]["input"]>>;
   workTypes?: InputMaybe<Array<Scalars["String"]["input"]>>;
   year?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** A search hit that encapsulates a matched manifestation from a search query. */
+export type SearchHit = {
+  __typename?: "SearchHit";
+  /** The manifestation that was matched during the search. */
+  match?: Maybe<Manifestation>;
 };
 
 /** The supported fields to query */
@@ -2279,6 +2310,7 @@ export type GetSmallWorkQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -2402,6 +2434,7 @@ export type GetSmallWorkQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -2525,6 +2558,7 @@ export type GetSmallWorkQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -2908,6 +2942,7 @@ export type GetMaterialQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -3031,6 +3066,7 @@ export type GetMaterialQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -3154,6 +3190,7 @@ export type GetMaterialQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -3382,6 +3419,7 @@ export type GetMaterialGloballyQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -3505,6 +3543,7 @@ export type GetMaterialGloballyQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -3628,6 +3667,7 @@ export type GetMaterialGloballyQuery = {
               origin: string;
               url: string;
               loginRequired: boolean;
+              status: LinkStatusEnum;
             }
           | { __typename: "DigitalArticleService"; issn: string }
           | {
@@ -3900,6 +3940,7 @@ export type RecommendFromFaustQuery = {
                   origin: string;
                   url: string;
                   loginRequired: boolean;
+                  status: LinkStatusEnum;
                 }
               | { __typename: "DigitalArticleService"; issn: string }
               | {
@@ -4023,6 +4064,7 @@ export type RecommendFromFaustQuery = {
                   origin: string;
                   url: string;
                   loginRequired: boolean;
+                  status: LinkStatusEnum;
                 }
               | { __typename: "DigitalArticleService"; issn: string }
               | {
@@ -4146,6 +4188,7 @@ export type RecommendFromFaustQuery = {
                   origin: string;
                   url: string;
                   loginRequired: boolean;
+                  status: LinkStatusEnum;
                 }
               | { __typename: "DigitalArticleService"; issn: string }
               | {
@@ -4333,6 +4376,7 @@ export type SearchWithPaginationQuery = {
                 origin: string;
                 url: string;
                 loginRequired: boolean;
+                status: LinkStatusEnum;
               }
             | { __typename: "DigitalArticleService"; issn: string }
             | {
@@ -4456,6 +4500,7 @@ export type SearchWithPaginationQuery = {
                 origin: string;
                 url: string;
                 loginRequired: boolean;
+                status: LinkStatusEnum;
               }
             | { __typename: "DigitalArticleService"; issn: string }
             | {
@@ -4579,6 +4624,7 @@ export type SearchWithPaginationQuery = {
                 origin: string;
                 url: string;
                 loginRequired: boolean;
+                status: LinkStatusEnum;
               }
             | { __typename: "DigitalArticleService"; issn: string }
             | {
@@ -4811,6 +4857,7 @@ export type ComplexSearchWithPaginationQuery = {
                 origin: string;
                 url: string;
                 loginRequired: boolean;
+                status: LinkStatusEnum;
               }
             | { __typename: "DigitalArticleService"; issn: string }
             | {
@@ -4934,6 +4981,7 @@ export type ComplexSearchWithPaginationQuery = {
                 origin: string;
                 url: string;
                 loginRequired: boolean;
+                status: LinkStatusEnum;
               }
             | { __typename: "DigitalArticleService"; issn: string }
             | {
@@ -5057,6 +5105,7 @@ export type ComplexSearchWithPaginationQuery = {
                 origin: string;
                 url: string;
                 loginRequired: boolean;
+                status: LinkStatusEnum;
               }
             | { __typename: "DigitalArticleService"; issn: string }
             | {
@@ -5299,6 +5348,7 @@ export type ManifestationsSimpleFragment = {
           origin: string;
           url: string;
           loginRequired: boolean;
+          status: LinkStatusEnum;
         }
       | { __typename: "DigitalArticleService"; issn: string }
       | {
@@ -5416,6 +5466,7 @@ export type ManifestationsSimpleFragment = {
           origin: string;
           url: string;
           loginRequired: boolean;
+          status: LinkStatusEnum;
         }
       | { __typename: "DigitalArticleService"; issn: string }
       | {
@@ -5533,6 +5584,7 @@ export type ManifestationsSimpleFragment = {
           origin: string;
           url: string;
           loginRequired: boolean;
+          status: LinkStatusEnum;
         }
       | { __typename: "DigitalArticleService"; issn: string }
       | {
@@ -5682,6 +5734,7 @@ export type ManifestationsSimpleFieldsFragment = {
         origin: string;
         url: string;
         loginRequired: boolean;
+        status: LinkStatusEnum;
       }
     | { __typename: "DigitalArticleService"; issn: string }
     | {
@@ -5944,6 +5997,7 @@ export type WorkSmallFragment = {
             origin: string;
             url: string;
             loginRequired: boolean;
+            status: LinkStatusEnum;
           }
         | { __typename: "DigitalArticleService"; issn: string }
         | {
@@ -6067,6 +6121,7 @@ export type WorkSmallFragment = {
             origin: string;
             url: string;
             loginRequired: boolean;
+            status: LinkStatusEnum;
           }
         | { __typename: "DigitalArticleService"; issn: string }
         | {
@@ -6190,6 +6245,7 @@ export type WorkSmallFragment = {
             origin: string;
             url: string;
             loginRequired: boolean;
+            status: LinkStatusEnum;
           }
         | { __typename: "DigitalArticleService"; issn: string }
         | {
@@ -6411,6 +6467,7 @@ export type WorkMediumFragment = {
             origin: string;
             url: string;
             loginRequired: boolean;
+            status: LinkStatusEnum;
           }
         | { __typename: "DigitalArticleService"; issn: string }
         | {
@@ -6534,6 +6591,7 @@ export type WorkMediumFragment = {
             origin: string;
             url: string;
             loginRequired: boolean;
+            status: LinkStatusEnum;
           }
         | { __typename: "DigitalArticleService"; issn: string }
         | {
@@ -6657,6 +6715,7 @@ export type WorkMediumFragment = {
             origin: string;
             url: string;
             loginRequired: boolean;
+            status: LinkStatusEnum;
           }
         | { __typename: "DigitalArticleService"; issn: string }
         | {
@@ -6933,6 +6992,7 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
       origin
       url
       loginRequired
+      status
     }
     ... on InfomediaService {
       id
