@@ -7640,6 +7640,10 @@ const marcGetMarcByRecordIdDocument = `
   }
 `;
 
+export type MarcGetMarcByRecordIdArgs = {
+  recordId: Scalars["String"]["input"];
+};
+
 export const useGetMaterialMarc = <TData = MarcRecord, TError = unknown>(
   variables: MarcGetMarcByRecordIdArgs,
   options?: UseQueryOptions<MarcRecord, TError, TData>
