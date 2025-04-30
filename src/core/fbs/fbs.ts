@@ -1012,7 +1012,7 @@ export const createV4 = (
   createPatronRequestV3: BodyType<CreatePatronRequestV3>
 ) => {
   return fetcher<AuthenticatedPatronV4>({
-    url: `/external/agencyid/patrons/v4`,
+    url: `/external/agencyid/patrons/v9`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     data: createPatronRequestV3
@@ -1466,14 +1466,14 @@ export function useGetLoansV2<
  */
 export const getPatronInformationByPatronIdV2 = (signal?: AbortSignal) => {
   return fetcher<AuthenticatedPatronV6>({
-    url: `/external/agencyid/patrons/patronid/v2`,
+    url: `/external/agencyid/patrons/patronid/v4`,
     method: "GET",
     signal
   });
 };
 
 export const getGetPatronInformationByPatronIdV2QueryKey = () => {
-  return [`/external/agencyid/patrons/patronid/v2`] as const;
+  return [`/external/agencyid/patrons/patronid/v4`] as const;
 };
 
 export const getGetPatronInformationByPatronIdV2QueryOptions = <
@@ -1552,7 +1552,7 @@ export const updateV5 = (
   updatePatronRequestV4: BodyType<UpdatePatronRequestV4>
 ) => {
   return fetcher<AuthenticatedPatronV6>({
-    url: `/external/agencyid/patrons/patronid/v5`,
+    url: `/external/agencyid/patrons/patronid/v8`,
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     data: updatePatronRequestV4
