@@ -1,7 +1,8 @@
 import React from "react";
 import {
   getAllFaustIds,
-  getManifestationType
+  getAllPids,
+  getMaterialType
 } from "../../../../core/utils/helpers/general";
 import { isBlocked } from "../../../../core/utils/helpers/user";
 import { ButtonSize } from "../../../../core/utils/types/button";
@@ -20,16 +21,19 @@ export interface MaterialButtonsPhysicalProps {
   manifestations: Manifestation[];
   size?: ButtonSize;
   dataCy?: string;
+  isSpecificManifestation?: boolean;
 }
 
 const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
   manifestations,
   size,
-  dataCy = "material-buttons-physical"
+  dataCy = "material-buttons-physical",
+  isSpecificManifestation
 }) => {
   const t = useText();
   const config = useConfig();
   const faustIds = getAllFaustIds(manifestations);
+  const pids = getAllPids(manifestations);
   // We extract loading of Availability here, as it isn't possible within
   // UseReservableManifestations. React query uses cached version of the data
   // so we can determine if the request inside UseReservableManifestations is
@@ -64,9 +68,10 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
     return (
       <MaterialButtonReservePhysical
         dataCy={dataCy}
-        manifestationMaterialType={getManifestationType(manifestations)}
-        faustIds={faustIds}
+        manifestationMaterialType={getMaterialType(manifestations)}
         size={size}
+        isSpecificManifestation={isSpecificManifestation}
+        pids={pids}
       />
     );
   }

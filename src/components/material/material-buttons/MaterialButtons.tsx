@@ -3,7 +3,7 @@ import { FC } from "react";
 import { AccessTypeCodeEnum } from "../../../core/dbc-gateway/generated/graphql";
 import {
   getAllFaustIds,
-  getManifestationType
+  getMaterialType
 } from "../../../core/utils/helpers/general";
 import { ButtonSize } from "../../../core/utils/types/button";
 import { Manifestation } from "../../../core/utils/types/entities";
@@ -21,6 +21,7 @@ export interface MaterialButtonsProps {
   workId: WorkId;
   dataCy?: string;
   materialTitleId: string;
+  isSpecificManifestation?: boolean;
 }
 
 const MaterialButtons: FC<MaterialButtonsProps> = ({
@@ -28,7 +29,8 @@ const MaterialButtons: FC<MaterialButtonsProps> = ({
   size,
   workId,
   dataCy = "material-buttons",
-  materialTitleId
+  materialTitleId,
+  isSpecificManifestation = false
 }) => {
   const faustIds = getAllFaustIds(manifestations);
   // We don't want to show physical buttons/find on shelf for articles because
@@ -41,8 +43,9 @@ const MaterialButtons: FC<MaterialButtonsProps> = ({
   if (materialIsReservableFromAnotherLibrary) {
     return (
       <MaterialButtonReservableFromAnotherLibrary
+        workId={workId}
         size={size}
-        manifestationMaterialType={getManifestationType(manifestations)}
+        manifestationMaterialType={getMaterialType(manifestations)}
         faustIds={faustIds}
       />
     );
@@ -57,11 +60,13 @@ const MaterialButtons: FC<MaterialButtonsProps> = ({
               manifestations={manifestations}
               size={size}
               dataCy={`${dataCy}-physical`}
+              isSpecificManifestation={isSpecificManifestation}
             />
             <MaterialButtonsFindOnShelf
               size={size}
               faustIds={faustIds}
               dataCy={`${dataCy}-find-on-shelf`}
+              workId={workId}
             />
           </>
         )}
