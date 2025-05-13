@@ -63,6 +63,9 @@ function stripPunctuationAndSpaces(string: string) {
   return (string || "").replace(/[^\w\s\']|_/g, "").replace(/\s+/g, " ");
 }
 
+// @ts-ignore-next-line
+const systemAgency = JSON.parse(document.querySelector("[data-agency-config]").getAttribute("data-agency-config"))?.id || "";
+
 function extendedFieldsDataGetter(pointers: string[], materialData: any, options: any) {
   options = options || {};
 
@@ -70,6 +73,8 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
     data: [],
     filterBy: []
   };
+
+  console.log('materialData', materialData.manifestations);
 
   [{
     storage: "data",
@@ -80,6 +85,7 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
   }].filter((datum: any) => {
     return (datum.pointers || []).filter(Boolean).length > 0;
   }).forEach((datum: any) => {
+
     datum.pointers.forEach((pointer: string) => {
       pointer.split("||").some((orPointer: string) => {
         orPointer = orPointer.trim();
@@ -95,6 +101,31 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
           fieldData = lodash.get(materialData?.parsedExtraMarc, orPointer);
         } else if (type === "graphql") {
           fieldData = lodash.get(materialData, orPointer);
+        } else if (type.startsWith("manifestationMarc")) {
+          let agency = type.replace("manifestationMarc", "");
+          agency = agency.substring(1, agency.length - 1);
+          if (agency === "systemAgency") {
+            if (!systemAgency)
+              return console.warn("System agency is not defined, by required by extended field!", `Type: "${ type }", pointer: "${ orPointer }".`);
+
+            agency = systemAgency;
+          }
+
+          let targetManifestation: any;
+          materialData.manifestations.all.concat([
+            materialData.manifestations.bestRepresentation,
+            materialData.manifestations.latest
+          ]).some((manifestation: any) => {
+            if (manifestation.pid.startsWith(agency)) {
+              targetManifestation = manifestation;
+            }
+
+            return targetManifestation;
+          });
+
+          if (targetManifestation) {
+            fieldData = lodash.get(targetManifestation?.parsedMarc, orPointer);
+          }
         } else {
           console.warn(`Unknown getter type: "${ type }, pointer: "${ orPointer }"`);
         }
