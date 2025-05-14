@@ -13,7 +13,7 @@ import {
   createFilters,
   useGetFacets
 } from "../../components/facet-browser/helper";
-import { useStatistics } from "../../core/statistics/useStatistics";
+import { useCollectPageStatistics } from "../../core/statistics/useStatistics";
 import { useCampaignMatchPOST } from "../../core/dpl-cms/dpl-cms";
 import {
   CampaignMatchPOST200,
@@ -60,11 +60,10 @@ const SearchResult: React.FC<SearchResultProps> = ({ q, pageSize }) => {
     setResultItems([]);
   }, [q, pageSize, filters, sorting]);
 
-  const { track } = useStatistics();
+  const { collectPageStatistics } = useCollectPageStatistics();
   useEffect(() => {
-    track("click", {
-      id: statistics.searchQuery.id,
-      name: statistics.searchQuery.name,
+    collectPageStatistics({
+      ...statistics.searchQuery,
       trackedData: q
     });
     // We actually just want to track if the query changes.
@@ -147,9 +146,8 @@ const SearchResult: React.FC<SearchResultProps> = ({ q, pageSize }) => {
       setCanWeTrackHitcount(true);
       return;
     }
-    track("click", {
-      id: statistics.searchResultCount.id,
-      name: statistics.searchResultCount.name,
+    collectPageStatistics({
+      ...statistics.searchResultCount,
       trackedData: hitcount ? hitcount.toString() : "0"
     });
     // We actaully just want to track if the hitcount changes.
@@ -158,9 +156,8 @@ const SearchResult: React.FC<SearchResultProps> = ({ q, pageSize }) => {
 
   useEffect(() => {
     if (campaignData?.data?.title) {
-      track("click", {
-        id: statistics.campaignShown.id,
-        name: statistics.campaignShown.name,
+      collectPageStatistics({
+        ...statistics.campaignShown,
         trackedData: campaignData.data.title
       });
     }

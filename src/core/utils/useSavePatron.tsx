@@ -48,8 +48,10 @@ const useSavePatron = ({ patron, fetchHandlers }: UseSavePatron) => {
             libraryCardNumber: patron.patronId.toString()
           },
           patron: {
-            ...patron,
-            ...convertPatronSettingsV4toV6(data)
+            ...convertPatronSettingsV4toV6({
+              ...patron,
+              ...data
+            })
           }
         }
       },
