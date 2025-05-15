@@ -136,7 +136,21 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
       filterBodyBy: ["graphql:abstract"],
       tags: [{
         label: "Custom tags",
-        data: ["extraMarc:001.a", "extraMarc:001.c"],
+        data: [
+          "manifestationMarc(systemAgency):667.f",
+          "manifestationMarc(systemAgency):667.t",
+          "manifestationMarc(systemAgency):667.e",
+          "manifestationMarc(systemAgency):667.s",
+          "manifestationMarc(systemAgency):667.r",
+          "manifestationMarc(systemAgency):667.q",
+          "manifestationMarc(systemAgency):667.m",
+          "manifestationMarc(systemAgency):667.n",
+          "manifestationMarc(systemAgency):667.p",
+          "manifestationMarc(systemAgency):667.l",
+          "manifestationMarc(systemAgency):667.i",
+          "manifestationMarc(systemAgency):667.o",
+          "manifestationMarc(systemAgency):667.u"
+        ],
         url:"/search?q=${tag}"
       }]
     },
