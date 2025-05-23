@@ -132,8 +132,9 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
     },
     additionalDescription: {
       label: "Additional description",
-      body: ["extraMarc:504.a"],
-      filterBodyBy: ["graphql:abstract"],
+      body: ["manifestationMarc(systemAgency):504.byLang.kal"],
+      //filterBodyBy: ["graphql:abstract"],
+      //filterBodyBy: [{ data: "graphql:abstract", similarity: 0.8 }],
       tags: [{
         label: "Custom tags",
         data: [
@@ -192,6 +193,24 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
         data: ["marc:795.a","marc:530.a"],
         type: "list",
         insert:"fallback"
+      },
+      "Indledende tekst": {
+        "data": ["manifestationMarc(systemAgency):530.i", "marc:530.i"],
+        "url":"/search?q=${tag}"
+      },
+      "Titel": {
+        "data": ["manifestationMarc(systemAgency):530.t", "marc:530.t"],
+        "type": "list",
+        "url":"/search?q=${tag}"
+      },
+      "Ophavsangivelse": {
+        "data": ["manifestationMarc(systemAgency):530.e", "marc:530.e"],
+        "url":"/search?q=${tag}"
+      },
+      "Paralleltitel": {
+        "data": ["manifestationMarc(systemAgency):530.p", "marc:530.p"],
+        "type": "list",
+        "url":"/search?q=${tag}"
       }
     }
   };
