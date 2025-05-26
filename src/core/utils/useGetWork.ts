@@ -40,7 +40,7 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
     target: "parsedExtraMarc"
   }];
 
-  if (workData.manifestations && shelfmarkOverride) {
+  if (workData.manifestations) {
     (workData.manifestations.all || []).forEach((manifestation: any, index: number) => {
       if (manifestation?.marc?.content) {
         marcSources.push({
@@ -50,9 +50,11 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
             if (manifestation.pid === workPid)
               manifestation.parsedMarc = workData.parsedExtraMarc;
 
-            let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
-            if (overrideValue && manifestation.shelfmark) {
-              manifestation.shelfmark.shelfmark = overrideValue;
+            if (shelfmarkOverride) {
+              let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
+              if (overrideValue && manifestation.shelfmark) {
+                manifestation.shelfmark.shelfmark = overrideValue;
+              }
             }
           }
         });
@@ -68,9 +70,11 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
               if (manifestation.pid === workPid)
                 manifestation.parsedMarc = workData.parsedExtraMarc;
 
-              let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
-              if (overrideValue && manifestation.shelfmark) {
-                manifestation.shelfmark.shelfmark = overrideValue;
+              if (shelfmarkOverride) {
+                let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
+                if (overrideValue && manifestation.shelfmark) {
+                  manifestation.shelfmark.shelfmark = overrideValue;
+                }
               }
             }
           });
@@ -96,6 +100,17 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
             parsedMarc[tag][code].push(codeNode.innerText);
           });
         });
+
+        if (parsedMarc["504"] && parsedMarc["041"]) {
+          let knownLanguages: string[] = Object.values(parsedMarc["041"] as string[][]).reduce((_knownLanguages: string[], list: string[]) => {
+            return _knownLanguages.concat(list);
+          });
+
+          parsedMarc["504"].byLang = {};
+          knownLanguages.forEach((langCode: string, index: number) => {
+            parsedMarc["504"].byLang[langCode] = lodash.get(parsedMarc, `504.a[${ index }]`);
+          });
+        }
 
         lodash.set(workData, datum.target, parsedMarc);
       } catch (error) {

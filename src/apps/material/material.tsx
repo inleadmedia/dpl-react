@@ -74,8 +74,6 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
     filterBy: []
   };
 
-  console.log('materialData', materialData.manifestations);
-
   [{
     storage: "data",
     pointers: pointers
@@ -411,6 +409,20 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     let dataIndex = customField.findLabelIndex(originalListElementLabels);
     let customFieldValue = customField.getter(work);
 
+    if (customField.url) {
+      customFieldValue = lodash.castArray(customFieldValue).filter(Boolean).map((value: string) => {
+        return {
+          key: value,
+          node: <a
+            className="link-tag"
+            href={ new URL((customField.url || "#").replace(/\$\{\s*tag\s*\}/ig, value), window.location.href).toString() }
+          >
+            { value }
+          </a>
+        };
+      });
+    }
+
     if (dataIndex === -1) {
       dataIndex = detailsListData.push({
         label: customField.label,
@@ -420,8 +432,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
       detailsListData[dataIndex].value = customField.merge(detailsListData[dataIndex].value, customFieldValue);
     }
 
-    if (customField.type === "list")
-      detailsListData[dataIndex].type = ListItemType.List;
+    detailsListData[dataIndex].type = customField.type || "standard";
 
     if (detailsListData[dataIndex].value.length === 0 || customField.hidden === true)
       detailsListData.splice(dataIndex, 1);
