@@ -4,6 +4,7 @@ import {
   UseQueryOptions,
   UseMutationOptions
 } from "react-query";
+import { useMemo } from "react";
 import { fetcher } from "../graphql-fetcher";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -7118,6 +7119,37 @@ export const WorkSmallFragmentDoc = `
 }
     ${SeriesSimpleFragmentDoc}
 ${ManifestationsSimpleFragmentDoc}`;
+
+export const WorkSmallSearchFragmentDoc = `
+    fragment WorkSmallSearch on Work {
+  workId
+  titles {
+    full
+    original
+    tvSeries {
+      title
+      season {
+        display
+      }
+    }
+  }
+  abstract
+  creators {
+    display
+    __typename
+  }
+  workYear {
+    year
+  }
+  genreAndForm
+  manifestations {
+    ...ManifestationsSimple
+  }
+}
+${ManifestationsSimpleFragmentDoc.replace(/materialTypes[\s]+{[^{]+{[^}]+}[^}]+}/gm, "")}`;
+
+
+
 export const WorkMediumFragmentDoc = `
     fragment WorkMedium on Work {
   ...WorkSmall
@@ -7431,11 +7463,11 @@ function getSearchWithPaginationQuery(options: any) {
   search(q: $q, filters: $filters${ withSorting ? ", sorting: $sorting" : "" }) {
     hitcount
     works(offset: $offset, limit: $limit) {
-      ...WorkSmall
+      ...WorkSmallSearch
     }
   }
 }
-    ${WorkSmallFragmentDoc}`;
+    ${WorkSmallSearchFragmentDoc}`;
 }
 
 export const useSearchWithPaginationQuery = <
@@ -7445,7 +7477,7 @@ export const useSearchWithPaginationQuery = <
   variables: SearchWithPaginationQueryVariables,
   options?: UseQueryOptions<SearchWithPaginationQuery, TError, TData>
 ) => {
-  return useQuery<SearchWithPaginationQuery, TError, TData>(
+  const searchResult: any = useQuery<SearchWithPaginationQuery, TError, TData>(
     ["searchWithPagination", variables],
     fetcher<SearchWithPaginationQuery, SearchWithPaginationQueryVariables>(
       getSearchWithPaginationQuery(options),
@@ -7453,6 +7485,27 @@ export const useSearchWithPaginationQuery = <
     ),
     options
   );
+
+  return useMemo(() => {
+    if (searchResult.status === "success") {
+      (searchResult?.data?.search?.works || []).forEach((materialData: any) => {
+        materialData.series = [];
+
+        (materialData?.manifestations?.all || []).concat([
+          materialData?.manifestations?.bestRepresentation,
+          materialData?.manifestations?.latest
+        ].filter(Boolean)).forEach((manifest: any) => {
+          manifest.materialTypes = [];
+        });
+      });
+
+      console.log('searchResult?.data', searchResult?.data);
+    }
+
+    return searchResult;
+  }, [searchResult.status]);
+
+  return searchResult;
 };
 
 export const ComplexSearchWithPaginationWorkAccessDocument = `
