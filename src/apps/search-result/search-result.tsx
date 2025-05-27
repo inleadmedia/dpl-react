@@ -36,6 +36,8 @@ interface SearchResultProps {
 }
 
 const withSorting = document.querySelector("[data-show-search-sorting]")?.getAttribute("data-show-search-sorting") === "true";
+const lazyTypesLoading = document.querySelector("[data-search-lazy-types-loading]")?.getAttribute("data-search-lazy-types-loading") === "true";
+
 const SearchResult: React.FC<SearchResultProps> = ({ q, pageSize }) => {
   const { filters, sorting, clearFilter, addFilterFromUrlParamListener } =
     useFilterHandler();
@@ -107,7 +109,8 @@ const SearchResult: React.FC<SearchResultProps> = ({ q, pageSize }) => {
     {
       enabled: q.length >= minimalQueryLength,
       // @ts-ignore-next-line
-      withSorting: withSorting
+      withSorting: withSorting,
+      lazyTypesLoading: lazyTypesLoading
     }
   );
 

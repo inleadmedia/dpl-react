@@ -222,6 +222,8 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
 
   const showSearchBranchSelection = "true";
   const showSearchSorting = "false";
+  const searchLazyTypesLoading = "true";
+
   const branchesConfig = [{
     branchId:"DK-830630",
     title:"Aalborg"
@@ -232,6 +234,8 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
   const blacklistedSearchBranches = "DK-830480";
 
   document.body.setAttribute("data-show-search-sorting", showSearchSorting);
+  document.body.setAttribute("data-search-lazy-types-loading", searchLazyTypesLoading);
+
   document.body.setAttribute("data-show-search-branch-selection", showSearchBranchSelection);
   document.body.setAttribute("data-branches-config", JSON.stringify(branchesConfig));
   document.body.setAttribute("data-blacklisted-search-branches-config", blacklistedSearchBranches);

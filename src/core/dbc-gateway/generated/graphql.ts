@@ -4,7 +4,9 @@ import {
   UseQueryOptions,
   UseMutationOptions
 } from "react-query";
-import { useMemo } from "react";
+// @ts-ignore-next-line
+import * as async from "async-es";
+import { useState, useEffect, useRef } from "react";
 import { fetcher } from "../graphql-fetcher";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -4255,6 +4257,7 @@ export type SearchWithPaginationQueryVariables = Exact<{
 export type SearchWithPaginationQuery = {
   __typename?: "Query";
   withSearch?: boolean;
+  lazyTypesLoading?: boolean;
   search: {
     __typename?: "SearchResponse";
     hitcount: number;
@@ -7121,7 +7124,7 @@ export const WorkSmallFragmentDoc = `
 ${ManifestationsSimpleFragmentDoc}`;
 
 export const WorkSmallSearchFragmentDoc = `
-    fragment WorkSmallSearch on Work {
+    fragment WorkSmall on Work {
   workId
   titles {
     full
@@ -7142,11 +7145,8 @@ export const WorkSmallSearchFragmentDoc = `
     year
   }
   genreAndForm
-  manifestations {
-    ...ManifestationsSimple
-  }
 }
-${ManifestationsSimpleFragmentDoc.replace(/materialTypes[\s]+{[^{]+{[^}]+}[^}]+}/gm, "")}`;
+`;
 
 
 
@@ -7463,12 +7463,32 @@ function getSearchWithPaginationQuery(options: any) {
   search(q: $q, filters: $filters${ withSorting ? ", sorting: $sorting" : "" }) {
     hitcount
     works(offset: $offset, limit: $limit) {
-      ...WorkSmallSearch
+      ...WorkSmall
     }
   }
 }
-    ${WorkSmallSearchFragmentDoc}`;
+    ${ options?.lazyTypesLoading ? WorkSmallSearchFragmentDoc : WorkSmallFragmentDoc }`;
 }
+
+export const SearchLazyWorkQuery = `
+query getSearchLazyWork($id: String!) {
+  work(id: $id) {
+    ...WorkSmall
+  }
+}
+
+fragment WorkSmall on Work {
+  workId
+  series {
+    ...SeriesSimple
+  }
+  manifestations {
+    ...ManifestationsSimple
+  }
+}
+
+${SeriesSimpleFragmentDoc}
+${ManifestationsSimpleFragmentDoc}`;
 
 export const useSearchWithPaginationQuery = <
   TData = SearchWithPaginationQuery,
@@ -7477,33 +7497,70 @@ export const useSearchWithPaginationQuery = <
   variables: SearchWithPaginationQueryVariables,
   options?: UseQueryOptions<SearchWithPaginationQuery, TError, TData>
 ) => {
-  const searchResult: any = useQuery<SearchWithPaginationQuery, TError, TData>(
-    ["searchWithPagination", variables],
-    fetcher<SearchWithPaginationQuery, SearchWithPaginationQueryVariables>(
-      getSearchWithPaginationQuery(options),
-      variables
-    ),
-    options
-  );
+  const [searchResult, setSearchResult] = useState({ data: null as any, error: null, status: "waiting", isLoading: true });
+  const abortController: any = useRef(null);
 
-  return useMemo(() => {
-    if (searchResult.status === "success") {
-      (searchResult?.data?.search?.works || []).forEach((materialData: any) => {
-        materialData.series = [];
+  useEffect(() => {
+    if (options?.enabled === false)
+      return setSearchResult({ data: null, error: null, isLoading: false, status: "stopped" });
 
-        (materialData?.manifestations?.all || []).concat([
-          materialData?.manifestations?.bestRepresentation,
-          materialData?.manifestations?.latest
-        ].filter(Boolean)).forEach((manifest: any) => {
-          manifest.materialTypes = [];
+    let _abortController = abortController.current;
+    if (_abortController && _abortController.abort)
+      _abortController.abort();
+
+    _abortController = abortController.current = new AbortController();
+    setSearchResult({ data: null, error: null, isLoading: true, status: "loading" });
+
+    fetcher(getSearchWithPaginationQuery(options), variables, _abortController)().then((searchResult: any) => {
+      if ((options as any)?.lazyTypesLoading) {
+        (searchResult?.search?.works || []).forEach((materialData: any) => {
+          materialData.series = [];
+          materialData.isLazyLoading = true;
+
+          materialData.manifestations = materialData.manifestations || {
+            all: [],
+            bestRepresentation: {},
+            latest: {}
+          };
         });
-      });
 
-      console.log('searchResult?.data', searchResult?.data);
-    }
+        async.eachLimit((searchResult?.search?.works || []), 5, async function(work: any) {
+          try {
+            const materialData: any = await fetcher(SearchLazyWorkQuery, { id: work.workId }, _abortController)();
+            if (_abortController.signal.aborted)
+              return;
 
-    return searchResult;
-  }, [searchResult.status]);
+            setSearchResult((_searchResult) => {
+              let targetMaterial = (_searchResult?.data?.search?.works || []).find((target: any) => {
+                return target.workId === work.workId;
+              });
+
+              if (targetMaterial) {
+                Object.assign(targetMaterial, materialData.work, { isLazyLoading: false });
+
+                return Object.assign({}, _searchResult, {
+                  data: {
+                    search: {
+                      hitcount: _searchResult?.data?.search?.hitcount,
+                      works: (_searchResult?.data?.search?.works || []).slice()
+                    }
+                  }
+                });
+              }
+
+              return _searchResult;
+            });
+          } catch (error) {
+            console.error("Can't fetch material manifestations!", work, error);
+          }
+        });
+      }
+
+      setSearchResult({ data: searchResult, error: null, isLoading: false, status: "success" });
+    }).catch((error: any) => {
+      setSearchResult({ data: null, error: error, isLoading: false, status: "error" });
+    });
+  }, [JSON.stringify(variables), JSON.stringify(options)]);
 
   return searchResult;
 };

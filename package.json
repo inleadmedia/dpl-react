@@ -160,6 +160,7 @@
     "@fullcalendar/timegrid": "^6.1.17",
     "@reduxjs/toolkit": "^2.5.0",
     "@types/lodash": "^4.17.5",
+    "async-es": "^3.2.6",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "downshift": "^9.0.8",
