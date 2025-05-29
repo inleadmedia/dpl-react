@@ -58,6 +58,7 @@ export type Work = Omit<
   };
   parsedMarc?: any;
   parsedExtraMarc?: any;
+  isLazyLoading?: boolean;
 };
 
 export type Patron = PatronV5;

@@ -152,6 +152,8 @@ const CardListItem: React.FC<CardListItemProps> = ({
               addToListRequest={addToListRequest}
             />
           )}
+
+          { item && item.isLazyLoading ? <span className="text-loading" /> : null }
           <SeriesList
             series={series}
             searchUrl={searchUrl}
