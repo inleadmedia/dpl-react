@@ -31,6 +31,9 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   const { fictionNonfiction, series, subjects, relations, dk5MainEntry } = work;
   let descriptionTermFields = React.useMemo(() => {
     return Object.values(customFields || {}).map((fieldData: any) => {
+      if (fieldData.label === "body")
+        return;
+
       let values = fieldData.getter(work);
 
       return {
@@ -42,7 +45,15 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
           }
         })
       }
-    });
+    }).filter(Boolean);
+  }, [customFields, work]);
+
+  let descriptionOverride = React.useMemo(() => {
+    let overrideData: any = Object.values(customFields || {}).find((fieldData: any) => fieldData.label === "body");
+    if (!overrideData)
+      return null;
+
+    return (overrideData.getter(work) || []).filter(Boolean).join("\n");
   }, [customFields, work]);
 
   const seriesMembersList =
@@ -142,7 +153,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
           </h2>
           {work.abstract && (
             <p className="text-body-large material-description__content">
-              {work.abstract[0]}
+              { descriptionOverride === null ? work.abstract[0] : descriptionOverride }
             </p>
           )}
           <div className="material-description__links mt-32">

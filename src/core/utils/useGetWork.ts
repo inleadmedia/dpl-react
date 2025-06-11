@@ -138,9 +138,19 @@ function filterDuplicates(workData: any) {
   });
 
   workData.manifestations.all = Object.keys(manifestationsMap).map(faustNumber => {
-    let basis = Object.values(manifestationsMap[faustNumber]).find((manifestation: any) => {
+    let basis: any = Object.values(manifestationsMap[faustNumber]).find((manifestation: any) => {
       return manifestation.pid.includes("basis")
     });
+
+    let katalog: any = Object.values(manifestationsMap[faustNumber]).find((manifestation: any) => {
+      return manifestation.pid.includes("katalog");
+    });
+
+    /* Override the pid and marc data from the katalog to basis */
+    if (basis && katalog) {
+      basis.pid = katalog.pid;
+      basis.marc = katalog.marc;
+    }
 
     if (basis)
       return basis;

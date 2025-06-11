@@ -100,6 +100,7 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
         } else if (type === "graphql") {
           fieldData = lodash.get(materialData, orPointer);
         } else if (type.startsWith("manifestationMarc")) {
+
           let agency = type.replace("manifestationMarc", "");
           agency = agency.substring(1, agency.length - 1);
           if (agency === "systemAgency") {
@@ -232,7 +233,11 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           Object.keys(extendedFields[sectionName]).forEach(fieldLabel => {
             extendedFields[sectionName][fieldLabel].label = fieldLabel;
             extendedFields[sectionName][fieldLabel].merge = extendedFieldsDataMerge.bind(null, extendedFields[sectionName][fieldLabel]);
-            extendedFields[sectionName][fieldLabel].getter = extendedFieldsDataGetter.bind(null, extendedFields[sectionName][fieldLabel]?.data);
+            let pointers = extendedFields[sectionName][fieldLabel]?.data;
+            if (!pointers && Array.isArray(extendedFields[sectionName][fieldLabel]))
+              pointers = extendedFields[sectionName][fieldLabel];
+
+            extendedFields[sectionName][fieldLabel].getter = extendedFieldsDataGetter.bind(null, pointers);
             if (hasExtraMarc(extendedFields[sectionName][fieldLabel]?.data)) {
               extendedFields._withExtraMarc = true;
             }
