@@ -47,7 +47,7 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
           rawMarc: manifestation.marc.content,
           target: `manifestations.all[${ index }].parsedMarc`,
           onProcessed: () => {
-            if (manifestation.pid === workPid)
+            if (manifestation.pid === workPid && workData.parsedExtraMarc)
               manifestation.parsedMarc = workData.parsedExtraMarc;
 
             if (shelfmarkOverride) {

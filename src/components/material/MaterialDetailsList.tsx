@@ -40,7 +40,6 @@ const MaterialDetailsListRow: FC<MaterialDetailsListRowProps> = ({
   type,
   value
 }) => {
-  console.log('value', value);
   switch (type) {
     case ListItemType.Link:
       return Array.isArray(value)
