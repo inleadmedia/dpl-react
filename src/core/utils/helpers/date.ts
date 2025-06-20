@@ -14,8 +14,16 @@ import {
   timeFormat
 } from "../../configuration/date-format";
 
-const dayjsLocale = document.querySelector("[data-eonext-translation-oh-locale]")?.getAttribute("data-eonext-translation-oh-locale") || "da";
-dayjs.locale(dayjsLocale);
+let dayjsLocaleName = "da";
+//@ts-ignore-next-line
+if (window.DPL_dayjsCustomLocale) {
+  //@ts-ignore-next-line
+  dayjs.locale(window.DPL_dayjsCustomLocale, null, true);
+  //@ts-ignore-next-line
+  dayjsLocaleName = window.DPL_dayjsCustomLocale.name;
+}
+
+dayjs.locale(dayjsLocaleName);
 dayjs.extend(weekOfYear);
 
 const getCurrentUnixTime = () => Math.floor(Date.now() / 1000);
