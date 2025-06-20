@@ -14,7 +14,8 @@ import {
   timeFormat
 } from "../../configuration/date-format";
 
-dayjs.locale("da");
+const dayjsLocale = document.querySelector("[data-eonext-translation-oh-locale]")?.getAttribute("data-eonext-translation-oh-locale") || "da";
+dayjs.locale(dayjsLocale);
 dayjs.extend(weekOfYear);
 
 const getCurrentUnixTime = () => Math.floor(Date.now() / 1000);
