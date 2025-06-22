@@ -263,7 +263,4 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
 
   const agencyConfig = { id: "911130" };
   document.body.setAttribute("data-agency-config", JSON.stringify(agencyConfig));
-
-  const dayjsLocale = "en";
-  document.body.setAttribute("data-eonext-translation-oh-locale", dayjsLocale);
 }
