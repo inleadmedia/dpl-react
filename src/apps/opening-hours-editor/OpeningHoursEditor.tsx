@@ -67,7 +67,10 @@ const OpeningHoursEditor: React.FC<OpeningHoursEditorType> = ({
           right: "prev,next today"
         }}
         initialView="timeGridWeek"
-        locale={da}
+        locale={
+          // @ts-ignore-next-line
+          window.DPL_fullCalendarCustomLocale || da
+        }
         selectable
         select={(selectedEventInfo) =>
           openDialogWithContent(
