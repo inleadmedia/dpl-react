@@ -134,6 +134,16 @@ export const getManifestationAudience = (
     : generalAudience || formattedAges;
 };
 
+export const getManifestationChildrenOrAdults = (
+  manifestation: Manifestation
+) => {
+  return (
+    first(manifestation.audience?.childrenOrAdults)?.display ||
+    // This should never happen, so it's only for debugging.
+    `No 'childrenOrAdults' data available for ${manifestation.pid}`
+  );
+};
+
 export const getManifestationIsbn = (manifestation: Manifestation) => {
   return manifestation.identifiers?.[0]?.value ?? "";
 };
@@ -187,6 +197,12 @@ export const getManifestationOriginalTitle = (manifestation: Manifestation) => {
   }
   // This should never happen, so therefore ist not translated.
   return "Unknown title";
+};
+
+export const materialContainsDanish = (work: Work) => {
+  return work.mainLanguages?.some(({ isoCode }) =>
+    isoCode?.toLowerCase().includes("dan")
+  );
 };
 
 export const getManifestationTitle = ({ titles }: Manifestation): string => {
@@ -622,11 +638,8 @@ export const getManifestationBasedOnType = (
   return bestRepresentation;
 };
 
-export const getWorkTitle = ({
-  titles,
-  mainLanguages,
-  manifestations
-}: Work): string => {
+export const getWorkTitle = (work: Work): string => {
+  const { titles, mainLanguages, manifestations } = work;
   // If the work is a movie, we prefer using the translated full title.
   // Avoid showing language details here as it might lead users to think there are no subtitles.
   if (manifestations?.all && isMovie(manifestations.all)) {
@@ -651,11 +664,7 @@ export const getWorkTitle = ({
 
   // If Danish is among the main languages and a full title exists,
   // we prefer showing the full title because it is translated.
-  const containsDanish = mainLanguages.some(({ isoCode }) =>
-    isoCode?.toLowerCase().includes("dan")
-  );
-
-  if (containsDanish && titles.full) {
+  if (materialContainsDanish(work) && titles.full) {
     return titles.full.join(", ");
   }
 

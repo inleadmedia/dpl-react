@@ -1,6 +1,5 @@
 import { getFirstManifestation } from "../../apps/material/helper";
 import { AccessTypeCodeEnum } from "../../core/dbc-gateway/generated/graphql";
-import { isAnonymous } from "../../core/utils/helpers/user";
 import { Manifestation } from "../../core/utils/types/entities";
 import { ManifestationMaterialType } from "../../core/utils/types/material-type";
 import { getReaderPlayerType } from "../reader-player/helper";
@@ -15,9 +14,20 @@ export const isPhysical = (manifestations: Manifestation[]) => {
 };
 
 export const isPeriodical = (manifestations: Manifestation[]) => {
-  return hasCorrectMaterialType(
-    ManifestationMaterialType.magazine,
-    manifestations
+  return (
+    hasCorrectMaterialType(
+      ManifestationMaterialType.magazine,
+      manifestations
+    ) ||
+    hasCorrectMaterialType(
+      ManifestationMaterialType.yearBook,
+      manifestations
+    ) ||
+    hasCorrectMaterialType(
+      ManifestationMaterialType.yearBookOnline,
+      manifestations
+    ) ||
+    hasCorrectMaterialType(ManifestationMaterialType.newspaper, manifestations)
   );
 };
 
@@ -32,9 +42,7 @@ export const shouldShowMaterialAvailabilityText = (
 ) => {
   const firstManifestation = getFirstManifestation(manifestations);
   const shouldShowOnlineAvailability =
-    !isAnonymous() &&
-    firstManifestation &&
-    isMaterialButtonsOnlineInternal(firstManifestation);
+    firstManifestation && isMaterialButtonsOnlineInternal(firstManifestation);
 
   const shouldShowPhysicalAvailability =
     isPhysical(manifestations) &&
@@ -42,6 +50,11 @@ export const shouldShowMaterialAvailabilityText = (
     !isArticle(manifestations);
 
   return shouldShowOnlineAvailability || shouldShowPhysicalAvailability;
+};
+
+export const cleanCreatorName = (creator: string): string => {
+  // Remove parentheses with birth years like "(f. 1972)" or "(f. 1805)" or "(f. 1953-02-05)"
+  return creator.replace(/\s*\([^)]*\)\s*$/g, "").trim();
 };
 
 export default {};

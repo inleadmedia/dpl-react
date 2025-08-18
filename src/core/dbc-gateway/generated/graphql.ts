@@ -72,6 +72,8 @@ export type AccessUrl = {
   type?: Maybe<AccessUrlTypeEnum>;
   /** The url where manifestation is located */
   url: Scalars["String"]["output"];
+  /** Description/type of URL */
+  urlText?: Maybe<Scalars["String"]["output"]>;
 };
 
 export enum AccessUrlTypeEnum {
@@ -333,6 +335,77 @@ export type Complexity = {
   max: Scalars["Int"]["output"];
   value: Scalars["Int"]["output"];
 };
+
+export type ContentEntry = {
+  __typename?: "ContentEntry";
+  /** Additional 'authors' (lyricists, arrangers, performers/soloists etc.), quoted as strings (including possible author's statement) from the record */
+  contributors?: Maybe<Array<Scalars["String"]["output"]>>;
+  /** Main creator(s) of the entry i.e. composer (classical music), artist/band (rhythmic music), author (fiction, articles). For music and sheet music always only 1 creator, for articles and fiction possibly more than 1 */
+  creators?: Maybe<ContentEntryCreators>;
+  /** Playing time for music tracks, quoted from the record */
+  playingTime?: Maybe<Scalars["String"]["output"]>;
+  /** Possible entry data (title, creators, contributors, playingtime) subordinate to the entry's top level */
+  sublevel?: Maybe<Array<ContentSublevel>>;
+  /** Top level title of the entry */
+  title: ContentEntryTitle;
+};
+
+export type ContentEntryCreators = {
+  __typename?: "ContentEntryCreators";
+  /** Details about a corporation or conference, name, role, etc. */
+  corporations?: Maybe<Array<Corporation>>;
+  /** Details about a person, name, role etc. */
+  persons?: Maybe<Array<Person>>;
+};
+
+export type ContentEntryTitle = {
+  __typename?: "ContentEntryTitle";
+  /** Title of the content entry */
+  display: Scalars["String"]["output"];
+};
+
+export type ContentSublevel = {
+  __typename?: "ContentSublevel";
+  /** Additional 'authors' (lyricists, arrangers, performers/soloists etc.) related to the title on sublevel 1, quoted as strings (including possible author's statement) from the record */
+  contributors?: Maybe<Array<Scalars["String"]["output"]>>;
+  /** Playing time for music tracks */
+  playingTime?: Maybe<Scalars["String"]["output"]>;
+  /** Possible entry data (title, contributors, playingtime) subordinate to the entry's sublevel 1 */
+  sublevel?: Maybe<Array<ContentSublevelLast>>;
+  /** Title subordinate to the title in the entry's top level */
+  title: ContentEntryTitle;
+};
+
+export type ContentSublevelLast = {
+  __typename?: "ContentSublevelLast";
+  /** Additional 'authors' (lyricists, arrangers, performers/soloists etc.) related to the title on sublevel 1, quoted as strings (including possible author's statement) from the record */
+  contributors?: Maybe<Array<Scalars["String"]["output"]>>;
+  /** Playing time for music tracks */
+  playingTime?: Maybe<Scalars["String"]["output"]>;
+  /** Title subordinate to the title in the entry's top level */
+  title: ContentEntryTitle;
+};
+
+export type ContentsEntity = {
+  __typename?: "ContentsEntity";
+  /** Content entry with title and possible creator(s), contributors and (for some music and movies) playing time */
+  entries?: Maybe<Array<ContentEntry>>;
+  /** Heading for the contents of this entity */
+  heading: Scalars["String"]["output"];
+  /** Contents text note quoted as it is from the marc field. Used for non-machine-decipherable content notes (un)formatted in only 1 subfield) */
+  raw?: Maybe<Scalars["String"]["output"]>;
+  /** ENUM for type of content entries (music tracks, articles, fiction etc.) in this entity */
+  type: ContentsEntityEnum;
+};
+
+export enum ContentsEntityEnum {
+  Articles = "ARTICLES",
+  Chapters = "CHAPTERS",
+  Fiction = "FICTION",
+  MusicTracks = "MUSIC_TRACKS",
+  NotSpecified = "NOT_SPECIFIED",
+  SheetMusic = "SHEET_MUSIC"
+}
 
 export type CopyRequestInput = {
   authorOfComponent?: InputMaybe<Scalars["String"]["input"]>;
@@ -831,6 +904,8 @@ export type Manifestation = {
   cataloguedPublicationStatus?: Maybe<CataloguedPublicationStatus>;
   /** Classification codes for this manifestation from any classification system */
   classifications: Array<Classification>;
+  /** Content title entries with possible creators, contributors and playing time for music tracks, sheet music titles, articles, poems, short stories etc. */
+  contents?: Maybe<Array<ContentsEntity>>;
   /** Contributors to the manifestation, actors, illustrators etc */
   contributors: Array<CreatorInterface>;
   /** Additional contributors of this manifestation as described on the publication. E.g. 'på dansk ved Vivi Berendt' */
@@ -859,7 +934,10 @@ export type Manifestation = {
   latestPrinting?: Maybe<Printing>;
   /** Identification of the local id of this manifestation */
   localId?: Maybe<Scalars["String"]["output"]>;
-  /** Tracks on music album, sheet music content, or articles/short stories etc. in this manifestation */
+  /**
+   * Tracks on music album, sheet music content, or articles/short stories etc. in this manifestation
+   * @deprecated Use 'Manifestation.contents' instead expires: 01/11-2025
+   */
   manifestationParts?: Maybe<ManifestationParts>;
   /** Field for presenting bibliographic records in MARC format */
   marc?: Maybe<MarcRecord>;
@@ -893,7 +971,10 @@ export type Manifestation = {
   source: Array<Scalars["String"]["output"]>;
   /** Subjects for this manifestation */
   subjects: SubjectContainer;
-  /** Quotation of the manifestation's table of contents or a similar content list */
+  /**
+   * Quotation of the manifestation's table of contents or a similar content list
+   * @deprecated Use 'Manifestation.contents' instead expires: 01/11-2025
+   */
   tableOfContents?: Maybe<TableOfContent>;
   /** Different kinds of titles for this work */
   titles: ManifestationTitles;
@@ -1188,14 +1269,6 @@ export type MoodTagRecommendResponse = {
   work: Work;
 };
 
-export type MusicalExercise = {
-  __typename?: "MusicalExercise";
-  /** The types of instrument 'schools' intended to practise with */
-  display: Array<Scalars["String"]["output"]>;
-  /** Information whether material is intended for practising and in combination with an instrument */
-  forExercise: Scalars["Boolean"]["output"];
-};
-
 export type Mutation = {
   __typename?: "Mutation";
   elba: ElbaServices;
@@ -1223,6 +1296,8 @@ export type Note = {
   heading?: Maybe<Scalars["String"]["output"]>;
   /** The type of note - e.g. note about language, genre etc, NOT_SPECIFIED if not known.  */
   type: NoteTypeEnum;
+  /** A link and possible link text */
+  urls?: Maybe<Array<Maybe<AccessUrl>>>;
 };
 
 export enum NoteTypeEnum {
@@ -1503,10 +1578,12 @@ export type RelatedPublication = {
   issn?: Maybe<Scalars["String"]["output"]>;
   /** Title of the related periodical/journal */
   title: Array<Scalars["String"]["output"]>;
-  /** URL of the related publication */
+  /** The first URL of the urls in related publications */
   url?: Maybe<Scalars["String"]["output"]>;
   /** Note regarding the URL of the related publication */
   urlText?: Maybe<Scalars["String"]["output"]>;
+  /** Alle urls of the related publication */
+  urls: Array<Maybe<Scalars["String"]["output"]>>;
 };
 
 export type Relations = {
@@ -1761,10 +1838,10 @@ export type SheetMusicCategory = {
   chamberMusicTypes: Array<Scalars["String"]["output"]>;
   /** The types of choir material covers */
   choirTypes: Array<Scalars["String"]["output"]>;
+  /** I this node for exercises */
+  forMusicalExercise?: Maybe<Scalars["Boolean"]["output"]>;
   /** The types of instruments material covers */
   instruments: Array<Scalars["String"]["output"]>;
-  /** Material intended to practice with */
-  musicalExercises?: Maybe<MusicalExercise>;
   /** The types of orchestra material covers */
   orchestraTypes: Array<Scalars["String"]["output"]>;
 };
@@ -2301,6 +2378,11 @@ export type GetSmallWorkQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -2425,6 +2507,11 @@ export type GetSmallWorkQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -2549,6 +2636,11 @@ export type GetSmallWorkQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -2824,7 +2916,11 @@ export type GetMaterialQuery = {
       display: string;
       code: FictionNonfictionCodeEnum;
     } | null;
-    dk5MainEntry?: { __typename?: "DK5MainEntry"; display: string } | null;
+    dk5MainEntry?: {
+      __typename?: "DK5MainEntry";
+      display: string;
+      code: string;
+    } | null;
     relations: {
       __typename?: "Relations";
       hasReview: Array<{ __typename?: "Manifestation"; pid: string }>;
@@ -2933,6 +3029,11 @@ export type GetMaterialQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -3057,6 +3158,11 @@ export type GetMaterialQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -3181,6 +3287,11 @@ export type GetMaterialQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -3301,7 +3412,11 @@ export type GetMaterialGloballyQuery = {
       display: string;
       code: FictionNonfictionCodeEnum;
     } | null;
-    dk5MainEntry?: { __typename?: "DK5MainEntry"; display: string } | null;
+    dk5MainEntry?: {
+      __typename?: "DK5MainEntry";
+      display: string;
+      code: string;
+    } | null;
     relations: {
       __typename?: "Relations";
       hasReview: Array<{ __typename?: "Manifestation"; pid: string }>;
@@ -3410,6 +3525,11 @@ export type GetMaterialGloballyQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -3534,6 +3654,11 @@ export type GetMaterialGloballyQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -3658,6 +3783,11 @@ export type GetMaterialGloballyQuery = {
           __typename?: "Audience";
           generalAudience: Array<string>;
           ages: Array<{ __typename?: "Range"; display: string }>;
+          childrenOrAdults: Array<{
+            __typename?: "ChildOrAdult";
+            display: string;
+            code: ChildOrAdultCodeEnum;
+          }>;
         } | null;
         notes: Array<{ __typename?: "Note"; display: Array<string> }>;
         languages?: {
@@ -3734,7 +3864,11 @@ export type GetInfomediaQuery = {
     error?: InfomediaErrorEnum | null;
     article?: {
       __typename?: "InfomediaArticle";
+      byLine?: string | null;
+      dateLine?: string | null;
       headLine?: string | null;
+      hedLine?: string | null;
+      paper?: string | null;
       text?: string | null;
     } | null;
   };
@@ -3931,6 +4065,11 @@ export type RecommendFromFaustQuery = {
               __typename?: "Audience";
               generalAudience: Array<string>;
               ages: Array<{ __typename?: "Range"; display: string }>;
+              childrenOrAdults: Array<{
+                __typename?: "ChildOrAdult";
+                display: string;
+                code: ChildOrAdultCodeEnum;
+              }>;
             } | null;
             notes: Array<{ __typename?: "Note"; display: Array<string> }>;
             languages?: {
@@ -4055,6 +4194,11 @@ export type RecommendFromFaustQuery = {
               __typename?: "Audience";
               generalAudience: Array<string>;
               ages: Array<{ __typename?: "Range"; display: string }>;
+              childrenOrAdults: Array<{
+                __typename?: "ChildOrAdult";
+                display: string;
+                code: ChildOrAdultCodeEnum;
+              }>;
             } | null;
             notes: Array<{ __typename?: "Note"; display: Array<string> }>;
             languages?: {
@@ -4179,6 +4323,11 @@ export type RecommendFromFaustQuery = {
               __typename?: "Audience";
               generalAudience: Array<string>;
               ages: Array<{ __typename?: "Range"; display: string }>;
+              childrenOrAdults: Array<{
+                __typename?: "ChildOrAdult";
+                display: string;
+                code: ChildOrAdultCodeEnum;
+              }>;
             } | null;
             notes: Array<{ __typename?: "Note"; display: Array<string> }>;
             languages?: {
@@ -4368,6 +4517,11 @@ export type SearchWithPaginationQuery = {
             __typename?: "Audience";
             generalAudience: Array<string>;
             ages: Array<{ __typename?: "Range"; display: string }>;
+            childrenOrAdults: Array<{
+              __typename?: "ChildOrAdult";
+              display: string;
+              code: ChildOrAdultCodeEnum;
+            }>;
           } | null;
           notes: Array<{ __typename?: "Note"; display: Array<string> }>;
           languages?: {
@@ -4492,6 +4646,11 @@ export type SearchWithPaginationQuery = {
             __typename?: "Audience";
             generalAudience: Array<string>;
             ages: Array<{ __typename?: "Range"; display: string }>;
+            childrenOrAdults: Array<{
+              __typename?: "ChildOrAdult";
+              display: string;
+              code: ChildOrAdultCodeEnum;
+            }>;
           } | null;
           notes: Array<{ __typename?: "Note"; display: Array<string> }>;
           languages?: {
@@ -4616,6 +4775,11 @@ export type SearchWithPaginationQuery = {
             __typename?: "Audience";
             generalAudience: Array<string>;
             ages: Array<{ __typename?: "Range"; display: string }>;
+            childrenOrAdults: Array<{
+              __typename?: "ChildOrAdult";
+              display: string;
+              code: ChildOrAdultCodeEnum;
+            }>;
           } | null;
           notes: Array<{ __typename?: "Note"; display: Array<string> }>;
           languages?: {
@@ -4735,6 +4899,7 @@ export type ComplexSearchWithPaginationQueryVariables = Exact<{
   offset: Scalars["Int"]["input"];
   limit: Scalars["PaginationLimitScalar"]["input"];
   filters: ComplexSearchFiltersInput;
+  sort?: InputMaybe<Array<SortInput> | SortInput>;
 }>;
 
 export type ComplexSearchWithPaginationQuery = {
@@ -4849,6 +5014,11 @@ export type ComplexSearchWithPaginationQuery = {
             __typename?: "Audience";
             generalAudience: Array<string>;
             ages: Array<{ __typename?: "Range"; display: string }>;
+            childrenOrAdults: Array<{
+              __typename?: "ChildOrAdult";
+              display: string;
+              code: ChildOrAdultCodeEnum;
+            }>;
           } | null;
           notes: Array<{ __typename?: "Note"; display: Array<string> }>;
           languages?: {
@@ -4973,6 +5143,11 @@ export type ComplexSearchWithPaginationQuery = {
             __typename?: "Audience";
             generalAudience: Array<string>;
             ages: Array<{ __typename?: "Range"; display: string }>;
+            childrenOrAdults: Array<{
+              __typename?: "ChildOrAdult";
+              display: string;
+              code: ChildOrAdultCodeEnum;
+            }>;
           } | null;
           notes: Array<{ __typename?: "Note"; display: Array<string> }>;
           languages?: {
@@ -5097,6 +5272,11 @@ export type ComplexSearchWithPaginationQuery = {
             __typename?: "Audience";
             generalAudience: Array<string>;
             ages: Array<{ __typename?: "Range"; display: string }>;
+            childrenOrAdults: Array<{
+              __typename?: "ChildOrAdult";
+              display: string;
+              code: ChildOrAdultCodeEnum;
+            }>;
           } | null;
           notes: Array<{ __typename?: "Note"; display: Array<string> }>;
           languages?: {
@@ -5203,6 +5383,67 @@ export type SuggestionsFromQueryStringQuery = {
           };
         };
       } | null;
+    }>;
+  };
+};
+
+export type GetCoversByPidsQueryVariables = Exact<{
+  pids: Array<Scalars["String"]["input"]> | Scalars["String"]["input"];
+}>;
+
+export type GetCoversByPidsQuery = {
+  __typename?: "Query";
+  manifestations: Array<{
+    __typename?: "Manifestation";
+    pid: string;
+    cover: {
+      __typename?: "Cover";
+      xSmall?: {
+        __typename?: "CoverDetails";
+        url?: string | null;
+        width?: number | null;
+        height?: number | null;
+      } | null;
+      small?: {
+        __typename?: "CoverDetails";
+        url?: string | null;
+        width?: number | null;
+        height?: number | null;
+      } | null;
+      medium?: {
+        __typename?: "CoverDetails";
+        url?: string | null;
+        width?: number | null;
+        height?: number | null;
+      } | null;
+      large?: {
+        __typename?: "CoverDetails";
+        url?: string | null;
+        width?: number | null;
+        height?: number | null;
+      } | null;
+    };
+  } | null>;
+};
+
+export type GetBestRepresentationPidByIsbnQueryVariables = Exact<{
+  cql: Scalars["String"]["input"];
+  offset: Scalars["Int"]["input"];
+  limit: Scalars["PaginationLimitScalar"]["input"];
+  filters: ComplexSearchFiltersInput;
+}>;
+
+export type GetBestRepresentationPidByIsbnQuery = {
+  __typename?: "Query";
+  complexSearch: {
+    __typename?: "ComplexSearchResponse";
+    works: Array<{
+      __typename?: "Work";
+      workId: string;
+      manifestations: {
+        __typename?: "Manifestations";
+        bestRepresentation: { __typename?: "Manifestation"; pid: string };
+      };
     }>;
   };
 };
@@ -5367,6 +5608,11 @@ export type ManifestationsSimpleFragment = {
       __typename?: "Audience";
       generalAudience: Array<string>;
       ages: Array<{ __typename?: "Range"; display: string }>;
+      childrenOrAdults: Array<{
+        __typename?: "ChildOrAdult";
+        display: string;
+        code: ChildOrAdultCodeEnum;
+      }>;
     } | null;
     notes: Array<{ __typename?: "Note"; display: Array<string> }>;
     languages?: {
@@ -5485,6 +5731,11 @@ export type ManifestationsSimpleFragment = {
       __typename?: "Audience";
       generalAudience: Array<string>;
       ages: Array<{ __typename?: "Range"; display: string }>;
+      childrenOrAdults: Array<{
+        __typename?: "ChildOrAdult";
+        display: string;
+        code: ChildOrAdultCodeEnum;
+      }>;
     } | null;
     notes: Array<{ __typename?: "Note"; display: Array<string> }>;
     languages?: {
@@ -5603,6 +5854,11 @@ export type ManifestationsSimpleFragment = {
       __typename?: "Audience";
       generalAudience: Array<string>;
       ages: Array<{ __typename?: "Range"; display: string }>;
+      childrenOrAdults: Array<{
+        __typename?: "ChildOrAdult";
+        display: string;
+        code: ChildOrAdultCodeEnum;
+      }>;
     } | null;
     notes: Array<{ __typename?: "Note"; display: Array<string> }>;
     languages?: {
@@ -5756,6 +6012,11 @@ export type ManifestationsSimpleFieldsFragment = {
     __typename?: "Audience";
     generalAudience: Array<string>;
     ages: Array<{ __typename?: "Range"; display: string }>;
+    childrenOrAdults: Array<{
+      __typename?: "ChildOrAdult";
+      display: string;
+      code: ChildOrAdultCodeEnum;
+    }>;
   } | null;
   notes: Array<{ __typename?: "Note"; display: Array<string> }>;
   languages?: {
@@ -6013,6 +6274,11 @@ export type WorkSmallFragment = {
         __typename?: "Audience";
         generalAudience: Array<string>;
         ages: Array<{ __typename?: "Range"; display: string }>;
+        childrenOrAdults: Array<{
+          __typename?: "ChildOrAdult";
+          display: string;
+          code: ChildOrAdultCodeEnum;
+        }>;
       } | null;
       notes: Array<{ __typename?: "Note"; display: Array<string> }>;
       languages?: {
@@ -6137,6 +6403,11 @@ export type WorkSmallFragment = {
         __typename?: "Audience";
         generalAudience: Array<string>;
         ages: Array<{ __typename?: "Range"; display: string }>;
+        childrenOrAdults: Array<{
+          __typename?: "ChildOrAdult";
+          display: string;
+          code: ChildOrAdultCodeEnum;
+        }>;
       } | null;
       notes: Array<{ __typename?: "Note"; display: Array<string> }>;
       languages?: {
@@ -6261,6 +6532,11 @@ export type WorkSmallFragment = {
         __typename?: "Audience";
         generalAudience: Array<string>;
         ages: Array<{ __typename?: "Range"; display: string }>;
+        childrenOrAdults: Array<{
+          __typename?: "ChildOrAdult";
+          display: string;
+          code: ChildOrAdultCodeEnum;
+        }>;
       } | null;
       notes: Array<{ __typename?: "Note"; display: Array<string> }>;
       languages?: {
@@ -6374,7 +6650,11 @@ export type WorkMediumFragment = {
     display: string;
     code: FictionNonfictionCodeEnum;
   } | null;
-  dk5MainEntry?: { __typename?: "DK5MainEntry"; display: string } | null;
+  dk5MainEntry?: {
+    __typename?: "DK5MainEntry";
+    display: string;
+    code: string;
+  } | null;
   relations: {
     __typename?: "Relations";
     hasReview: Array<{ __typename?: "Manifestation"; pid: string }>;
@@ -6483,6 +6763,11 @@ export type WorkMediumFragment = {
         __typename?: "Audience";
         generalAudience: Array<string>;
         ages: Array<{ __typename?: "Range"; display: string }>;
+        childrenOrAdults: Array<{
+          __typename?: "ChildOrAdult";
+          display: string;
+          code: ChildOrAdultCodeEnum;
+        }>;
       } | null;
       notes: Array<{ __typename?: "Note"; display: Array<string> }>;
       languages?: {
@@ -6607,6 +6892,11 @@ export type WorkMediumFragment = {
         __typename?: "Audience";
         generalAudience: Array<string>;
         ages: Array<{ __typename?: "Range"; display: string }>;
+        childrenOrAdults: Array<{
+          __typename?: "ChildOrAdult";
+          display: string;
+          code: ChildOrAdultCodeEnum;
+        }>;
       } | null;
       notes: Array<{ __typename?: "Note"; display: Array<string> }>;
       languages?: {
@@ -6731,6 +7021,11 @@ export type WorkMediumFragment = {
         __typename?: "Audience";
         generalAudience: Array<string>;
         ages: Array<{ __typename?: "Range"; display: string }>;
+        childrenOrAdults: Array<{
+          __typename?: "ChildOrAdult";
+          display: string;
+          code: ChildOrAdultCodeEnum;
+        }>;
       } | null;
       notes: Array<{ __typename?: "Note"; display: Array<string> }>;
       languages?: {
@@ -7014,6 +7309,10 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
     ages {
       display
     }
+    childrenOrAdults {
+      display
+      code
+    }
   }
   notes {
     display
@@ -7182,6 +7481,7 @@ export const WorkMediumFragmentDoc = `
   }
   dk5MainEntry {
     display
+    code
   }
   relations {
     hasReview {
@@ -7344,7 +7644,11 @@ export const GetInfomediaDocument = `
   infomedia(id: $id) {
     error
     article {
+      byLine
+      dateLine
       headLine
+      hedLine
+      paper
       text
     }
   }
@@ -7598,10 +7902,10 @@ export const useComplexSearchWithPaginationWorkAccessQuery = <
 };
 
 export const ComplexSearchWithPaginationDocument = `
-    query complexSearchWithPagination($cql: String!, $offset: Int!, $limit: PaginationLimitScalar!, $filters: ComplexSearchFiltersInput!) {
+    query complexSearchWithPagination($cql: String!, $offset: Int!, $limit: PaginationLimitScalar!, $filters: ComplexSearchFiltersInput!, $sort: [SortInput!]) {
   complexSearch(cql: $cql, filters: $filters) {
     hitcount
-    works(offset: $offset, limit: $limit) {
+    works(offset: $offset, limit: $limit, sort: $sort) {
       ...WorkSmall
     }
   }
@@ -7670,6 +7974,85 @@ export const useSuggestionsFromQueryStringQuery = <
       SuggestionsFromQueryStringQuery,
       SuggestionsFromQueryStringQueryVariables
     >(SuggestionsFromQueryStringDocument, variables),
+    options
+  );
+};
+
+export const GetCoversByPidsDocument = `
+    query GetCoversByPids($pids: [String!]!) {
+  manifestations(pid: $pids) {
+    pid
+    cover {
+      xSmall {
+        url
+        width
+        height
+      }
+      small {
+        url
+        width
+        height
+      }
+      medium {
+        url
+        width
+        height
+      }
+      large {
+        url
+        width
+        height
+      }
+    }
+  }
+}
+    `;
+
+export const useGetCoversByPidsQuery = <
+  TData = GetCoversByPidsQuery,
+  TError = unknown
+>(
+  variables: GetCoversByPidsQueryVariables,
+  options?: UseQueryOptions<GetCoversByPidsQuery, TError, TData>
+) => {
+  return useQuery<GetCoversByPidsQuery, TError, TData>(
+    ["GetCoversByPids", variables],
+    fetcher<GetCoversByPidsQuery, GetCoversByPidsQueryVariables>(
+      GetCoversByPidsDocument,
+      variables
+    ),
+    options
+  );
+};
+
+export const GetBestRepresentationPidByIsbnDocument = `
+    query GetBestRepresentationPidByIsbn($cql: String!, $offset: Int!, $limit: PaginationLimitScalar!, $filters: ComplexSearchFiltersInput!) {
+  complexSearch(cql: $cql, filters: $filters) {
+    works(offset: $offset, limit: $limit) {
+      workId
+      manifestations {
+        bestRepresentation {
+          pid
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useGetBestRepresentationPidByIsbnQuery = <
+  TData = GetBestRepresentationPidByIsbnQuery,
+  TError = unknown
+>(
+  variables: GetBestRepresentationPidByIsbnQueryVariables,
+  options?: UseQueryOptions<GetBestRepresentationPidByIsbnQuery, TError, TData>
+) => {
+  return useQuery<GetBestRepresentationPidByIsbnQuery, TError, TData>(
+    ["GetBestRepresentationPidByIsbn", variables],
+    fetcher<
+      GetBestRepresentationPidByIsbnQuery,
+      GetBestRepresentationPidByIsbnQueryVariables
+    >(GetBestRepresentationPidByIsbnDocument, variables),
     options
   );
 };
@@ -7866,6 +8249,8 @@ export const operationNames = {
       "complexSearchWithPaginationWorkAccess" as const,
     complexSearchWithPagination: "complexSearchWithPagination" as const,
     suggestionsFromQueryString: "suggestionsFromQueryString" as const,
+    GetCoversByPids: "GetCoversByPids" as const,
+    GetBestRepresentationPidByIsbn: "GetBestRepresentationPidByIsbn" as const,
     searchFacet: "searchFacet" as const,
     intelligentFacets: "intelligentFacets" as const,
     WorkRecommendations: "WorkRecommendations" as const

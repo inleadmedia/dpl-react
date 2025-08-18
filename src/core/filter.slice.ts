@@ -3,14 +3,22 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { FacetValue } from "./dbc-gateway/generated/graphql";
 
 export type FilterItemTerm = Omit<FacetValue, "__typename">;
+export type FacetOrigin = "facetLine" | "facetBrowser" | "facetUrl";
+export type FilterItemTermWithOrigin = FilterItemTerm & {
+  origin: FacetOrigin;
+};
 
 export type Filter = {
-  [key: string]: { [key: string]: FilterItemTerm };
+  [key: string]: { [key: string]: FilterItemTermWithOrigin };
 };
 
 export type FilterPayloadType = {
   facet: string;
   term: FilterItemTerm;
+};
+
+export type FilterPayloadTypeWithOrigin = FilterPayloadType & {
+  origin: FacetOrigin;
 };
 
 const initialState: Filter = {};
@@ -20,7 +28,7 @@ const filterState = createSlice({
   initialState,
   reducers: {
     add(state, action: PayloadAction<FilterPayloadType>) {
-      const { facet, term } = action.payload;
+      const { facet, term, origin } = action.payload;
       let existingFacets = { ...state[facet] };
       if (facet === "sorting")
         existingFacets = {};
@@ -29,7 +37,10 @@ const filterState = createSlice({
         ...state,
         [facet]: {
           ...existingFacets,
-          [term.term]: term
+          [term.term]: {
+            ...term,
+            origin
+          }
         }
       };
     },

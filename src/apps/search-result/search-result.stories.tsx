@@ -277,7 +277,7 @@ export const Primary: Story = {
     showResultsText: "Show results",
     filterListText: "Filter list",
     searchSortingOptionText: "Search sorting option text",
-    addMoreFiltersText: "+ more filters",
+    addMoreFiltersText: "More filters",
     loadingText: "Loading",
     invalidSearchText: "Invalid search",
     invalidSearchDescriptionText:

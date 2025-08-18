@@ -33,6 +33,8 @@ export interface ModalIdsProps {
   };
 }
 
+const MODAL_Z_INDEX = 400;
+
 function Modal({
   modalId,
   closeModalAriaLabelText,
@@ -98,7 +100,7 @@ function Modal({
             // so we add 20 to the z-index of the modal (20 is the highest z-index - header).
             // The index of the modalid is used, so the newest modal is always on top of
             // the remaining modals
-            zIndex: modalIds.indexOf(modalId) + 20
+            zIndex: modalIds.indexOf(modalId) + MODAL_Z_INDEX
           }}
           onClick={() => {
             close();
@@ -118,7 +120,7 @@ function Modal({
           data-cy={dataCy}
           style={{
             // same as comment above
-            zIndex: modalIds.indexOf(modalId) + 21
+            zIndex: modalIds.indexOf(modalId) + MODAL_Z_INDEX + 1
           }}
         >
           <div
@@ -134,7 +136,7 @@ function Modal({
             }`}
             style={{
               // same as comment above
-              zIndex: modalIds.indexOf(modalId) + 20
+              zIndex: modalIds.indexOf(modalId) + MODAL_Z_INDEX
             }}
             aria-label={closeModalAriaLabelText}
             onClick={() => {

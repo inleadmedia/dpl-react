@@ -69,6 +69,7 @@ interface MaterialEntryTextProps {
   goToText: string;
   reservationDetailsNoInterestAfterTitleText: string;
   identifierText: string;
+  infomediaCopyrightText: string;
   infomediaModalCloseModalAriaLabelText: string;
   infomediaModalScreenReaderModalDescriptionText: string;
   inSameSeriesText: string;
@@ -77,6 +78,7 @@ interface MaterialEntryTextProps {
   instantLoanTitleText: string;
   instantLoanUnderlineDescriptionText: string;
   interestPeriodsConfig: string;
+  libraryAssessmentText: string;
   librariesHaveTheMaterialText: string;
   listenOnlineText: string;
   loadingText: string;
@@ -85,6 +87,11 @@ interface MaterialEntryTextProps {
   materialHeaderAllEditionsText: string;
   materialHeaderAuthorByText: string;
   materialGridRelatedTitleText: string;
+  materialGridRelatedRecommendationsDataLabelText: string;
+  materialGridRelatedSeriesDataLabelText: string;
+  materialGridRelatedAuthorDataLabelText: string;
+  materialGridRelatedSelectAriaLabelText: string;
+  materialGridRelatedInlineFiltersAriaLabelText: string;
   materialIsAvailableInAnotherEditionText: string;
   materialIsIncludedText: string;
   materialIsLoanedOutText: string;
@@ -174,6 +181,8 @@ interface MaterialEntryTextProps {
   readArticleText: string;
   receiveEmailWhenMaterialReadyText: string;
   receiveSmsWhenMaterialReadyText: string;
+  reservableFromAnotherLibraryMissingEmailText: string;
+  reservableFromAnotherLibraryExtraInfoText: string;
   reservableFromAnotherLibraryText: string;
   reservationDetailsPickUpAtTitleText: string;
   reservationErrorsDescriptionText: string;
@@ -199,6 +208,7 @@ interface MaterialEntryConfigProps {
   blacklistedInstantLoanBranchesConfig: string;
   blacklistedPickupBranchesConfig?: string;
   branchesConfig: string;
+  findOnShelfDisclosuresDefaultOpenConfig: string;
   instantLoanConfig: string;
   smsNotificationsForReservationsEnabledConfig: string;
 }

@@ -24,6 +24,7 @@ import {
   determineSuggestionTerm,
   findNonWorkSuggestion,
   getAutosuggestCategoryList,
+  getInitialSearchQuery,
   isDisplayedAsWorkSuggestion
 } from "./helpers";
 import { useEventStatistics } from "../../core/statistics/useStatistics";
@@ -54,7 +55,7 @@ const SearchHeader: React.FC = () => {
   const [suggestItems, setSuggestItems] = useState<
     SuggestionsFromQueryStringQuery["suggest"]["result"] | []
   >([]);
-  const minimalQueryLength = 3;
+  const minimalAutosuggestCharacters = 3;
   // we need to convert between string and suggestion result object so
   // that the value in the search field on enter click doesn't become [object][object]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,7 +72,7 @@ const SearchHeader: React.FC = () => {
     status: string;
   } = useSuggestionsFromQueryStringQuery(
     { q },
-    { enabled: q.length >= minimalQueryLength }
+    { enabled: q.length >= minimalAutosuggestCharacters }
   );
   const [isHeaderDropdownOpen, setIsHeaderDropdownOpen] =
     useState<boolean>(false);
@@ -125,7 +126,7 @@ const SearchHeader: React.FC = () => {
     }
   }
 
-  // Autosuggest opening and closing based on input text length.
+  // Autosuggest opening and closing based on input text length and user interaction.
   useEffect(() => {
     if (data && data.suggest.result.length > 0 && (qWithoutQuery !== initialSearchQuery || queryModified)) {
       setIsAutosuggestOpen(true);
@@ -359,9 +360,9 @@ const SearchHeader: React.FC = () => {
           textData={textData}
           materialData={materialData}
           categoryData={categoryData}
-          status={status}
           getMenuProps={getMenuProps}
           highlightedIndex={highlightedIndex}
+          setIsOpen={setIsAutosuggestOpen}
           getItemProps={getItemProps}
           isOpen={isAutosuggestOpen}
           isLoading={isLoading}

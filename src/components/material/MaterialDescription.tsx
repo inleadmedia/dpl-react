@@ -1,12 +1,15 @@
 import React from "react";
 import {
   getUniqueMovies,
-  getDbcVerifiedSubjectsFirst
+  getDbcVerifiedSubjectsFirst,
+  materialContainsDanish
 } from "../../apps/material/helper";
 import { useItemHasBeenVisible } from "../../core/utils/helpers/lazy-load";
 import {
+  constructDK5SearchUrl,
   constructMaterialUrl,
-  constructSearchUrl
+  constructSearchUrl,
+  constructSubjectSearchUrl
 } from "../../core/utils/helpers/url";
 import { useText } from "../../core/utils/text";
 import { Work } from "../../core/utils/types/entities";
@@ -56,6 +59,10 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     return (overrideData.getter(work) || []).filter(Boolean).join("\n");
   }, [customFields, work]);
 
+  // Show DK5 for all non-fiction works OR fiction works in non-Danish languages
+  const shouldShowDk5 =
+    !isFiction || (isFiction && !materialContainsDanish(work));
+
   const seriesMembersList =
     (series &&
       series[0]?.members.map((member) => {
@@ -69,7 +76,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     [];
 
   const subjectsList = getDbcVerifiedSubjectsFirst(subjects).map((item) => ({
-    url: constructSearchUrl(searchUrl, item),
+    url: constructSubjectSearchUrl(searchUrl, item),
     term: item
   }));
 
@@ -157,6 +164,17 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
             </p>
           )}
           <div className="material-description__links mt-32">
+            {shouldShowDk5 && dk5MainEntry && (
+              <HorizontalTermLine
+                title={t("subjectNumberText")}
+                linkList={[
+                  {
+                    url: constructDK5SearchUrl(searchUrl, dk5MainEntry.code),
+                    term: dk5MainEntry.display
+                  }
+                ]}
+              />
+            )}
             <SeriesList
               series={series}
               searchUrl={searchUrl}
