@@ -5,7 +5,7 @@ import OpeningHoursDayEntry from "./OpeningHoursDayEntry";
 import { GroupedOpeningHours } from "./OpeningHoursHelpers";
 import {
   formatDateToWeekday,
-  formatDayMonth
+  formatFullMonthDay
 } from "../../core/utils/helpers/date";
 
 interface OpeningHoursWeekListProps {
@@ -25,11 +25,11 @@ const OpeningHoursWeekList: React.FC<OpeningHoursWeekListProps> = ({
     <ul className="opening-hours__content" data-cy="opening-hours-week-list">
       {data.map(({ dateTime, openingHourEntries }) => {
         const dateAsWeekday = formatDateToWeekday(dateTime);
-        const formattedDateForDisplay = formatDayMonth(dateTime);
+        const formattedDateForDisplay = formatFullMonthDay(dateTime);
 
         return (
           <li key={formattedDateForDisplay} className="opening-hours__row">
-            <h3 className="opening-hours__individual-day">{`${dateAsWeekday}: d. ${formattedDateForDisplay}`}</h3>
+            <h3 className="opening-hours__individual-day">{`${dateAsWeekday} ${formattedDateForDisplay}`}</h3>
             {openingHourEntries.length > 0 ? (
               <ul>
                 {openingHourEntries.map((item, categoryIndex) => (
