@@ -59,6 +59,8 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     return (overrideData.getter(work) || []).filter(Boolean).join("\n");
   }, [customFields, work]);
 
+  const isFiction = materialIsFiction(work);
+
   // Show DK5 for all non-fiction works OR fiction works in non-Danish languages
   const shouldShowDk5 =
     !isFiction || (isFiction && !materialContainsDanish(work));
@@ -97,7 +99,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     : [];
 
   let knownFileds: any = {
-    [t("subjectNumberText")]: !materialIsFiction(work) && dk5MainEntry ? {
+    [t("subjectNumberText")]: !isFiction && dk5MainEntry ? {
       label: t("subjectNumberText"),
       tags: [{
         url: constructSearchUrl(searchUrl, dk5MainEntry.display),

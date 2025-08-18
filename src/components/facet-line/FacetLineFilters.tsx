@@ -47,7 +47,6 @@ const FacetLineFilters: React.FunctionComponent<FacetLineFiltersProps> = ({
   sorting = null
 }) => {
   const t = useText();
-  const { open } = useModalButtonHandler();
   const { filters, addToFilter, setSorting } = useFilterHandler();
 
   // TODO: Since the huge refactoring of the FBI API,

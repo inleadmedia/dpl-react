@@ -31,7 +31,7 @@
     "watch:lint:js": "chokidar \"./src/**/*.{js,jsx,ts,tsx}\" -c \"yarn lint:js\"",
     "build:storybook": "storybook build -c .storybook -o dev",
     "start:storybook:test": "NODE_ENV=test storybook dev --port 57021 --quiet --ci",
-    "start:storybook:dev": "NODE_ENV=development  storybook dev --port 80",
+    "start:storybook:dev": "NODE_ENV=development  storybook dev --port 7020 --no-open --disable-telemetry",
     "dev": "npx concurrently --raw \"yarn start:storybook:dev\" \"yarn watch\"",
     "test:unit": "vitest",
     "test:integration": "cypress run",
@@ -151,7 +151,7 @@
     "prop-types": "Since we use former ddb-react components that depend on prop-types we keep this. Should be removed when usage of prop-types is deprecated."
   },
   "dependencies": {
-    "@danskernesdigitalebibliotek/dpl-design-system": "2025.27.0-a301abfb35e16b2f5ecfcd8a234e2ac4bb2497b5",
+    "@danskernesdigitalebibliotek/dpl-design-system": "git+https://github.com/inleadmedia/dpl-design-system.git#2025.33.0+inlead.18.08.2025",
     "@fullcalendar/core": "^6.1.19",
     "@fullcalendar/daygrid": "^6.1.19",
     "@fullcalendar/interaction": "^6.1.19",
@@ -159,6 +159,7 @@
     "@fullcalendar/timegrid": "^6.1.19",
     "@reduxjs/toolkit": "^2.5.0",
     "@types/lodash": "^4.17.5",
+    "async-es": "^3.2.6",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "downshift": "^9.0.8",
@@ -167,6 +168,7 @@
     "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
     "prop-types": "^15.8.1",
+    "querystring": "^0.2.1",
     "react": "^19.1.1",
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.1.1",

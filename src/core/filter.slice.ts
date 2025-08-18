@@ -27,7 +27,7 @@ const filterState = createSlice({
   name: "filter",
   initialState,
   reducers: {
-    add(state, action: PayloadAction<FilterPayloadType>) {
+    add(state, action: PayloadAction<FilterPayloadTypeWithOrigin>) {
       const { facet, term, origin } = action.payload;
       let existingFacets = { ...state[facet] };
       if (facet === "sorting")
