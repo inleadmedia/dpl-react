@@ -5,14 +5,11 @@ import { guardedRequest } from "../../core/guardedRequests.slice";
 import { TypedDispatch } from "../../core/store";
 import {
   convertPostIdToFaustId,
-  creatorsToString,
-  flattenCreators,
   getAllFaustIds,
   getManifestationsPids,
   getMaterialTypes,
   getWorkPid
 } from "../../core/utils/helpers/general";
-import { useText } from "../../core/utils/text";
 import { WorkId } from "../../core/utils/types/ids";
 import { AvailabilityLabels } from "../availability-label/availability-labels";
 import ButtonFavourite, {
@@ -36,6 +33,8 @@ import { isPeriodical, shouldShowMaterialAvailabilityText } from "./helper";
 import useAvailabilityData from "../availability-label/useAvailabilityData";
 import { AccessTypeCodeEnum } from "../../core/dbc-gateway/generated/graphql";
 import { first } from "lodash";
+import { hasCorrectMaterialType } from "./material-buttons/helper";
+import { ManifestationMaterialType } from "../../core/utils/types/material-type";
 
 interface MaterialHeaderProps {
   wid: WorkId;
@@ -64,7 +63,6 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
 }) => {
   const materialTitleId = useId();
   const { itemRef, hasBeenVisible: showItem } = useItemHasBeenVisible();
-  const t = useText();
   const dispatch = useDispatch<TypedDispatch>();
   const addToListRequest = (id: ButtonFavouriteId) => {
     dispatch(
@@ -75,7 +73,6 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
       })
     );
   };
-  const author = creatorsToString(flattenCreators(creators), t);
   const title = getWorkTitle(work);
   const pid = getWorkPid(work);
   const coverPids = getManifestationsPids(selectedManifestations);
@@ -96,6 +93,15 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
     // which we check inside shouldShowMaterialAvailabilityText() helper here.
     manifestText: "NOT AN ARTICLE"
   });
+  const isYearbook =
+    hasCorrectMaterialType(
+      ManifestationMaterialType.yearBook,
+      manifestations
+    ) ||
+    hasCorrectMaterialType(
+      ManifestationMaterialType.yearBookOnline,
+      manifestations
+    );
 
   useDeepCompareEffect(() => {
     collectPageStatistics({
@@ -117,7 +123,8 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
         <Cover
           ids={coverPids}
           bestRepresentation={bestRepresentation}
-          size="xlarge"
+          size="large"
+          displaySize="xlarge"
           animate
           shadow="small"
         />
@@ -133,7 +140,7 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
         />
         <MaterialHeaderText
           title={String(title)}
-          author={author}
+          creators={creators}
           languageIsoCode={languageIsoCode}
           materialTitleId={materialTitleId}
         />
@@ -156,6 +163,7 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                 faustId={convertPostIdToFaustId(pid)}
                 selectedPeriodical={selectedPeriodical}
                 selectPeriodicalHandler={selectPeriodicalHandler}
+                isYearbook={isYearbook}
               />
             )}
             {selectedManifestations && (
@@ -169,7 +177,7 @@ const MaterialHeader: React.FC<MaterialHeaderProps> = ({
                   />
                 </div>
                 {/* MaterialAvailabilityText is only shown for:
-                    - Online manifestations if the user is logged in
+                    - Online manifestations
                     - physical manifestations
                     - that are not periodical or articles
                     - that are available in at least one local library branch

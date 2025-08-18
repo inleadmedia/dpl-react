@@ -1,5 +1,3 @@
-const coverUrlPattern = /^https:\/\/res\.cloudinary\.com\/.*\.(jpg|jpeg|png)$/;
-
 describe("Material buttons", () => {
   it("Renders a clickable find on shelf button even if no materials are available", () => {
     cy.interceptRest({
@@ -148,10 +146,59 @@ describe("Material buttons", () => {
     )
       .getBySel("material-description")
       .scrollIntoView({ duration: 300 });
-
     cy.getBySel("material-header-buttons-online-digital-article").contains(
       "Order digital copy"
     );
+  });
+
+  it("Renders correct action button for ordering a physical article with 'DigitalArticle' access", () => {
+    cy.interceptRest({
+      aliasName: "Availability",
+      url: "**/availability/v3?recordid=**",
+      fixtureFilePath:
+        "material/availability-physical-article-with-digital-access.json"
+    });
+    cy.interceptRest({
+      aliasName: "Holdings",
+      url: "**/availability/v3?recordid=**",
+      fixtureFilePath:
+        "material/holdings-periodical-article-with-digital-article-access.json"
+    });
+    cy.interceptGraphql({
+      operationName: "getMaterial",
+      fixtureFilePath:
+        "material-buttons/material-buttons-physical-article-digital-access-fbi-api.json"
+    });
+    cy.visit(
+      "/iframe.html?id=apps-material--periodical-multiple-accesses&viewMode=story&type=tidsskrift"
+    )
+      .getBySel("material-description")
+      .scrollIntoView({ duration: 300 });
+    cy.getBySel("material-header-buttons-physical").contains(
+      "Reserve tidsskrift"
+    );
+  });
+
+  it("Renders the correct action button for ordering a 'DigitalArticle' with only physical access type", () => {
+    cy.interceptGraphql({
+      operationName: "getMaterial",
+      fixtureFilePath:
+        "material-buttons/material-buttons-digital-article-with-physical-access-type-fbi-api.json"
+    });
+    cy.interceptRest({
+      aliasName: "FBSPatron",
+      url: "**fbs-openplatform.dbc.dk/external/agencyid/patrons/patronid/v4",
+      fixtureFilePath: "cover/cover.json"
+    });
+    cy.visit(
+      "/iframe.html?id=apps-material--digital&viewMode=story&type=artikel"
+    )
+      .getBySel("material-description")
+      .scrollIntoView({ duration: 300 });
+    cy.getBySel("material-header-buttons-online-digital-article").contains(
+      "Order digital copy"
+    );
+    cy.getBySel("material-header-buttons-physical").should("not.exist");
   });
 
   it("Renders the correct action button for infomedia articles", () => {
@@ -213,12 +260,6 @@ describe("Material buttons", () => {
     });
 
     cy.interceptRest({
-      aliasName: "Cover",
-      url: "**/api/v2/covers?**",
-      fixtureFilePath: "cover.json"
-    });
-
-    cy.interceptRest({
       aliasName: "Availability",
       url: "**/availability/v3?recordid=**",
       fixtureFilePath: "material/availability.json"
@@ -229,20 +270,16 @@ describe("Material buttons", () => {
       fixtureFilePath: "material/material-grid-related-recommendations.json"
     });
 
+    cy.interceptGraphql({
+      operationName: "GetCoversByPids",
+      fixtureFilePath: "cover/cover.json"
+    });
+
     // Intercept like button
     cy.intercept("HEAD", "**/list/default/**", {
       statusCode: 404
     }).as("Favorite list service");
 
-    // Intercept covers.
-    cy.intercept(
-      {
-        url: coverUrlPattern
-      },
-      {
-        fixture: "images/cover.jpg"
-      }
-    );
     // Intercept url "translation".
     cy.interceptRest({
       aliasName: "UrlProxy",
