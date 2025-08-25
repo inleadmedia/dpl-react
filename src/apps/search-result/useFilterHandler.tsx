@@ -103,7 +103,7 @@ const useFilterHandler = () => {
       // We dont have a traceId, so we just use a placeholder.
       addToFilter({
         facet: mapFacetToFilter(facet),
-        term: { key: "key", term: urlFilter, traceId: "traceId" },
+        term: { key: urlFilter, term: urlFilter, traceId: "traceId" },
         origin: "facetUrl"
       });
     }
