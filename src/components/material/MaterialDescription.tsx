@@ -99,13 +99,6 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     : [];
 
   let knownFileds: any = {
-    [t("subjectNumberText")]: !isFiction && dk5MainEntry ? {
-      label: t("subjectNumberText"),
-      tags: [{
-        url: constructSearchUrl(searchUrl, dk5MainEntry.display),
-        term: dk5MainEntry.display
-      }]
-    } : null,
     [t("inSameSeriesText")]: {
       label: t("inSameSeriesText"),
       tags: seriesMembersList,
