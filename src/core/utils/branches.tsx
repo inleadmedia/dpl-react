@@ -1,15 +1,24 @@
-import { AgencyBranch } from "../fbs/model";
 import { useConfig } from "./config";
 import { getUrlQueryParam } from "./helpers/url";
 
+type TBranch = {
+  branchId: string;
+  title: string;
+  address: {
+    lat: string;
+    long: string;
+    value: string;
+  };
+};
+
 export const excludeBlacklistedBranches = (
-  branches: AgencyBranch[],
+  branches: TBranch[],
   blacklist: string[]
-): AgencyBranch[] => {
+): TBranch[] => {
   return branches.filter((item) => !blacklist.includes(item.branchId));
 };
 
-export const cleanBranchesId = (branches: AgencyBranch[]): string[] => {
+export const cleanBranchesId = (branches: TBranch[]): string[] => {
   return (
     branches
       .map((branch) => {
@@ -24,10 +33,10 @@ export const cleanBranchesId = (branches: AgencyBranch[]): string[] => {
   );
 };
 
-export const useGetBranches = (key: string): AgencyBranch[] => {
+export const useGetBranches = (key: string): TBranch[] => {
   const selectedBranchId = getUrlQueryParam("branchId");
   const config = useConfig();
-  let branches = config<AgencyBranch[]>("branchesConfig", {
+  let branches = config<TBranch[]>("branchesConfig", {
     transformer: "jsonParse"
   })
 
