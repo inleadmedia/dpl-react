@@ -18,17 +18,19 @@ import useGetAvailability from "../../../../core/utils/useGetAvailability";
 import { useConfig } from "../../../../core/utils/config";
 
 export interface MaterialButtonsPhysicalProps {
+  isSpecificManifestation?: boolean;
   manifestations: Manifestation[];
   size?: ButtonSize;
   dataCy?: string;
-  isSpecificManifestation?: boolean;
+  isEditionPicker?: boolean;
 }
 
 const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
+  isSpecificManifestation,
   manifestations,
   size,
   dataCy = "material-buttons-physical",
-  isSpecificManifestation
+  isEditionPicker = false
 }) => {
   const t = useText();
   const config = useConfig();
@@ -49,11 +51,17 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
   const isUserBlocked = !!(userData?.patron && isBlocked(userData?.patron));
 
   if (isLoading || isLoadingAvailability) {
-    return <MaterialButtonLoading />;
+    return <MaterialButtonLoading classNames="reserve-button" />;
   }
 
   if (!reservableManifestations || reservableManifestations.length < 1) {
-    return <MaterialButtonDisabled size={size} label={t("cantReserveText")} />;
+    return (
+      <MaterialButtonDisabled
+        size={size}
+        label={t("cantReserveText")}
+        classNames="reserve-button"
+      />
+    );
   }
 
   if (isUserBlocked) {
@@ -72,6 +80,7 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
         size={size}
         isSpecificManifestation={isSpecificManifestation}
         pids={pids}
+        isEditionPicker={isEditionPicker}
       />
     );
   }

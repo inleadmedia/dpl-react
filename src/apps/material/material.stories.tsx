@@ -24,6 +24,12 @@ import reservationMaterialDetailsProps, {
 import reservationListArgs, {
   argTypes as reservationListArgTypes
 } from "../../core/storybook/reservationListArgs";
+import copyLinkArgs, {
+  argTypes as copyLinkArgTypes
+} from "../../core/storybook/copyLinkArgs";
+import editionSwitchModalArgs, {
+  argTypes as editionSwitchModalArgTypes
+} from "../../core/storybook/editionSwitchModalArgs";
 
 const meta: Meta<typeof MaterialEntry> = {
   title: "Apps / Material",
@@ -36,9 +42,11 @@ const meta: Meta<typeof MaterialEntry> = {
     ...globalConfigArgTypes,
     ...deleteReservationModalArgTypes,
     ...publizonErrorArgTypes,
+    ...copyLinkArgTypes,
     ...mappArgTypes,
     ...reservationMaterialDetailsPropsArgTypes,
     ...reservationListArgTypes,
+    ...editionSwitchModalArgTypes,
     searchUrl: {
       description: "Path to the search result page",
       control: { type: "text" }
@@ -49,6 +57,10 @@ const meta: Meta<typeof MaterialEntry> = {
     },
     wid: {
       description: "Work ID",
+      control: { type: "text" }
+    },
+    agencyIdConfig: {
+      description: "Agency ID from OpenID Connect configuration",
       control: { type: "text" }
     },
     smsNotificationsForReservationsEnabledConfig: {
@@ -838,12 +850,15 @@ const meta: Meta<typeof MaterialEntry> = {
     ...globalConfigArgs,
     ...deleteReservationModalArgs,
     ...publizonErrorArgs,
+    ...copyLinkArgs,
     ...mappArgs,
     ...reservationMaterialDetailsProps,
     ...reservationListArgs,
+    ...editionSwitchModalArgs,
     searchUrl: "/search",
     materialUrl: "/work/:workid",
     wid: "work-of:870970-basis:52557240",
+    agencyIdConfig: "710100",
     smsNotificationsForReservationsEnabledConfig: "1",
     blacklistedPickupBranchesConfig:
       "FBS-751032,FBS-751031,FBS-751009,FBS-751027,FBS-751024,DK-775164",

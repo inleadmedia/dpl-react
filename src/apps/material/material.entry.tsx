@@ -9,8 +9,11 @@ import GlobalUrlEntryPropsInterface from "../../core/utils/types/global-url-prop
 import { GlobalEntryTextProps } from "../../core/storybook/globalTextArgs";
 import { DeleteReservationModalArgs } from "../../core/storybook/deleteReservationModalArgs";
 import { PublizonErrorArgs } from "../../core/storybook/publizonErrorArgs";
+import { CopyLinkArgs } from "../../core/storybook/copyLinkArgs";
 import { MappArgs } from "../../core/storybook/mappArgs";
+import { EditionSwitchModalArgs } from "../../core/storybook/editionSwitchModalArgs";
 import withPageStatistics from "../../core/statistics/withPageStatistics";
+import useSetSmoothScroll from "../../core/utils/useSetSmoothScroll";
 
 interface MaterialEntryTextProps {
   alreadyReservedText: string;
@@ -204,6 +207,7 @@ interface MaterialEntryTextProps {
 }
 
 interface MaterialEntryConfigProps {
+  agencyIdConfig: string;
   blacklistedAvailabilityBranchesConfig?: string;
   blacklistedInstantLoanBranchesConfig: string;
   blacklistedPickupBranchesConfig?: string;
@@ -220,11 +224,14 @@ export interface MaterialEntryProps
     MaterialEntryConfigProps,
     DeleteReservationModalArgs,
     PublizonErrorArgs,
-    MappArgs {
+    CopyLinkArgs,
+    MappArgs,
+    EditionSwitchModalArgs {
   wid: WorkId;
 }
 
 const WrappedMaterialEntry: React.FC<MaterialEntryProps> = ({ wid }) => {
+  useSetSmoothScroll();
   return (
     <GuardedApp app="material">
       <Material wid={wid} />
