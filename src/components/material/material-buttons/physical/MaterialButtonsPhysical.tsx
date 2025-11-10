@@ -14,6 +14,7 @@ import MaterialButtonLoading from "../generic/MaterialButtonLoading";
 import MaterialButtonDisabled from "../generic/MaterialButtonDisabled";
 import { useText } from "../../../../core/utils/text";
 import { usePatronData } from "../../../../core/utils/helpers/usePatronData";
+import useGetAvailability from "../../../../core/utils/useGetAvailability";
 import { useConfig } from "../../../../core/utils/config";
 import { useGetHoldings } from "../../../../apps/material/helper";
 
@@ -42,15 +43,27 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
     config
   });
 
+  // We extract loading of Availability here, as it isn't possible within
+  // UseReservableManifestations. React query uses cached version of the data
+  // so we can determine if the request inside UseReservableManifestations is
+  // loading this way.
+  const { isLoading: isLoadingAvailability } = useGetAvailability({
+    faustIds,
+    config
+  });
+  const { reservableManifestations } = UseReservableManifestations({
+    manifestations
+  });
+
+  const { data: userData, isLoading } = usePatronData();
+  const isUserBlocked = !!(userData?.patron && isBlocked(userData?.patron));
+
   const blacklistedGroup = useMemo(() => {
     // @ts-ignore-next-line
     return (document.querySelector("[data-blacklisted-reservation-groups]")?.getAttribute("data-blacklisted-reservation-groups") || "")
       .split(",")
       .filter(Boolean);
   }, []);
-
-  const { data: userData, isLoading: isLoadingPatron } = usePatronData();
-  const isUserBlocked = !!(userData?.patron && isBlocked(userData?.patron));
 
   if (isLoading || isLoadingAvailability) {
     return <MaterialButtonLoading classNames="reserve-button" />;

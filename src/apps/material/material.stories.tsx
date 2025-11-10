@@ -857,7 +857,7 @@ const meta: Meta<typeof MaterialEntry> = {
     ...editionSwitchModalArgs,
     searchUrl: "/search",
     materialUrl: "/work/:workid",
-    wid: "work-of:870970-basis:52557240",
+    wid: "work-of:870970-basis:141339257",
     agencyIdConfig: "710100",
     smsNotificationsForReservationsEnabledConfig: "1",
     blacklistedPickupBranchesConfig:

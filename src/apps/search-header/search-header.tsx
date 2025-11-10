@@ -62,6 +62,7 @@ const SearchHeader: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [currentlySelectedItem, setCurrentlySelectedItem] = useState<any>("");
   const [isAutosuggestOpen, setIsAutosuggestOpen] = useState<boolean>(false);
+  const [hasUserTyped, setHasUserTyped] = useState<boolean>(false);
   const { clearFilter } = useFilterHandler();
   const { data, isLoading, status } = useSuggestionsFromQueryStringQuery(
     { q },
@@ -124,20 +125,17 @@ const SearchHeader: React.FC = () => {
 
   // Autosuggest opening and closing based on input text length and user interaction.
   useEffect(() => {
-    if (data && data.suggest.result.length > 0 && (qWithoutQuery !== initialSearchQuery || queryModified)) {
+    if (
+      hasUserTyped &&
+      suggestItems.length > 0 &&
+      (status === "success" || status === "loading") &&
+      (qWithoutQuery !== initialSearchQuery || queryModified)
+    ) {
       setIsAutosuggestOpen(true);
     } else {
       setIsAutosuggestOpen(false);
     }
-  }, [data]);
-
-  useEffect(() => {
-    if (qWithoutQuery.length > 2 && (qWithoutQuery !== initialSearchQuery || queryModified)) {
-      setIsAutosuggestOpen(true);
-    } else {
-      setIsAutosuggestOpen(false);
-    }
-  }, [qWithoutQuery]);
+  }, [hasUserTyped, status, suggestItems, qWithoutQuery]);
 
   function handleSelectedItemChange(
     changes: UseComboboxStateChange<Suggestion>
@@ -208,6 +206,7 @@ const SearchHeader: React.FC = () => {
     if (type === useCombobox.stateChangeTypes.InputChange) {
       setQ(inputValue);
       setQWithoutQuery(inputValue);
+      setHasUserTyped(true);
       return;
     }
     setQWithoutQuery(inputValue);
