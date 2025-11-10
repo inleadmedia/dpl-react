@@ -21,7 +21,7 @@ const useReservableFromAnotherLibrary = (
   const config = useConfig();
   const { data: holdingsData } = useGetHoldings({
     faustIds: getAllFaustIds(manifestations),
-    blacklist: "both",
+    blacklist: "availability",
     config
   });
 

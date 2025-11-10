@@ -53,8 +53,9 @@ const SearchHeader: React.FC = () => {
   const [q, setQ] = useState<string>(initialSearchQuery);
   const [qWithoutQuery, setQWithoutQuery] = useState<string>(q);
   const [suggestItems, setSuggestItems] = useState<
-    SuggestionsFromQueryStringQuery["suggest"]["result"] | []
+    SuggestionsFromQueryStringQuery["localSuggest"]["result"] | []
   >([]);
+
   const minimalAutosuggestCharacters = 3;
   // we need to convert between string and suggestion result object so
   // that the value in the search field on enter click doesn't become [object][object]
@@ -62,17 +63,11 @@ const SearchHeader: React.FC = () => {
   const [currentlySelectedItem, setCurrentlySelectedItem] = useState<any>("");
   const [isAutosuggestOpen, setIsAutosuggestOpen] = useState<boolean>(false);
   const { clearFilter } = useFilterHandler();
-  const {
-    data,
-    isLoading,
-    status
-  }: {
-    data: SuggestionsFromQueryStringQuery | undefined;
-    isLoading: boolean;
-    status: string;
-  } = useSuggestionsFromQueryStringQuery(
+  const { data, isLoading, status } = useSuggestionsFromQueryStringQuery(
     { q },
-    { enabled: q.length >= minimalAutosuggestCharacters }
+    {
+      enabled: q.length >= minimalAutosuggestCharacters
+    }
   );
   const [isHeaderDropdownOpen, setIsHeaderDropdownOpen] =
     useState<boolean>(false);
@@ -86,7 +81,7 @@ const SearchHeader: React.FC = () => {
   // Make sure to only assign the data once.
   useEffect(() => {
     if (data) {
-      const arrayOfResults = data.suggest.result;
+      const arrayOfResults = data.localSuggest.result;
       setSuggestItems(arrayOfResults);
     }
   }, [data]);
@@ -98,7 +93,8 @@ const SearchHeader: React.FC = () => {
   // The first suggestion that is not of SuggestionType.Title - used for showing/
   // /hiding autosuggest categories suggestions.
   let nonWorkSuggestion: Suggestion | undefined;
-  let orderedData: SuggestionsFromQueryStringQuery["suggest"]["result"] = [];
+  let orderedData: SuggestionsFromQueryStringQuery["localSuggest"]["result"] =
+    [];
 
   if (originalData) {
     nonWorkSuggestion = findNonWorkSuggestion(originalData);

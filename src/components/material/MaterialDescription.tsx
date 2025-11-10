@@ -4,7 +4,6 @@ import {
   getDbcVerifiedSubjectsFirst,
   materialContainsDanish
 } from "../../apps/material/helper";
-import { useItemHasBeenVisible } from "../../core/utils/helpers/lazy-load";
 import {
   constructDK5SearchUrl,
   constructMaterialUrl,
@@ -26,7 +25,6 @@ export interface MaterialDescriptionProps {
 }
 
 const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customFields }) => {
-  const { itemRef, hasBeenVisible: showItem } = useItemHasBeenVisible();
   const t = useText();
   const u = useUrls();
   const searchUrl = u("searchUrl");
@@ -143,54 +141,46 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   descriptionTermFields = Object.values(knownFileds).concat(descriptionTermFields).filter(Boolean);
 
   return (
-    <section
-      ref={itemRef}
-      className="material-description"
-      data-cy="material-description"
-    >
-      {showItem && (
-        <>
-          <h2 className="text-header-h4 pb-24">
-            {t("descriptionHeadlineText")}
-          </h2>
-          {work.abstract && (
-            <p className="text-body-large material-description__content">
-              { descriptionOverride === null ? work.abstract[0] : descriptionOverride }
-            </p>
-          )}
-          <div className="material-description__links mt-32">
-            {shouldShowDk5 && dk5MainEntry && (
-              <HorizontalTermLine
-                title={t("subjectNumberText")}
-                linkList={[
-                  {
-                    url: constructDK5SearchUrl(searchUrl, dk5MainEntry.code),
-                    term: dk5MainEntry.display
-                  }
-                ]}
-              />
-            )}
-            <SeriesList
-              series={series}
-              searchUrl={searchUrl}
-              t={t}
-              workId={work.workId}
-              dataCy="material-description-series"
+    <section className="material-description" data-cy="material-description">
+      <>
+        <h2 className="text-header-h4 pb-24">{t("descriptionHeadlineText")}</h2>
+        {work.abstract && (
+          <p className="text-body-large material-description__content">
+            { descriptionOverride === null ? work.abstract[0] : descriptionOverride }
+          </p>
+        )}
+        <div className="material-description__links mt-32">
+          {shouldShowDk5 && dk5MainEntry && (
+            <HorizontalTermLine
+              title={t("subjectNumberText")}
+              linkList={[
+                {
+                  url: constructDK5SearchUrl(searchUrl, dk5MainEntry.code),
+                  term: dk5MainEntry.display
+                }
+              ]}
             />
+          )}
+          <SeriesList
+            series={series}
+            searchUrl={searchUrl}
+            t={t}
+            workId={work.workId}
+            dataCy="material-description-series"
+          />
 
-            {
-              descriptionTermFields.map((customField: any) => {
-                return <HorizontalTermLine
-                  key={ customField.label }
-                  title={ customField.label }
-                  linkList={ customField.tags }
-                  dataCy={ customField.cy || "material-description-custom" }
-                />
-              })
-            }
-          </div>
-        </>
-      )}
+          {
+            descriptionTermFields.map((customField: any) => {
+              return <HorizontalTermLine
+                key={ customField.label }
+                title={ customField.label }
+                linkList={ customField.tags }
+                dataCy={ customField.cy || "material-description-custom" }
+              />
+            })
+          }
+        </div>
+      </>
     </section>
   );
 };

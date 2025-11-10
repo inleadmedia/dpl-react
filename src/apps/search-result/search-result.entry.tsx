@@ -40,7 +40,6 @@ interface SearchResultEntryTextProps {
   numberDescriptionText: string;
   resultPagerStatusText: string;
   showingResultsForText: string;
-  noSearchResultText: string;
   showMoreText: string;
   showResultsText: string;
   invalidSearchText: string;
@@ -56,6 +55,7 @@ interface SearchResultEntryConfigProps {
   blacklistedPickupBranchesConfig?: string;
   blacklistedSearchBranchesConfig?: string;
   branchesConfig: string;
+  searchInfoboxConfig: string;
 }
 
 export interface SearchResultEntryProps

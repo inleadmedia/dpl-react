@@ -14,6 +14,7 @@ interface GlobalUrlEntryPropsInterface {
   authUrl: string;
   materialListBaseUrl: string;
   wayfinderBaseUrl: string;
+  zeroHitsSearchUrl: string;
 }
 
 export default GlobalUrlEntryPropsInterface;

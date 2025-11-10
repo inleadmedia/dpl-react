@@ -22,7 +22,7 @@ import {
   useCollectPageStatistics,
   usePageStatistics
 } from "../../core/statistics/useStatistics";
-import { getWorkPid } from "../../core/utils/helpers/general";
+import { getAllFaustIds, getWorkPid } from "../../core/utils/helpers/general";
 import {
   getUrlQueryParam,
   setQueryParametersInUrl
@@ -33,6 +33,7 @@ import { useText } from "../../core/utils/text";
 import { Manifestation, Work } from "../../core/utils/types/entities";
 import { WorkId } from "../../core/utils/types/ids";
 import { useGetWork } from "../../core/utils/useGetWork";
+import { useEditionSwitch } from "../../core/utils/useEditionSwitch";
 import {
   divideManifestationsByMaterialType,
   getBestMaterialTypeForWork,
@@ -40,7 +41,8 @@ import {
   getInfomediaIds,
   getManifestationChildrenOrAdults,
   getManifestationsOrderByTypeAndYear,
-  isParallelReservation
+  isParallelReservation,
+  getDisclosureOpenStatesFromUrl
 } from "./helper";
 import {
   ListItemType,
@@ -50,6 +52,10 @@ import MaterialDisclosure from "./MaterialDisclosure";
 import ReservationFindOnShelfModals from "./ReservationFindOnShelfModals";
 import OnlineInternalModal from "../../components/reservation/OnlineInternalModal";
 import MaterialGridRelated from "../../components/material-grid-related/MaterialGridRelated";
+import useAvailabilityData from "../../components/availability-label/useAvailabilityData";
+import { AccessTypeCodeEnum } from "../../core/dbc-gateway/generated/graphql";
+import { useScrollToLocation } from "../../core/utils/UseScrollToLocation";
+import EditionSwitchModal from "../../components/reservation/EditionSwitchModal";
 
 export interface MaterialProps {
   wid: WorkId;
@@ -207,6 +213,10 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
   const [isUserBlocked, setIsUserBlocked] = useState<boolean | null>(null);
   const { updatePageStatistics } = usePageStatistics();
   const { collectPageStatistics } = useCollectPageStatistics();
+  const disclosureOpenStates = getDisclosureOpenStatesFromUrl();
+  const { handleReserveFirstAvailable } = useEditionSwitch(
+    selectedManifestations
+  );
 
   const customFields = useMemo(() => {
     // @ts-ignore-next-line
@@ -367,6 +377,24 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
     }
   }, [data]);
 
+  // We need availability in order to show availability text under action buttons
+  const { isAvailable, isLoading: isAvailabilityLoading } = useAvailabilityData(
+    {
+      accessTypes: [AccessTypeCodeEnum.Physical, AccessTypeCodeEnum.Online],
+      access: [undefined],
+      faustIds: selectedManifestations
+        ? getAllFaustIds(selectedManifestations)
+        : [],
+      isbn: null, // Not needed.
+      // "manifestText" is used inside the availability hook to check whether the material is an article
+      // which we check inside shouldShowMaterialAvailabilityText() helper here.
+      manifestText: "NOT AN ARTICLE",
+      enabled: !!selectedManifestations
+    }
+  );
+
+  useScrollToLocation([data?.work, isAvailabilityLoading]);
+
   if (isLoading || !data?.work || !selectedManifestations) {
     return <MaterialSkeleton />;
   }
@@ -422,9 +450,6 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
 
   const infomediaIds = getInfomediaIds(selectedManifestations);
 
-  // Get disclosure URL parameter from the current URL to see if it should be open.
-  const shouldOpenReviewDisclosure = !!getUrlQueryParam("disclosure");
-
   return (
     <>
       <section className="material-page">
@@ -436,6 +461,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           selectedPeriodical={selectedPeriodical}
           selectPeriodicalHandler={setSelectedPeriodical}
           isGlobalMaterial={workType === "global"}
+          isAvailable={isAvailable}
         >
           {manifestations.map((manifestation) => (
             <>
@@ -475,6 +501,11 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
               setSelectedPeriodical={setSelectedPeriodical}
             />
           )}
+          <EditionSwitchModal
+            work={work}
+            workId={wid}
+            handleReserveFirstAvailable={handleReserveFirstAvailable}
+          />
         </MaterialHeader>
         <div className="material-description-group">
           <MaterialAdditionalDescription work={work} fieldsOptions={ customFields?.additionalDescription } />
@@ -487,6 +518,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
             title={`${t("editionsText")} (${manifestations.length})`}
             icon={VariousIcon}
             dataCy="material-editions-disclosure"
+            open={disclosureOpenStates.editions}
           >
             <>
               {getManifestationsOrderByTypeAndYear(manifestations).map(
@@ -508,6 +540,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           dataCy="material-details-disclosure"
           title={t("detailsText")}
           icon={Receipt}
+          open={disclosureOpenStates.details}
         >
           <MaterialDetailsList
             id={`material-details-${wid}`}
@@ -519,7 +552,7 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           <DisclosureControllable
             detailsClassName="disclosure text-body-large"
             id="reviews"
-            showContent={shouldOpenReviewDisclosure}
+            showContent={disclosureOpenStates.reviews}
             cyData="material-reviews-disclosure"
             summary={
               <DisclosureSummary

@@ -18,17 +18,19 @@ import { useConfig } from "../../../../core/utils/config";
 import { useGetHoldings } from "../../../../apps/material/helper";
 
 export interface MaterialButtonsPhysicalProps {
+  isSpecificManifestation?: boolean;
   manifestations: Manifestation[];
   size?: ButtonSize;
   dataCy?: string;
-  isSpecificManifestation?: boolean;
+  isEditionPicker?: boolean;
 }
 
 const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
+  isSpecificManifestation,
   manifestations,
   size,
   dataCy = "material-buttons-physical",
-  isSpecificManifestation
+  isEditionPicker = false
 }) => {
   const t = useText();
   const config = useConfig();
@@ -50,8 +52,8 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
   const { data: userData, isLoading: isLoadingPatron } = usePatronData();
   const isUserBlocked = !!(userData?.patron && isBlocked(userData?.patron));
 
-  if (isLoadingHoldings || isLoadingPatron) {
-    return <MaterialButtonLoading />;
+  if (isLoading || isLoadingAvailability) {
+    return <MaterialButtonLoading classNames="reserve-button" />;
   }
 
   const blacklistedBranches = config("blacklistedAvailabilityBranchesConfig", { transformer: "stringToArray" });
@@ -73,6 +75,16 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
     return <MaterialButtonDisabled size={size} label={t("cantReserveText")} />;
   }
 
+  if (!reservableManifestations || reservableManifestations.length < 1) {
+    return (
+      <MaterialButtonDisabled
+        size={size}
+        label={t("cantReserveText")}
+        classNames="reserve-button"
+      />
+    );
+  }
+
   if (isUserBlocked) {
     return <MaterialButtonUserBlocked size={size} dataCy={dataCy} />;
   }
@@ -89,6 +101,7 @@ const MaterialButtonsPhysical: React.FC<MaterialButtonsPhysicalProps> = ({
         size={size}
         isSpecificManifestation={isSpecificManifestation}
         pids={pids}
+        isEditionPicker={isEditionPicker}
       />
     );
   }

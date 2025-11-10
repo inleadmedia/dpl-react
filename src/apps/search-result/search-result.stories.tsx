@@ -13,6 +13,9 @@ import globalConfigArgs, {
 import mappArgs, {
   argTypes as mappArgTypes
 } from "../../core/storybook/mappArgs";
+import zeroHitsSearchUrlArgs, {
+  argTypes as zeroHitsSearchUrlArgTypes
+} from "../../core/storybook/zeroHitsSearchUrlArgs";
 
 const meta: Meta<typeof SearchResultEntry> = {
   title: "Apps / Search Result",
@@ -24,6 +27,7 @@ const meta: Meta<typeof SearchResultEntry> = {
     ...globalTextArgTypes,
     ...globalConfigArgTypes,
     ...mappArgTypes,
+    ...zeroHitsSearchUrlArgTypes,
     q: {
       description: "Search string",
       control: { type: "text" }
@@ -76,10 +80,6 @@ const meta: Meta<typeof SearchResultEntry> = {
       description: "Showing results for",
       control: { type: "text" }
     },
-    noSearchResultText: {
-      description: "0-hit search result",
-      control: { type: "text" }
-    },
     blacklistedPickupBranchesConfig: {
       description: "Blacklisted Pickup branches",
       control: { type: "text" }
@@ -94,6 +94,10 @@ const meta: Meta<typeof SearchResultEntry> = {
     },
     branchesConfig: {
       description: "Branches",
+      control: { type: "text" }
+    },
+    searchInfoboxConfig: {
+      description: "Search info box configuration",
       control: { type: "text" }
     },
     facetBrowserModalScreenReaderModalDescriptionText: {
@@ -232,11 +236,15 @@ export const Primary: Story = {
     ...globalTextArgs,
     ...globalConfigArgs,
     ...mappArgs,
+    ...zeroHitsSearchUrlArgs,
     q: initialSearchQuery || "harry",
     pageSizeDesktop: 50,
     pageSizeMobile: 20,
     authUrl: "",
     searchUrl: "/search",
+    advancedSearchUrl: "/advanced-search",
+    searchInfoboxConfig:
+      '{"title":"Help with searching","content":{"value":"<p>Here are some tips for searching:</p><ul><li>Use specific terms</li><li>Try different keywords</li><li>Check your spelling</li></ul>","format":"limited"},"buttonLabel":"Advanced search","buttonUrl":"/advanced-search"}',
     materialUrl: "/work/:workid",
     etAlText: "et al.",
     byAuthorText: "By",
@@ -245,7 +253,6 @@ export const Primary: Story = {
     numberDescriptionText: "Nr.",
     inSeriesText: "in series",
     showingResultsForText: "Showing results for “@query”",
-    noSearchResultText: "Your search has 0 results",
     blacklistedPickupBranchesConfig:
       "FBS-751032,FBS-751031,FBS-751009,FBS-751027,FBS-751024",
     blacklistedAvailabilityBranchesConfig:
