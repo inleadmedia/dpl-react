@@ -1,6 +1,5 @@
 import * as React from "react";
 import menuIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-menu.svg";
-import searchIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-search.svg";
 import profileIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-profile.svg";
 import heartIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-heart.svg";
 import watchIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-watch-static.svg";
