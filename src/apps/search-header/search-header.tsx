@@ -346,6 +346,7 @@ const SearchHeader: React.FC = () => {
           }}
           isHeaderDropdownOpen={isHeaderDropdownOpen}
           setIsHeaderDropdownOpen={setIsHeaderDropdownOpen}
+          advancedSearchUrl={advancedSearchUrl}
           redirectUrl={redirectUrl}
           onBlur={() => setTimeout(() => setIsAutosuggestOpen(false), 100) }
           initialBranchId={ searchBranch }
