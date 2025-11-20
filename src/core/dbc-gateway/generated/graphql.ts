@@ -7817,6 +7817,9 @@ export const useSearchWithPaginationQuery = <
     setSearchResult({ data: null, error: null, isLoading: true, status: "loading" });
 
     fetcher(getSearchWithPaginationQuery(options), variables, _abortController)().then((searchResult: any) => {
+      if (options?.onSuccess)
+        options?.onSuccess(searchResult);
+
       if ((options as any)?.lazyTypesLoading) {
         (searchResult?.search?.works || []).forEach((materialData: any) => {
           materialData.series = [];
