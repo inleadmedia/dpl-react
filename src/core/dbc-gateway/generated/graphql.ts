@@ -482,6 +482,7 @@ export type Cover = {
   large?: Maybe<CoverDetails>;
   medium?: Maybe<CoverDetails>;
   origin?: Maybe<Scalars["String"]["output"]>;
+  original?: Maybe<CoverDetails>;
   small?: Maybe<CoverDetails>;
   thumbnail?: Maybe<Scalars["String"]["output"]>;
   xSmall?: Maybe<CoverDetails>;
@@ -939,8 +940,6 @@ export type Manifestation = {
    * @deprecated Use 'Manifestation.contents' instead expires: 01/11-2025
    */
   manifestationParts?: Maybe<ManifestationParts>;
-  /** Field for presenting bibliographic records in MARC format */
-  marc?: Maybe<MarcRecord>;
   /** The type of material of the manifestation based on bibliotek.dk types */
   materialTypes: Array<MaterialType>;
   /** Notes about the manifestation */
@@ -1079,22 +1078,6 @@ export type Manifestations = {
    * Only one manifestation per unit is returned.
    */
   searchHits?: Maybe<Array<SearchHit>>;
-};
-
-export type MarcRecord = {
-  __typename?: "MarcRecord";
-  /** The library agency */
-  agencyId: Scalars["String"]["output"];
-  /** The bibliographic record identifier */
-  bibliographicRecordId: Scalars["String"]["output"];
-  /** The MARC record collection content as marcXchange XML string */
-  content: Scalars["String"]["output"];
-  /** The serialization format of the MARC record content. Defaults to 'marcXchange' */
-  contentSerializationFormat: Scalars["String"]["output"];
-  /** Flag indicating whether or not the record is deleted */
-  deleted: Scalars["Boolean"]["output"];
-  /** The marc record identifier */
-  id: Scalars["String"]["output"];
 };
 
 export type MaterialType = {
@@ -2202,8 +2185,6 @@ export type Work = {
   mainLanguages: Array<Language>;
   /** Details about the manifestations of this work */
   manifestations: Manifestations;
-  /** Field for presenting bibliographic records in MARC format */
-  marc?: Maybe<MarcRecord>;
   /** The type of material of the manifestation based on bibliotek.dk types */
   materialTypes: Array<MaterialType>;
   /** Relations to other manifestations */
@@ -2361,6 +2342,15 @@ export type GetSmallWorkQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -2490,6 +2480,15 @@ export type GetSmallWorkQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -2619,6 +2618,15 @@ export type GetSmallWorkQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -3012,6 +3020,15 @@ export type GetMaterialQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -3141,6 +3158,15 @@ export type GetMaterialQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -3270,6 +3296,15 @@ export type GetMaterialQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -3508,6 +3543,15 @@ export type GetMaterialGloballyQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -3637,6 +3681,15 @@ export type GetMaterialGloballyQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -3766,6 +3819,15 @@ export type GetMaterialGloballyQuery = {
               }>;
             }
         >;
+        contents?: Array<{
+          __typename?: "ContentsEntity";
+          heading: string;
+          type: ContentsEntityEnum;
+          entries?: Array<{
+            __typename?: "ContentEntry";
+            title: { __typename?: "ContentEntryTitle"; display: string };
+          }> | null;
+        }> | null;
         edition?: {
           __typename?: "Edition";
           summary: string;
@@ -4048,6 +4110,15 @@ export type RecommendFromFaustQuery = {
                   }>;
                 }
             >;
+            contents?: Array<{
+              __typename?: "ContentsEntity";
+              heading: string;
+              type: ContentsEntityEnum;
+              entries?: Array<{
+                __typename?: "ContentEntry";
+                title: { __typename?: "ContentEntryTitle"; display: string };
+              }> | null;
+            }> | null;
             edition?: {
               __typename?: "Edition";
               summary: string;
@@ -4177,6 +4248,15 @@ export type RecommendFromFaustQuery = {
                   }>;
                 }
             >;
+            contents?: Array<{
+              __typename?: "ContentsEntity";
+              heading: string;
+              type: ContentsEntityEnum;
+              entries?: Array<{
+                __typename?: "ContentEntry";
+                title: { __typename?: "ContentEntryTitle"; display: string };
+              }> | null;
+            }> | null;
             edition?: {
               __typename?: "Edition";
               summary: string;
@@ -4306,6 +4386,15 @@ export type RecommendFromFaustQuery = {
                   }>;
                 }
             >;
+            contents?: Array<{
+              __typename?: "ContentsEntity";
+              heading: string;
+              type: ContentsEntityEnum;
+              entries?: Array<{
+                __typename?: "ContentEntry";
+                title: { __typename?: "ContentEntryTitle"; display: string };
+              }> | null;
+            }> | null;
             edition?: {
               __typename?: "Edition";
               summary: string;
@@ -4500,6 +4589,15 @@ export type SearchWithPaginationQuery = {
                 }>;
               }
           >;
+          contents?: Array<{
+            __typename?: "ContentsEntity";
+            heading: string;
+            type: ContentsEntityEnum;
+            entries?: Array<{
+              __typename?: "ContentEntry";
+              title: { __typename?: "ContentEntryTitle"; display: string };
+            }> | null;
+          }> | null;
           edition?: {
             __typename?: "Edition";
             summary: string;
@@ -4629,6 +4727,15 @@ export type SearchWithPaginationQuery = {
                 }>;
               }
           >;
+          contents?: Array<{
+            __typename?: "ContentsEntity";
+            heading: string;
+            type: ContentsEntityEnum;
+            entries?: Array<{
+              __typename?: "ContentEntry";
+              title: { __typename?: "ContentEntryTitle"; display: string };
+            }> | null;
+          }> | null;
           edition?: {
             __typename?: "Edition";
             summary: string;
@@ -4758,6 +4865,15 @@ export type SearchWithPaginationQuery = {
                 }>;
               }
           >;
+          contents?: Array<{
+            __typename?: "ContentsEntity";
+            heading: string;
+            type: ContentsEntityEnum;
+            entries?: Array<{
+              __typename?: "ContentEntry";
+              title: { __typename?: "ContentEntryTitle"; display: string };
+            }> | null;
+          }> | null;
           edition?: {
             __typename?: "Edition";
             summary: string;
@@ -4997,6 +5113,15 @@ export type ComplexSearchWithPaginationQuery = {
                 }>;
               }
           >;
+          contents?: Array<{
+            __typename?: "ContentsEntity";
+            heading: string;
+            type: ContentsEntityEnum;
+            entries?: Array<{
+              __typename?: "ContentEntry";
+              title: { __typename?: "ContentEntryTitle"; display: string };
+            }> | null;
+          }> | null;
           edition?: {
             __typename?: "Edition";
             summary: string;
@@ -5126,6 +5251,15 @@ export type ComplexSearchWithPaginationQuery = {
                 }>;
               }
           >;
+          contents?: Array<{
+            __typename?: "ContentsEntity";
+            heading: string;
+            type: ContentsEntityEnum;
+            entries?: Array<{
+              __typename?: "ContentEntry";
+              title: { __typename?: "ContentEntryTitle"; display: string };
+            }> | null;
+          }> | null;
           edition?: {
             __typename?: "Edition";
             summary: string;
@@ -5255,6 +5389,15 @@ export type ComplexSearchWithPaginationQuery = {
                 }>;
               }
           >;
+          contents?: Array<{
+            __typename?: "ContentsEntity";
+            heading: string;
+            type: ContentsEntityEnum;
+            entries?: Array<{
+              __typename?: "ContentEntry";
+              title: { __typename?: "ContentEntryTitle"; display: string };
+            }> | null;
+          }> | null;
           edition?: {
             __typename?: "Edition";
             summary: string;
@@ -5592,6 +5735,15 @@ export type ManifestationsSimpleFragment = {
           }>;
         }
     >;
+    contents?: Array<{
+      __typename?: "ContentsEntity";
+      heading: string;
+      type: ContentsEntityEnum;
+      entries?: Array<{
+        __typename?: "ContentEntry";
+        title: { __typename?: "ContentEntryTitle"; display: string };
+      }> | null;
+    }> | null;
     edition?: {
       __typename?: "Edition";
       summary: string;
@@ -5715,6 +5867,15 @@ export type ManifestationsSimpleFragment = {
           }>;
         }
     >;
+    contents?: Array<{
+      __typename?: "ContentsEntity";
+      heading: string;
+      type: ContentsEntityEnum;
+      entries?: Array<{
+        __typename?: "ContentEntry";
+        title: { __typename?: "ContentEntryTitle"; display: string };
+      }> | null;
+    }> | null;
     edition?: {
       __typename?: "Edition";
       summary: string;
@@ -5838,6 +5999,15 @@ export type ManifestationsSimpleFragment = {
           }>;
         }
     >;
+    contents?: Array<{
+      __typename?: "ContentsEntity";
+      heading: string;
+      type: ContentsEntityEnum;
+      entries?: Array<{
+        __typename?: "ContentEntry";
+        title: { __typename?: "ContentEntryTitle"; display: string };
+      }> | null;
+    }> | null;
     edition?: {
       __typename?: "Edition";
       summary: string;
@@ -5996,6 +6166,15 @@ export type ManifestationsSimpleFieldsFragment = {
         }>;
       }
   >;
+  contents?: Array<{
+    __typename?: "ContentsEntity";
+    heading: string;
+    type: ContentsEntityEnum;
+    entries?: Array<{
+      __typename?: "ContentEntry";
+      title: { __typename?: "ContentEntryTitle"; display: string };
+    }> | null;
+  }> | null;
   edition?: {
     __typename?: "Edition";
     summary: string;
@@ -6258,6 +6437,15 @@ export type WorkSmallFragment = {
             }>;
           }
       >;
+      contents?: Array<{
+        __typename?: "ContentsEntity";
+        heading: string;
+        type: ContentsEntityEnum;
+        entries?: Array<{
+          __typename?: "ContentEntry";
+          title: { __typename?: "ContentEntryTitle"; display: string };
+        }> | null;
+      }> | null;
       edition?: {
         __typename?: "Edition";
         summary: string;
@@ -6387,6 +6575,15 @@ export type WorkSmallFragment = {
             }>;
           }
       >;
+      contents?: Array<{
+        __typename?: "ContentsEntity";
+        heading: string;
+        type: ContentsEntityEnum;
+        entries?: Array<{
+          __typename?: "ContentEntry";
+          title: { __typename?: "ContentEntryTitle"; display: string };
+        }> | null;
+      }> | null;
       edition?: {
         __typename?: "Edition";
         summary: string;
@@ -6516,6 +6713,15 @@ export type WorkSmallFragment = {
             }>;
           }
       >;
+      contents?: Array<{
+        __typename?: "ContentsEntity";
+        heading: string;
+        type: ContentsEntityEnum;
+        entries?: Array<{
+          __typename?: "ContentEntry";
+          title: { __typename?: "ContentEntryTitle"; display: string };
+        }> | null;
+      }> | null;
       edition?: {
         __typename?: "Edition";
         summary: string;
@@ -6747,6 +6953,15 @@ export type WorkMediumFragment = {
             }>;
           }
       >;
+      contents?: Array<{
+        __typename?: "ContentsEntity";
+        heading: string;
+        type: ContentsEntityEnum;
+        entries?: Array<{
+          __typename?: "ContentEntry";
+          title: { __typename?: "ContentEntryTitle"; display: string };
+        }> | null;
+      }> | null;
       edition?: {
         __typename?: "Edition";
         summary: string;
@@ -6876,6 +7091,15 @@ export type WorkMediumFragment = {
             }>;
           }
       >;
+      contents?: Array<{
+        __typename?: "ContentsEntity";
+        heading: string;
+        type: ContentsEntityEnum;
+        entries?: Array<{
+          __typename?: "ContentEntry";
+          title: { __typename?: "ContentEntryTitle"; display: string };
+        }> | null;
+      }> | null;
       edition?: {
         __typename?: "Edition";
         summary: string;
@@ -7005,6 +7229,15 @@ export type WorkMediumFragment = {
             }>;
           }
       >;
+      contents?: Array<{
+        __typename?: "ContentsEntity";
+        heading: string;
+        type: ContentsEntityEnum;
+        entries?: Array<{
+          __typename?: "ContentEntry";
+          title: { __typename?: "ContentEntryTitle"; display: string };
+        }> | null;
+      }> | null;
       edition?: {
         __typename?: "Edition";
         summary: string;
@@ -7292,6 +7525,15 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
     roles {
       function {
         singular
+      }
+    }
+  }
+  contents {
+    heading
+    type
+    entries {
+      title {
+        display
       }
     }
   }

@@ -143,11 +143,15 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   return (
     <section className="material-description" data-cy="material-description">
       <>
-        <h2 className="text-header-h4 pb-24">{t("descriptionHeadlineText")}</h2>
         {work.abstract && (
-          <p className="text-body-large material-description__content">
-            { descriptionOverride === null ? work.abstract[0] : descriptionOverride }
-          </p>
+          <>
+            <h2 className="text-header-h4 pb-24">
+              {t("descriptionHeadlineText")}
+            </h2>
+            <p className="text-body-large material-description__content">
+              { descriptionOverride === null ? work.abstract[0] : descriptionOverride }
+            </p>
+          </>
         )}
         <div className="material-description__links mt-32">
           {shouldShowDk5 && dk5MainEntry && (
