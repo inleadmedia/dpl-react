@@ -116,6 +116,13 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
       label: t("filmAdaptationsText"),
       tags: filmAdaptationsList,
       cy: "material-description-film-adaptations"
+    },
+    [t("subjectNumberText")]: {
+      label: t("subjectNumberText"),
+      tags: shouldShowDk5 && dk5MainEntry ? [{
+        url: constructDK5SearchUrl(searchUrl, dk5MainEntry.code),
+        term: dk5MainEntry.display
+      }] : []
     }
   };
 
@@ -154,17 +161,6 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
           </>
         )}
         <div className="material-description__links mt-32">
-          {shouldShowDk5 && dk5MainEntry && (
-            <HorizontalTermLine
-              title={t("subjectNumberText")}
-              linkList={[
-                {
-                  url: constructDK5SearchUrl(searchUrl, dk5MainEntry.code),
-                  term: dk5MainEntry.display
-                }
-              ]}
-            />
-          )}
           <SeriesList
             series={series}
             searchUrl={searchUrl}
