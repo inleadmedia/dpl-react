@@ -23,8 +23,7 @@ import {
   determineSuggestionTerm,
   findNonWorkSuggestion,
   getAutosuggestCategoryList,
-  getInitialSearchQuery,
-  isDisplayedAsWorkSuggestion
+  getInitialSearchQuery
 } from "./helpers";
 import { useEventStatistics } from "../../core/statistics/useStatistics";
 import { statistics } from "../../core/statistics/statistics";
@@ -221,10 +220,7 @@ const SearchHeader: React.FC = () => {
       return;
     }
     // If this item is shown as one of work suggestions redirect to material page.
-    if (
-      selectedItem.work?.workId &&
-      isDisplayedAsWorkSuggestion(selectedItem.work, materialData)
-    ) {
+    if (selectedItem.work?.workId && materialData.includes(selectedItem)) {
       track("click", {
         id: statistics.autosuggestClick.id,
         name: statistics.autosuggestClick.name,
