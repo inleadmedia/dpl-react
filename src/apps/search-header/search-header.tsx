@@ -12,7 +12,6 @@ import { Autosuggest } from "../../components/autosuggest/autosuggest";
 import { Suggestion } from "../../core/utils/types/autosuggest";
 import { useUrls } from "../../core/utils/url";
 import {
-  constructAdvancedSearchUrl,
   constructMaterialUrl,
   constructSearchUrl,
   constructSearchUrlWithFilter,
