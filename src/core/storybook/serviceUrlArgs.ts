@@ -126,7 +126,7 @@ export default envOptions;
 
 if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true") {
   const extendedCovers = "cover.detail";
-  const extendedFields = {
+  /*const extendedFields = {
     shelfmarkOverride: {
       data: "652.m[0]"
     },
@@ -213,7 +213,50 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
         "url":"/search?q=${tag}"
       }
     }
-  };
+  };*/
+  const extendedFields = {
+    "description": {
+      "Emnetal": {
+        "data": ["graphql:manifestations.bestRepresentation.classifications[].code" /*"marc:088.a"*/],
+        "insert": "replace",
+        "url": "/advanced-search?advancedSearchQuery=%7B%22rows%22%3A%5B%7B%22term%22%3A%22${tag}%22%2C%22searchIndex%22%3A%22localclassification%22%2C%22clause%22%3A%7B%22value%22%3A%22AND%22%2C%22translation%22%3A%22clauseAndText%22%7D%2C%22id%22%3A0%7D%2C%7B%22term%22%3A%22%22%2C%22searchIndex%22%3A%22all%22%2C%22clause%22%3A%7B%22value%22%3A%22AND%22%2C%22translation%22%3A%22clauseAndText%22%7D%2C%22id%22%3A1%7D%5D%2C%22filters%22%3A%7B%22materialTypes%22%3A%5B%7B%22item%22%3A%22multiselectAllOptionText%22%2C%22value%22%3A%22all%22%7D%5D%2C%22fiction%22%3A%5B%7B%22item%22%3A%22multiselectAllOptionText%22%2C%22value%22%3A%22all%22%7D%5D%2C%22accessibility%22%3A%5B%7B%22item%22%3A%22multiselectAllOptionText%22%2C%22value%22%3A%22all%22%7D%5D%7D%7D"
+      },
+      "Skøn-/faglitteratur": {
+        "hidden": true
+      },
+      "Emneord": {
+        "data": [
+          "marc:631.a"
+        ],
+        "insert":"prepend",
+        "url":"/search?q=${tag}"
+      }
+    },
+    "detail": {
+     "År": {
+       "data": ["graphql:manifestations.bestRepresentation.edition.publicationYear.display" /*"marc:260.c"*/]
+     },
+     "Nr.": {
+       "hidden": true
+     },
+      "Besætning": {
+        "data": [
+          "graphql:manifestations.bestRepresentation.notes[type=MUSICAL_ENSEMBLE_OR_CAST].display"/*"marc:509.a"*/
+        ]
+      },
+      /*"Stemmer forkortet": {
+        "data": ["marc:509.b"] // via GraphQL targets to the same elements as "Besætning"
+      },*/
+      "Indhold": {
+        "data": [
+          "marc:795.a",
+          "graphql:manifestations.bestRepresentation.contents[heading=Indhold].raw"/*"marc:530.a"*/
+        ],
+        "type": "list",
+        "insert":"fallback"
+      }
+    }
+  }
 
   const complexSearch = {
     terms: [{ label: "Marc 088a", term: "localclassification" }]

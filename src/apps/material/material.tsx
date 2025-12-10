@@ -68,6 +68,83 @@ function stripPunctuationAndSpaces(string: string) {
 // @ts-ignore-next-line
 const systemAgency = JSON.parse(document.querySelector("[data-agency-config]").getAttribute("data-agency-config"))?.id || "";
 
+function pointerToFilter(pointer: string) {
+  if (pointer.includes("[") === false)
+    return [{ pointer: pointer }];
+
+  let filter = [];
+  let chunks = pointer.split(/\[(.*?)\]/i);
+  for (let i = 0; i < chunks.length; i += 2) {
+    // is number only - then it's element index, a part of pointer.
+    if (/^\d+$/.test(chunks[i + 1])) {
+      chunks[i] = chunks[i] + "[" + chunks[i + 1] + "]"
+      chunks[i + 1] = "";
+    }
+
+    let filterData: any = {
+      pointer: lodash.trim(chunks[i], ".")
+    };
+
+    if (chunks[i + 1]) {
+      let filterOptions: any = {};
+
+      chunks[i + 1].split(",").filter(Boolean).map(option => {
+        let [property, modifier, value] = option.trim().split(/([\^\~]?)=/);
+        // @ts-ignore-next-line
+        value = value ? value.trim() : null;
+
+        if (value === "$systemAgency") {
+          value =  systemAgency;
+        }
+
+        filterOptions[property.trim()] = { value, modifier };
+      });
+
+      if (Object.keys(filterOptions).length !== 0) {
+        filterData.filterOptions = filterOptions,
+        filterData.filter = function(array: any) {
+          return lodash.castArray(array).filter((value: any) => {
+            return value != null && Object.keys(filterOptions).every(key => {
+              let targetData = filterOptions[key];
+              if (targetData.value == null)
+                return key in value;
+
+              switch(targetData.modifier) {
+                case "":
+                  return value[key] == targetData.value;
+                case "^":
+                  return value[key].startsWith(targetData.value);
+                case "~":
+                  return value[key].includes(targetData.value);
+              }
+            });
+          });
+        };
+      }
+    }
+
+    filter.push(filterData);
+  }
+
+  return filter;
+}
+
+// Support the lodash pointers + .propname[] - to traverse a property value as array.
+function extendedGet(target: any, pointer: any): any {
+  if (typeof pointer === "string")
+    pointer = pointerToFilter(pointer);
+
+  target = lodash.castArray(target);
+  pointer.forEach((getterOptions: any) => {
+    target = lodash.flatten(target.map((_target: any) => lodash.get(_target, getterOptions.pointer)));
+
+    if (getterOptions.filter)
+      target = getterOptions.filter(target);
+  });
+
+  return target;
+}
+
 function extendedFieldsDataGetter(pointers: string[], materialData: any, options: any) {
   options = options || {};
 
@@ -100,14 +177,14 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
         } else if (type === "extraMarc") {
           fieldData = lodash.get(materialData?.parsedExtraMarc, orPointer);
         } else if (type === "graphql") {
-          fieldData = lodash.get(materialData, orPointer);
+          fieldData = extendedGet(materialData, orPointer);
         } else if (type.startsWith("manifestationMarc")) {
-
           let agency = type.replace("manifestationMarc", "");
           agency = agency.substring(1, agency.length - 1);
+
           if (agency === "systemAgency") {
             if (!systemAgency)
-              return console.warn("System agency is not defined, by required by extended field!", `Type: "${ type }", pointer: "${ orPointer }".`);
+              return console.warn("System agency is not defined, by required by extended field!", `Type: "${ options.type }", pointer: "${ options.orPointer }".`);
 
             agency = systemAgency;
           }

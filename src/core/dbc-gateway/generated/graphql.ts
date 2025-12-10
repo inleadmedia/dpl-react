@@ -6143,6 +6143,7 @@ export type ManifestationsSimpleFieldsFragment = {
   genreAndForm: Array<string>;
   source: Array<string>;
   publisher: Array<string>;
+  classifications?: Array<Classification>;
   titles: {
     __typename?: "ManifestationTitles";
     main: Array<string>;
@@ -7548,9 +7549,20 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
       }
     }
   }
+  abstract
+  subjects {
+    all {
+      display
+      type
+    }
+  }
+  classifications {
+    code
+  }
   contents {
     heading
     type
+    raw
     entries {
       title {
         display
@@ -7579,6 +7591,7 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
   }
   notes {
     display
+    type
   }
   languages {
     notes

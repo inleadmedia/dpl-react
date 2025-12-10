@@ -862,7 +862,9 @@ const meta: Meta<typeof MaterialEntry> = {
     ...editionSwitchModalArgs,
     searchUrl: "/search",
     materialUrl: "/work/:workid",
-    wid: "work-of:870970-basis:141339257",
+    //wid: "work-of:870970-basis:42786616", // musbib detail `År` and `Indhold`.
+    //wid: "work-of:870970-basis:02149206", // musbib detail `Besætning`.
+    wid: "work-of:830480-katalog:132910111", // musbib detail `Emneord`.
     agencyIdConfig: "710100",
     smsNotificationsForReservationsEnabledConfig: "1",
     blacklistedPickupBranchesConfig:

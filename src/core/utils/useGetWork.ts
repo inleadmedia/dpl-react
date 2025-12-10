@@ -30,6 +30,16 @@ const getData = (
   return null;
 };
 
+function toGroupedAbstract(abstract: string[], languages: any[]) {
+  let group: any = {};
+
+  abstract.forEach((value: string, index: number) => {
+    group[languages[index].isoCode] = value;
+  });
+
+  return group;
+}
+
 function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: any) {
   let workPid = workData.workId.split("work-of:")[1];
   let marcSources: any = [{
@@ -40,8 +50,12 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
     target: "parsedExtraMarc"
   }];
 
+  workData._abstractByLang = toGroupedAbstract(workData.abstract, workData.mainLanguages);
+
   if (workData.manifestations) {
     (workData.manifestations.all || []).forEach((manifestation: any, index: number) => {
+      manifestation._abstractByLang = toGroupedAbstract(manifestation.abstract, lodash.get(manifestation, "languages.main"));
+
       if (manifestation?.marc?.content) {
         marcSources.push({
           rawMarc: manifestation.marc.content,
@@ -62,6 +76,8 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
 
       ["bestRepresentation", "latest"].forEach((manifestationType) => {
         let manifestation = workData.manifestations[manifestationType];
+        manifestation._abstractByLang = toGroupedAbstract(manifestation.abstract, lodash.get(manifestation, "languages.main"));
+
         if (manifestation?.marc?.content) {
           marcSources.push({
             rawMarc: manifestation.marc.content,
