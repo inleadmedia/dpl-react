@@ -7555,6 +7555,10 @@ export const ManifestationsSimpleFieldsFragmentDoc = `
       display
       type
     }
+    dbcVerified {
+      display
+      type
+    }
   }
   classifications {
     code

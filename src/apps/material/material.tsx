@@ -184,7 +184,7 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
 
           if (agency === "systemAgency") {
             if (!systemAgency)
-              return console.warn("System agency is not defined, by required by extended field!", `Type: "${ options.type }", pointer: "${ options.orPointer }".`);
+              return console.warn("System agency is not defined, by required by extended field!", `Type: "${ type }", pointer: "${ orPointer }".`);
 
             agency = systemAgency;
           }
@@ -225,7 +225,6 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
   ["data", "filterBy"].forEach((storage: string) => {
     foundData[storage] = foundData[storage].filter((dataChunk: any) => dataChunk && ("" + dataChunk).trim() !== "");
   });
-
 
   if (foundData.filterBy.length !== 0) {
     foundData.filterBy =  foundData.filterBy.map((dataChunk: string) => {
@@ -355,7 +354,12 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
 
           (extendedFields[sectionName].tags || []).forEach((tag: any) => {
             tag.merge = extendedFieldsDataMerge.bind(null, tag);
-            tag.getter = extendedFieldsDataGetter.bind(null, tag?.data);
+            tag.getter = (work: any) => {
+              return extendedFieldsDataGetter(tag?.data, work, {
+                filterBy: tag?.filterBy
+              });
+            };
+
             if (hasExtraMarc(tag?.data)) {
               extendedFields._withExtraMarc = true;
             }
