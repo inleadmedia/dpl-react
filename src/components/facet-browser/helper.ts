@@ -5,7 +5,7 @@ import {
   FacetValue,
   useSearchFacetQuery
 } from "../../core/dbc-gateway/generated/graphql";
-import useGetCleanBranches from "../../core/utils/branches";
+import useGetSearchBranches from "../../core/utils/branches";
 import { FacetOrigin, Filter, FilterItemTerm } from "../../core/filter.slice";
 import invalidSwitchCase from "../../core/utils/helpers/invalid-switch-case";
 import { Facets } from "../../core/utils/types/entities";
@@ -66,7 +66,7 @@ export const createFilters = (
 };
 
 export function useGetFacets(query: string, filters: Filter) {
-  const cleanBranches = useGetCleanBranches();
+  const cleanBranches = useGetSearchBranches();
 
   const { data, isLoading } = useSearchFacetQuery(
     {
