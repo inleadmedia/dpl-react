@@ -204,6 +204,7 @@ export enum ComplexSearchFacetsEnum {
   Generalmaterialtype = "GENERALMATERIALTYPE",
   Genreandform = "GENREANDFORM",
   Hostpublication = "HOSTPUBLICATION",
+  Hostpublicationtype = "HOSTPUBLICATIONTYPE",
   Instrument = "INSTRUMENT",
   Issue = "ISSUE",
   Language = "LANGUAGE",
