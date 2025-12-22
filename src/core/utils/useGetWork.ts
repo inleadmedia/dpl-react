@@ -34,7 +34,7 @@ function toGroupedAbstract(abstract: string[], languages: any[]) {
   let group: any = {};
 
   abstract.forEach((value: string, index: number) => {
-    group[languages[index].isoCode] = value;
+    group[languages[index]?.isoCode || "unknown"] = value;
   });
 
   return group;
