@@ -87,17 +87,22 @@ function pointerToFilter(pointer: string) {
 
     if (chunks[i + 1]) {
       let filterOptions: any = {};
-
       chunks[i + 1].split(",").filter(Boolean).map(option => {
         let [property, modifier, value] = option.trim().split(/([\^\~]?)=/);
         // @ts-ignore-next-line
         value = value ? value.trim() : null;
 
         if (value === "$systemAgency") {
-          value =  systemAgency;
+          value = systemAgency;
         }
 
-        filterOptions[property.trim()] = { value, modifier };
+        let trimmedProperty = property.trim();
+        if (filterOptions[trimmedProperty]) {
+          filterOptions[trimmedProperty] = lodash.castArray(filterOptions[trimmedProperty]);
+          filterOptions[trimmedProperty].push({ value, modifier })
+        } else {
+          filterOptions[trimmedProperty] = { value, modifier };
+        }
       });
 
       if (Object.keys(filterOptions).length !== 0) {
@@ -106,17 +111,20 @@ function pointerToFilter(pointer: string) {
           return lodash.castArray(array).filter((value: any) => {
             return value != null && Object.keys(filterOptions).every(key => {
               let targetData = filterOptions[key];
-              if (targetData.value == null)
-                return key in value;
 
-              switch(targetData.modifier) {
-                case "":
-                  return value[key] == targetData.value;
-                case "^":
-                  return value[key].startsWith(targetData.value);
-                case "~":
-                  return value[key].includes(targetData.value);
-              }
+              return lodash.castArray(targetData).every(_targetData => {
+                if (_targetData.value == null)
+                  return key in value;
+
+                switch(_targetData.modifier) {
+                  case "":
+                    return value[key] == _targetData.value;
+                  case "^":
+                    return value[key].startsWith(_targetData.value);
+                  case "~":
+                    return value[key].includes(_targetData.value);
+                }
+              });
             });
           });
         };
@@ -147,6 +155,14 @@ function extendedGet(target: any, pointer: any): any {
 
 function extendedFieldsDataGetter(pointers: string[], materialData: any, options: any) {
   options = options || {};
+  pointers = lodash.castArray(pointers).filter(Boolean);
+
+  if (pointers[0].startsWith("function")) {
+    let customHandler = eval("(" + pointers.join("\n") + ")");
+
+    return customHandler(extendedGet.bind(null, materialData));
+  }
+
 
   let foundData: any = {
     data: [],
@@ -171,7 +187,7 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
         if (orPointer.includes(":"))
           [type, orPointer] = orPointer.split(":");
 
-        let fieldData = "";
+        let fieldData: string|string[] = "";
         if (type === "marc") {
           fieldData = lodash.get(materialData?.parsedMarc, orPointer);
         } else if (type === "extraMarc") {
@@ -208,7 +224,10 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
           console.warn(`Unknown getter type: "${ type }, pointer: "${ orPointer }"`);
         }
 
-        if (!fieldData)
+        if (Array.isArray(fieldData))
+          fieldData = fieldData.filter((found: string) => found != null);
+
+        if (!fieldData || fieldData.length === 0)
           return;
 
         if (Array.isArray(fieldData)) {
@@ -304,6 +323,9 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
       extendedFields = JSON.parse(extendedFields);
       extendedFields.aliases = extendedFields.aliases || {};
       extendedFields._withExtraMarc = false;
+
+      if (extendedFields.shelfmarkOverride)
+        extendedFields.shelfmarkOverride.getter = extendedFieldsDataGetter.bind(null, extendedFields.shelfmarkOverride.data);
 
       Object.keys(extendedFields).forEach(sectionName => {
         if (["description", "detail"].includes(sectionName)) {
