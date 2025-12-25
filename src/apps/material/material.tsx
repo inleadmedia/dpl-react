@@ -255,7 +255,7 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
     });
   }
 
-  return foundData.data;
+  return lodash.uniq(foundData.data);
 }
 
 function extendedFieldsDataMerge(filedData: any, originalData: any, customData: any, options: any) {
