@@ -51,10 +51,16 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
   }];
 
   workData._abstractByLang = toGroupedAbstract(workData.abstract, workData.mainLanguages);
+  let shelfmarkOverrideData: any;
+  if (shelfmarkOverride && shelfmarkOverride.getter)
+    shelfmarkOverrideData = shelfmarkOverride.getter(workData);
 
   if (workData.manifestations) {
     (workData.manifestations.all || []).forEach((manifestation: any, index: number) => {
       manifestation._abstractByLang = toGroupedAbstract(manifestation.abstract, lodash.get(manifestation, "languages.main"));
+
+      if (shelfmarkOverrideData && manifestation.shelfmark)
+        manifestation.shelfmark.shelfmark = shelfmarkOverrideData;
 
       if (manifestation?.marc?.content) {
         marcSources.push({
@@ -64,38 +70,31 @@ function parseMarcField(workData: any, extraMarc?: string, shelfmarkOverride?: a
             if (manifestation.pid === workPid && workData.parsedExtraMarc)
               manifestation.parsedMarc = workData.parsedExtraMarc;
 
-            if (shelfmarkOverride) {
-              let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
-              if (overrideValue && manifestation.shelfmark) {
-                manifestation.shelfmark.shelfmark = overrideValue;
-              }
-            }
           }
         });
       }
+    });
 
-      ["bestRepresentation", "latest"].forEach((manifestationType) => {
-        let manifestation = workData.manifestations[manifestationType];
-        manifestation._abstractByLang = toGroupedAbstract(manifestation.abstract, lodash.get(manifestation, "languages.main"));
+    ["bestRepresentation", "latest"].forEach((manifestationType) => {
+      let manifestation = workData.manifestations[manifestationType];
+      manifestation._abstractByLang = toGroupedAbstract(manifestation.abstract, lodash.get(manifestation, "languages.main"));
 
-        if (manifestation?.marc?.content) {
-          marcSources.push({
-            rawMarc: manifestation.marc.content,
-            target: `manifestations.${ manifestationType }.parsedMarc`,
-            onProcessed: () => {
-              if (manifestation.pid === workPid && workData.parsedExtraMarc)
-                manifestation.parsedMarc = workData.parsedExtraMarc;
+      if (shelfmarkOverrideData && manifestation.shelfmark)
+        manifestation.shelfmark.shelfmark = shelfmarkOverrideData;
 
-              if (shelfmarkOverride) {
-                let overrideValue = lodash.get(manifestation.parsedMarc, shelfmarkOverride.data);
-                if (overrideValue && manifestation.shelfmark) {
-                  manifestation.shelfmark.shelfmark = overrideValue;
-                }
-              }
-            }
-          });
-        }
-      });
+      if (manifestation?.marc?.content) {
+        marcSources.push({
+          rawMarc: manifestation.marc.content,
+          target: `manifestations.${ manifestationType }.parsedMarc`,
+          onProcessed: () => {
+            if (manifestation.pid === workPid && workData.parsedExtraMarc)
+              manifestation.parsedMarc = workData.parsedExtraMarc;
+
+            if (shelfmarkOverrideData && manifestation.shelfmark)
+              manifestation.shelfmark.shelfmark = shelfmarkOverrideData;
+          }
+        });
+      }
     });
   }
 
@@ -220,7 +219,7 @@ export const useGetWork = (
 
   const localWorkData = getData(localWork, "local");
   if (localWorkData) {
-    filterDuplicates(localWorkData?.data?.work);
+    //filterDuplicates(localWorkData?.data?.work);
     parseMarcField(localWorkData?.data?.work, extraMarc, shelfmarkOverride);
 
     return localWorkData;
@@ -228,7 +227,7 @@ export const useGetWork = (
 
   const globalWorkData = getData(globalWork, "global");
   if (globalWorkData) {
-    filterDuplicates(globalWorkData?.data?.work);
+    //filterDuplicates(globalWorkData?.data?.work);
     parseMarcField(globalWorkData?.data?.work, extraMarc, shelfmarkOverride);
 
     return globalWorkData;
