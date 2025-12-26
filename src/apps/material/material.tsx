@@ -157,6 +157,9 @@ function extendedFieldsDataGetter(pointers: string[], materialData: any, options
   options = options || {};
   pointers = lodash.castArray(pointers).filter(Boolean);
 
+  if (pointers.length === 0)
+    return [];
+
   if (pointers[0].startsWith("function")) {
     let customHandler = eval("(" + pointers.join("\n") + ")");
 
