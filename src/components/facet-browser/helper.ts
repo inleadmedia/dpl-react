@@ -61,7 +61,7 @@ export const createFilters = (
 ) => {
   return {
     ...formatFacetTerms(facets),
-    ...(branchIdList ? { branchId: branchIdList } : {})
+    ...(branchIdList.length > 0 ? { branchId: branchIdList } : {})
   };
 };
 
