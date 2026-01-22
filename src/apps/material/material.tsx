@@ -85,6 +85,9 @@ function pointerToFilter(pointer: string) {
       pointer: lodash.trim(chunks[i], ".")
     };
 
+    if (filterData.pointer === "")
+      continue;
+
     if (chunks[i + 1]) {
       let filterOptions: any = {};
       chunks[i + 1].split(",").filter(Boolean).map(option => {
