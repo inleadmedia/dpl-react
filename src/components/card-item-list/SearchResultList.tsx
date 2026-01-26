@@ -1,5 +1,5 @@
 import React, { Fragment, memo, useEffect } from "react";
-import { isEmpty } from "lodash";
+import clsx from "clsx";
 import { getCoverTint } from "../../core/utils/helpers/general";
 import { Work } from "../../core/utils/types/entities";
 import CardListItem from "./card-list-item/card-list-item";
@@ -9,7 +9,8 @@ import CardListInfoBox, { CardListInfoBoxProps } from "./CardListInfoBox";
 import ContentList from "../content-list/ContentList";
 
 export interface SearchResultListProps {
-  resultItems: Work[];
+  resultItems?: Work[];
+  isLoading?: boolean;
   page: number;
   pageSize: number;
   infoBoxProps?: CardListInfoBoxProps;
@@ -18,12 +19,12 @@ export interface SearchResultListProps {
 
 const SearchResultList: React.FC<SearchResultListProps> = ({
   resultItems,
+  isLoading,
   page,
   pageSize,
   infoBoxProps,
   className
 }) => {
-  const worksAreLoaded = !isEmpty(resultItems);
   const lastItemRef = React.useRef<HTMLLIElement>(null);
 
   useEffect(() => {
@@ -35,19 +36,12 @@ const SearchResultList: React.FC<SearchResultListProps> = ({
   const searchInfoBoxIndex = pageSize;
 
   return (
-    <ContentList className={className} dataCy="search-result-list">
-      {/*
-          Show skeleton search result items if no data is available yet.
-          We'll show 5 items which should cover most screens.
-        */}
-      {!worksAreLoaded &&
-        [...Array(5)].map((_, index) => (
-          <li key={index} className="content-list__item">
-            <CardListItemSkeleton />
-          </li>
-        ))}
-      {worksAreLoaded &&
-        resultItems.map((item, i) => {
+    <ul
+      className={clsx("content-list", className)}
+      data-cy="search-result-list"
+    >
+      {!isLoading ? (
+        resultItems?.map((item, i) => {
           const isFirstNewItem = i === page * pageSize;
 
           if (
@@ -92,8 +86,21 @@ const SearchResultList: React.FC<SearchResultListProps> = ({
               </MaterialListItem>
             );
           }
-        })}
-    </ContentList>
+        })
+      ) : (
+        <>
+          {/*
+            Show skeleton search result items if no data is available yet.
+            We'll show 5 items which should cover most screens.
+          */}
+          {[...Array(5)].map((_, index) => (
+            <li key={index} className="content-list__item">
+              <CardListItemSkeleton />
+            </li>
+          ))}
+        </>
+      )}
+    </ul>
   );
 };
 
