@@ -15,21 +15,12 @@ export interface FindOnShelfManifestationListItemProps {
   title: string;
   publicationYear: string | null;
   numberAvailable: number;
-  author: string;
   holdingData?: HoldingDataInterface;
 }
 
 const FindOnShelfManifestationListItem: FC<
   FindOnShelfManifestationListItemProps
-> = ({
-  shelfmark,
-  locationArray,
-  title,
-  publicationYear,
-  numberAvailable,
-  author,
-  holdingData
-}) => {
+> = ({ shelfmark, locationArray, title, publicationYear, numberAvailable, holdingData }) => {
   const t = useText();
   const [wayfinderLink, setWayfinderLink] = useState<
     WayfinderReaponse | Record<string, never>
@@ -71,25 +62,14 @@ const FindOnShelfManifestationListItem: FC<
     </>);
   }
 
-  if (placementText.length !== 0 && author) {
-    placementText.push(<>
-      <span className="find-on-shelf__item-location-delimiter"> · </span>
-      <span className="find-on-shelf__item-location-author">
-        {author}
-      </span>
-    </>);
-  }
-
   return (
     <li className="find-on-shelf__row text-body-medium-regular" role="row">
-      <p className="dpl-find-on-shelf-title">
-        <Wayfinder viewId={wayfinderLink.viewId} link={wayfinderLink.link} />
-        <span className="find-on-shelf__material-text" role="cell">
-          {title}
-          {publicationYear && ` (${publicationYear})`}
-        </span>
-      </p>
-      <span className="find-on-shelf__item-location" role="cell">
+      <Wayfinder viewId={wayfinderLink.viewId} link={wayfinderLink.link} />
+      <span className="find-on-shelf__material-text" role="cell">
+        {title}
+        {publicationYear && ` (${publicationYear})`}
+      </span>
+      <span role="cell">
         {placementText ? placementText : t("findOnShelfModalNoLocationSpecifiedText")}
       </span>
       <span className="find-on-shelf__item-count-text" role="cell">
