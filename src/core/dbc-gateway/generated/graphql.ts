@@ -88,11 +88,6 @@ export enum AccessUrlTypeEnum {
 
 export type Audience = {
   __typename?: "Audience";
-  /**
-   * PEGI age rating for games
-   * @deprecated Use 'Audience.pegi' instead expires: 01/06-2025
-   */
-  PEGI?: Maybe<Pegi>;
   /** Range of numbers with either beginning of range or end of range or both e.g. 6-10, 1980-1999 */
   ages: Array<Range>;
   /** Is this material for children or adults */
@@ -760,6 +755,14 @@ export enum IdentifierTypeEnum {
   Uri = "URI"
 }
 
+export type IllAutomationMaterialGroup = {
+  __typename?: "IllAutomationMaterialGroup";
+  /** The material group (1-9) */
+  id: Scalars["Int"]["output"];
+  /** The name of the material group */
+  name: Scalars["String"]["output"];
+};
+
 export type InfomediaArticle = {
   __typename?: "InfomediaArticle";
   byLine?: Maybe<Scalars["String"]["output"]>;
@@ -936,6 +939,8 @@ export type Manifestation = {
   hostPublication?: Maybe<HostPublication>;
   /** Identifiers for this manifestation - often used for search indexes */
   identifiers: Array<Identifier>;
+  /** automation material group info */
+  illAutomationMaterialGroup?: Maybe<IllAutomationMaterialGroup>;
   /** Languages in this manifestation */
   languages?: Maybe<Languages>;
   /** Details about the latest printing of this manifestation */
@@ -954,6 +959,8 @@ export type Manifestation = {
   physicalDescription?: Maybe<PhysicalUnitDescription>;
   /** Unique identification of the manifestation e.g 870970-basis:54029519 */
   pid: Scalars["String"]["output"];
+  /** The city or place where the item was published */
+  placeOfPublication: Array<Scalars["String"]["output"]>;
   /** Publisher of this manifestion */
   publisher: Array<Scalars["String"]["output"]>;
   /** The creation date of the record describing this manifestation in the format YYYYMMDD */
@@ -974,11 +981,6 @@ export type Manifestation = {
   source: Array<Scalars["String"]["output"]>;
   /** Subjects for this manifestation */
   subjects: SubjectContainer;
-  /**
-   * Quotation of the manifestation's table of contents or a similar content list
-   * @deprecated Use 'Manifestation.contents' instead expires: 01/11-2025
-   */
-  tableOfContents?: Maybe<TableOfContent>;
   /** Different kinds of titles for this work */
   titles: ManifestationTitles;
   /**
@@ -997,41 +999,6 @@ export type Manifestation = {
   workTypes: Array<WorkTypeEnum>;
   /** The year this manifestation was originally published or produced */
   workYear?: Maybe<PublicationYear>;
-};
-
-export type ManifestationPart = {
-  __typename?: "ManifestationPart";
-  /** Classification of this entry (music track or literary analysis) */
-  classifications: Array<Classification>;
-  /** Contributors from description - additional contributor to this entry */
-  contributorsFromDescription: Array<Scalars["String"]["output"]>;
-  /** The creator of the music track or literary analysis */
-  creators: Array<CreatorInterface>;
-  /** Additional creator or contributor to this entry (music track or literary analysis) as described on the publication. E.g. 'arr.: H. Cornell' */
-  creatorsFromDescription: Array<Scalars["String"]["output"]>;
-  /** The playing time for this specific part (i.e. the duration of a music track)  */
-  playingTime?: Maybe<Scalars["String"]["output"]>;
-  /** Subjects of this entry (music track or literary analysis) */
-  subjects?: Maybe<Array<SubjectInterface>>;
-  /** The title of the entry (music track or title of a literary analysis) */
-  title: Scalars["String"]["output"];
-};
-
-export enum ManifestationPartTypeEnum {
-  MusicTracks = "MUSIC_TRACKS",
-  NotSpecified = "NOT_SPECIFIED",
-  PartsOfBook = "PARTS_OF_BOOK",
-  SheetMusicContent = "SHEET_MUSIC_CONTENT"
-}
-
-export type ManifestationParts = {
-  __typename?: "ManifestationParts";
-  /** Heading for the music content note */
-  heading?: Maybe<Scalars["String"]["output"]>;
-  /** The creator and title etc of the individual parts */
-  parts: Array<ManifestationPart>;
-  /** The type of manifestation parts, is this music tracks, book parts etc. */
-  type: ManifestationPartTypeEnum;
 };
 
 export type ManifestationReview = {
@@ -1452,8 +1419,6 @@ export type Query = {
   /** Access to various types of recommendations. */
   recommendations: Recommendations;
   refWorks: Scalars["String"]["output"];
-  /** @deprecated Use 'Recommendations.subjects' instead expires: 01/03-2025 */
-  relatedSubjects?: Maybe<Array<Scalars["String"]["output"]>>;
   ris: Scalars["String"]["output"];
   search: SearchResponse;
   series?: Maybe<Series>;
@@ -1505,11 +1470,6 @@ export type QueryRecommendArgs = {
 
 export type QueryRefWorksArgs = {
   pids: Array<Scalars["String"]["input"]>;
-};
-
-export type QueryRelatedSubjectsArgs = {
-  limit?: InputMaybe<Scalars["Int"]["input"]>;
-  q: Array<Scalars["String"]["input"]>;
 };
 
 export type QueryRisArgs = {
@@ -2088,13 +2048,6 @@ export enum SuggestionTypeEnum {
   Title = "TITLE"
 }
 
-export type TableOfContent = {
-  __typename?: "TableOfContent";
-  content?: Maybe<Scalars["String"]["output"]>;
-  heading?: Maybe<Scalars["String"]["output"]>;
-  listOfContent?: Maybe<Array<TableOfContent>>;
-};
-
 export type TimePeriod = SubjectInterface & {
   __typename?: "TimePeriod";
   display: Scalars["String"]["output"];
@@ -2351,18 +2304,6 @@ export type GetSmallWorkQuery = {
       __typename?: "WorkTitles";
       full: Array<string>;
       original?: Array<string> | null;
-      tvSeries?: {
-        __typename?: "TvSeries";
-        title?: string | null;
-        season?: {
-          __typename?: "TvSeriesDetails";
-          display?: string | null;
-        } | null;
-        disc?: {
-          __typename?: "TvSeriesDetails";
-          display?: string | null;
-        } | null;
-      } | null;
     };
     creators: Array<
       | { __typename: "Corporation"; display: string }
@@ -3132,18 +3073,6 @@ export type GetMaterialQuery = {
       __typename?: "WorkTitles";
       full: Array<string>;
       original?: Array<string> | null;
-      tvSeries?: {
-        __typename?: "TvSeries";
-        title?: string | null;
-        season?: {
-          __typename?: "TvSeriesDetails";
-          display?: string | null;
-        } | null;
-        disc?: {
-          __typename?: "TvSeriesDetails";
-          display?: string | null;
-        } | null;
-      } | null;
     };
     creators: Array<
       | { __typename: "Corporation"; display: string }
@@ -3752,18 +3681,6 @@ export type GetMaterialGloballyQuery = {
       __typename?: "WorkTitles";
       full: Array<string>;
       original?: Array<string> | null;
-      tvSeries?: {
-        __typename?: "TvSeries";
-        title?: string | null;
-        season?: {
-          __typename?: "TvSeriesDetails";
-          display?: string | null;
-        } | null;
-        disc?: {
-          __typename?: "TvSeriesDetails";
-          display?: string | null;
-        } | null;
-      } | null;
     };
     creators: Array<
       | { __typename: "Corporation"; display: string }
@@ -4414,18 +4331,6 @@ export type RecommendFromFaustQuery = {
           __typename?: "WorkTitles";
           full: Array<string>;
           original?: Array<string> | null;
-          tvSeries?: {
-            __typename?: "TvSeries";
-            title?: string | null;
-            season?: {
-              __typename?: "TvSeriesDetails";
-              display?: string | null;
-            } | null;
-            disc?: {
-              __typename?: "TvSeriesDetails";
-              display?: string | null;
-            } | null;
-          } | null;
         };
         creators: Array<
           | { __typename: "Corporation"; display: string }
@@ -4999,18 +4904,6 @@ export type SearchWithPaginationQuery = {
         __typename?: "WorkTitles";
         full: Array<string>;
         original?: Array<string> | null;
-        tvSeries?: {
-          __typename?: "TvSeries";
-          title?: string | null;
-          season?: {
-            __typename?: "TvSeriesDetails";
-            display?: string | null;
-          } | null;
-          disc?: {
-            __typename?: "TvSeriesDetails";
-            display?: string | null;
-          } | null;
-        } | null;
       };
       creators: Array<
         | { __typename: "Corporation"; display: string }
@@ -5621,18 +5514,6 @@ export type ComplexSearchWithPaginationQuery = {
         __typename?: "WorkTitles";
         full: Array<string>;
         original?: Array<string> | null;
-        tvSeries?: {
-          __typename?: "TvSeries";
-          title?: string | null;
-          season?: {
-            __typename?: "TvSeriesDetails";
-            display?: string | null;
-          } | null;
-          disc?: {
-            __typename?: "TvSeriesDetails";
-            display?: string | null;
-          } | null;
-        } | null;
       };
       creators: Array<
         | { __typename: "Corporation"; display: string }
@@ -7172,15 +7053,6 @@ export type WorkSmallFragment = {
     __typename?: "WorkTitles";
     full: Array<string>;
     original?: Array<string> | null;
-    tvSeries?: {
-      __typename?: "TvSeries";
-      title?: string | null;
-      season?: {
-        __typename?: "TvSeriesDetails";
-        display?: string | null;
-      } | null;
-      disc?: { __typename?: "TvSeriesDetails"; display?: string | null } | null;
-    } | null;
   };
   creators: Array<
     | { __typename: "Corporation"; display: string }
@@ -7782,15 +7654,6 @@ export type WorkMediumFragment = {
     __typename?: "WorkTitles";
     full: Array<string>;
     original?: Array<string> | null;
-    tvSeries?: {
-      __typename?: "TvSeries";
-      title?: string | null;
-      season?: {
-        __typename?: "TvSeriesDetails";
-        display?: string | null;
-      } | null;
-      disc?: { __typename?: "TvSeriesDetails"; display?: string | null } | null;
-    } | null;
   };
   creators: Array<
     | { __typename: "Corporation"; display: string }
@@ -8670,15 +8533,6 @@ export const WorkSmallFragmentDoc = `
   titles {
     full
     original
-    tvSeries {
-      title
-      season {
-        display
-      }
-      disc {
-        display
-      }
-    }
   }
   abstract
   creators {
