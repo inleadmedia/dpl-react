@@ -145,6 +145,14 @@ export const constructAdvancedSearchUrl = (advancedSearchUrl: URL, q: string, br
     branchId
   });
 
+export const constructAdvancedSearchSubjectUrl = (
+  advancedSearchUrl: URL,
+  subject: string
+) => {
+  const filters = JSON.stringify([{ term: "term.subject", query: subject }]);
+  return new URL(`${advancedSearchUrl}?filters=${filters}&view=results`);
+};
+
 export const constructSearchUrlWithFilter = (args: {
   searchUrl: URL;
   selectedItemString: string;

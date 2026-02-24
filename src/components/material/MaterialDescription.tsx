@@ -6,6 +6,7 @@ import {
   materialContainsDanish
 } from "../../apps/material/helper";
 import {
+  constructAdvancedSearchSubjectUrl,
   constructDK5SearchUrl,
   constructMaterialUrl,
   constructSearchUrl,
@@ -32,6 +33,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   const u = useUrls();
   const config = useConfig();
   const searchUrl = u("searchUrl");
+  const advancedSearchUrl = u("advancedSearchUrl");
   const materialUrl = u("materialUrl");
   const { fictionNonfiction, series, subjects, relations, dk5MainEntry, manifestations } = work;
   let descriptionTermFields = React.useMemo(() => {
@@ -94,7 +96,7 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   )
     .filter((item) => !dbcSubjects.some((dbc) => dbc.term === item))
     .map((item) => ({
-      url: constructSearchUrl(searchUrl, item),
+      url: constructAdvancedSearchSubjectUrl(advancedSearchUrl, item),
       term: item
     }));
 
