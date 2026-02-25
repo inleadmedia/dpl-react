@@ -9,37 +9,39 @@ import { getFacetFieldTranslation } from "../../components/facet-browser/helper"
 import { useFacetTracking } from "./useSearchResultTracking";
 import SearchFacetGroup from "../../components/facet-browser/SearchFacetGroup";
 import SearchToggle from "../../components/search-toggle/SearchToggle";
-import SearchRadioButtonGroup from "../../components/search-radio-button-group/SearchRadioButtonGroup";
 import { sortSimpleSearchFacetValues } from "../advanced-search-v2/lib/facet-sort-utils";
+import SearchRadioButtonGroup from "../../components/search-radio-button-group/SearchRadioButtonGroup";
 import { isValidFacetsState } from "./helpers";
 
-// Fixed facet name for "can always be loaned" filter in SearchFiltersInput
-const CAN_ALWAYS_BE_LOANED_FACET_NAME = "canAlwaysBeLoaned";
+// Type for facet state stored in URL
+// Uses facetName (camelCase string like "materialTypesGeneral") as that's what the API expects for filters
+type FacetState = {
+  facetName: string;
+  selectedValues: string[];
+};
 
-type AccessTypeFilterOptions =
-  | { value: "Digital"; label: "Online" }
-  | { value: "Fysisk"; label: "Fysisk" };
-type FictionTypeFilterOptions =
-  | { value: "Ikke angivet"; label: "Fiktion" }
-  | { value: "Faglitteratur"; label: "Non-fiktion" };
-type AgeGroupFilterOptions =
-  | { value: "til voksne"; label: "Voksne" }
-  | { value: "til børn"; label: "Børn" };
+// Validation function for facet state from URL
+const isValidFacetState = (value: unknown): value is FacetState[] => {
+  if (!Array.isArray(value)) return false;
 
-// Radio button options — values match the API-returned facet term values
-// (differs from advanced search which uses CQL-based filter values)
-const ACCESS_TYPE_OPTIONS: AccessTypeFilterOptions[] = [
-  { value: "Digital", label: "Online" },
-  { value: "Fysisk", label: "Fysisk" }
-];
-const FICTION_TYPE_OPTIONS: FictionTypeFilterOptions[] = [
-  { value: "Ikke angivet", label: "Fiktion" },
-  { value: "Faglitteratur", label: "Non-fiktion" }
-];
-const AGE_GROUP_OPTIONS: AgeGroupFilterOptions[] = [
-  { value: "til voksne", label: "Voksne" },
-  { value: "til børn", label: "Børn" }
-];
+  return value.every((item) => {
+    if (typeof item !== "object" || item === null) return false;
+
+    const { facetName, selectedValues } = item as Record<string, unknown>;
+
+    if (typeof facetName !== "string") {
+      return false;
+    }
+    if (
+      !Array.isArray(selectedValues) ||
+      !selectedValues.every((v) => typeof v === "string")
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+};
 
 const SearchResultFacets = ({ facets }: { facets: FacetResult[] }) => {
   const t = useText();
@@ -111,6 +113,35 @@ const SearchResultFacets = ({ facets }: { facets: FacetResult[] }) => {
   const ageGroupFacetName = allAvailableFacets.find(
     (filter) => filter.type === FacetFieldEnum.Childrenoradults
   )?.name;
+
+  // Fixed facet name for "can always be loaned" filter in SearchFiltersInput
+  const CAN_ALWAYS_BE_LOANED_FACET_NAME = "canAlwaysBeLoaned";
+
+  type AccessTypeFilterOptions =
+    | { value: "Digital"; label: "Online" }
+    | { value: "Fysisk"; label: "Fysisk" };
+  type FictionTypeFilterOptions =
+    | { value: "Skønlitteratur"; label: "Fiktion" }
+    | { value: "Faglitteratur"; label: "Non-fiktion" };
+  type AgeGroupFilterOptions =
+    | { value: "til voksne"; label: "Voksne" }
+    | { value: "til børn"; label: "Børn" };
+
+  // Radio button options — values match the API-returned facet term values
+  // (differs from advanced search which uses CQL-based filter values)
+  // Radio button options (mirroring AdvancedSearch)
+  const ACCESS_TYPE_OPTIONS: AccessTypeFilterOptions[] = [
+    { value: "Digital", label: "Online" },
+    { value: "Fysisk", label: "Fysisk" }
+  ];
+  const FICTION_TYPE_OPTIONS: FictionTypeFilterOptions[] = [
+    { value: "Skønlitteratur", label: "Fiktion" },
+    { value: "Faglitteratur", label: "Non-fiktion" }
+  ];
+  const AGE_GROUP_OPTIONS: AgeGroupFilterOptions[] = [
+    { value: "til voksne", label: "Voksne" },
+    { value: "til børn", label: "Børn" }
+  ];
 
   // facet names used by radio groups (may be undefined until facets load)
   const radioFacetNames = [
