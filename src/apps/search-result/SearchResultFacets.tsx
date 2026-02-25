@@ -5,43 +5,14 @@ import {
   FacetResult,
   FacetFieldEnum
 } from "../../core/dbc-gateway/generated/graphql";
-import { getFacetFieldTranslation } from "../../components/facet-browser/helper";
 import { useFacetTracking } from "./useSearchResultTracking";
-import SearchFacetGroup from "../../components/facet-browser/SearchFacetGroup";
+import SearchFacetGroup from "./SearchFacetGroup";
 import SearchToggle from "../../components/search-toggle/SearchToggle";
 import { sortSimpleSearchFacetValues } from "../advanced-search-v2/lib/facet-sort-utils";
 import SearchRadioButtonGroup from "../../components/search-radio-button-group/SearchRadioButtonGroup";
+
+import { getFacetFieldTranslation } from "./helper";
 import { isValidFacetsState } from "./helpers";
-
-// Type for facet state stored in URL
-// Uses facetName (camelCase string like "materialTypesGeneral") as that's what the API expects for filters
-type FacetState = {
-  facetName: string;
-  selectedValues: string[];
-};
-
-// Validation function for facet state from URL
-const isValidFacetState = (value: unknown): value is FacetState[] => {
-  if (!Array.isArray(value)) return false;
-
-  return value.every((item) => {
-    if (typeof item !== "object" || item === null) return false;
-
-    const { facetName, selectedValues } = item as Record<string, unknown>;
-
-    if (typeof facetName !== "string") {
-      return false;
-    }
-    if (
-      !Array.isArray(selectedValues) ||
-      !selectedValues.every((v) => typeof v === "string")
-    ) {
-      return false;
-    }
-
-    return true;
-  });
-};
 
 const SearchResultFacets = ({ facets }: { facets: FacetResult[] }) => {
   const t = useText();
