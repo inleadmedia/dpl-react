@@ -174,24 +174,22 @@ const AdvancedSearchResult: React.FC<AdvancedSearchResultProps> = ({
     }
   }, [resetPage, prevFilters, currentFilters]);
 
-  const headingTitle = (
-    <>
-      {isLoading && <span>{t("loadingResultsText")}</span>}
-      {shouldShowResultHeadline && (
-        <span>
-          {t("showingMaterialsText", {
-            placeholders: { "@hitcount": hitcount }
-          })}
-        </span>
-      )}
-    </>
-  );
-
   return (
     <>
       {!showContentOnly && <div className="advanced-search__divider" />}
       <ContentListPage
-        title={headingTitle}
+        title={
+          <>
+            {isLoading && <span>{t("loadingResultsText")}</span>}
+            {shouldShowResultHeadline && (
+              <span>
+                {t("showingMaterialsText", {
+                  placeholders: { "@hitcount": hitcount }
+                })}
+              </span>
+            )}
+          </>
+        }
         headingLevel="h2"
         // ID is used to scroll to the results upon hitting the search button.
         headingId="advanced-search-result"
