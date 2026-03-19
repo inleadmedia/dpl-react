@@ -30,6 +30,9 @@ import copyLinkArgs, {
 import editionSwitchModalArgs, {
   argTypes as editionSwitchModalArgTypes
 } from "../../core/storybook/editionSwitchModalArgs";
+import materialContentsArgs, {
+  argTypes as materialContentsArgTypes
+} from "../../components/material/MaterialContents/MaterialContentsArgs";
 
 const meta: Meta<typeof MaterialEntry> = {
   title: "Apps / Material",
@@ -47,6 +50,7 @@ const meta: Meta<typeof MaterialEntry> = {
     ...reservationMaterialDetailsPropsArgTypes,
     ...reservationListArgTypes,
     ...editionSwitchModalArgTypes,
+    ...materialContentsArgTypes,
     searchUrl: {
       description: "Path to the search result page",
       control: { type: "text" }
@@ -55,12 +59,21 @@ const meta: Meta<typeof MaterialEntry> = {
       description: "Path to the material page",
       control: { type: "text" }
     },
+    advancedSearchUrl: {
+      description: "Path to the advanced search page",
+      control: { type: "text" }
+    },
     wid: {
       description: "Work ID",
       control: { type: "text" }
     },
     agencyIdConfig: {
       description: "Agency ID from OpenID Connect configuration",
+      control: { type: "text" }
+    },
+    localSubjectsAgencyIdsConfig: {
+      description:
+        "Comma-separated list of agency ID prefixes for local subjects",
       control: { type: "text" }
     },
     smsNotificationsForReservationsEnabledConfig: {
@@ -860,10 +873,13 @@ const meta: Meta<typeof MaterialEntry> = {
     ...reservationMaterialDetailsProps,
     ...reservationListArgs,
     ...editionSwitchModalArgs,
+    ...materialContentsArgs,
     searchUrl: "/search",
     materialUrl: "/work/:workid",
+    advancedSearchUrl: "/advancedsearch",
     wid: "work-of:870970-basis:141339257",
     agencyIdConfig: "710100",
+    localSubjectsAgencyIdsConfig: "",
     smsNotificationsForReservationsEnabledConfig: "1",
     blacklistedPickupBranchesConfig:
       "FBS-751032,FBS-751031,FBS-751009,FBS-751027,FBS-751024,DK-775164",
@@ -1296,5 +1312,45 @@ export const FindOnShelfHideUnavailable: Story = {
   args: {
     ...Default.args,
     findOnShelfHideUnavailableHoldingsConfig: "1"
+  }
+};
+
+export const ContentsSmiple: Story = {
+  name: "With contents: simple",
+  args: {
+    ...Default.args,
+    wid: "work-of:870970-basis:139683226"
+  }
+};
+
+export const ContentsMany: Story = {
+  name: "With contents: many",
+  args: {
+    ...Default.args,
+    wid: "work-of:870970-basis:52531802"
+  }
+};
+
+export const ContentsComplex: Story = {
+  name: "With contents: complex",
+  args: {
+    ...Default.args,
+    wid: "work-of:870970-basis:140264814"
+  }
+};
+
+export const ContentsEditions: Story = {
+  name: "With contents: editions",
+  args: {
+    ...Default.args,
+    wid: "work-of:870970-basis:52974755"
+  }
+};
+
+export const ContentsRaw: Story = {
+  name: "With contents: raw",
+  args: {
+    ...Default.args,
+    wid: "work-of:150086-netmusik:00795041726629"
   }
 };

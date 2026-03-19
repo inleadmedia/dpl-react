@@ -1,7 +1,8 @@
 import { ReservationDetailsV2 } from "../../../core/fbs/model";
 import {
   calculateRoundedUpDaysUntil,
-  formatDateDependingOnDigitalMaterial
+  formatDateDependingOnDigitalMaterial,
+  formatDateTimeUtc
 } from "../../../core/utils/helpers/date";
 import { UseTextFunction } from "../../../core/utils/text";
 import { ReservationType } from "../../../core/utils/types/reservation-type";
@@ -22,6 +23,29 @@ export const sortByNumberInQueue = (
   return [...reservations].sort(
     (a, b) => (a.numberInQueue || 0) - (b.numberInQueue || 0)
   );
+};
+
+/**
+ * Sorts reservations alphanumerically by pickup number (0-9, then a-z).
+ * Sorts by pickup deadline first, then by pickup number.
+ * This ensures items with the same pickup number (or no pickup number) maintain deadline ordering.
+ */
+export const sortByPickupNumber = (list: ReservationType[]) => {
+  // First sort by pickup deadline (oldest first)
+  const sortedByDeadline = sortByOldestPickupDeadline([
+    ...list
+  ]) as ReservationType[];
+
+  // Then sort by pickup number
+  return sortedByDeadline.sort((a, b) => {
+    const pickupA = a.pickupNumber || "";
+    const pickupB = b.pickupNumber || "";
+
+    return pickupA.localeCompare(pickupB, undefined, {
+      numeric: true,
+      sensitivity: "base"
+    });
+  });
 };
 
 export const getReadyForPickup = (list: ReservationType[]) => {
@@ -95,10 +119,14 @@ if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest;
 
   describe("getReservationStatusInfoLabel", () => {
+    const testDate = "12-12-2012 12:12";
+    // Digital materials use UTC time formatting
+    const expectedUtcDate = formatDateTimeUtc(testDate);
+
     it("Should deliver correct label for a DIGITAL material when providing a branch", () => {
       const output = getReservationStatusInfoLabel({
         pickupBranch: "SOME-BRANCH",
-        date: "12-12-2012 12:12",
+        date: testDate,
         isDigital: true,
         t: (key, options) =>
           JSON.stringify({
@@ -108,13 +136,13 @@ if (import.meta.vitest) {
       });
 
       expect(output).toBe(
-        `{"key":"reservationPickUpLatestText","options":{"placeholders":{"@date":"12-12-2012 12:12"}}}`
+        `{"key":"reservationPickUpLatestText","options":{"placeholders":{"@date":"${expectedUtcDate}"}}}`
       );
     });
     it("Should deliver correct label for a DIGITAL material when NOT providing a branch", () => {
       const output = getReservationStatusInfoLabel({
         pickupBranch: null,
-        date: "12-12-2012 12:12",
+        date: testDate,
         isDigital: true,
         t: (key, options) =>
           JSON.stringify({
@@ -124,7 +152,7 @@ if (import.meta.vitest) {
       });
 
       expect(output).toBe(
-        `{"key":"reservationListLoanBeforeText","options":{"placeholders":{"@date":"12-12-2012 12:12"}}}`
+        `{"key":"reservationListLoanBeforeText","options":{"placeholders":{"@date":"${expectedUtcDate}"}}}`
       );
     });
     it("Should deliver correct label for a NON DIGITAL material when providing a branch", () => {
@@ -208,22 +236,162 @@ if (import.meta.vitest) {
   });
 
   describe("getReadyForPickup", () => {
-    // Test to check if the function correctly filters out the reservations that are "readyForPickup"
-    it("should return the list of reservations that are ready for pickup", () => {
-      // Mock data for testing
+    it("should filter and return only reservations that are ready for pickup", () => {
       const mockList: ReservationType[] = [
-        { state: "readyForPickup" },
-        { state: "notReady" },
-        { state: "readyForPickup" }
+        { state: "readyForPickup", pickupNumber: "123" },
+        { state: "notReady", pickupNumber: "456" },
+        { state: "readyForPickup", pickupNumber: "789" }
       ];
 
       const result = getReadyForPickup(mockList);
 
-      // We expect the result to be a list of reservations that are "readyForPickup"
       expect(result).toEqual([
-        { state: "readyForPickup" },
-        { state: "readyForPickup" }
+        { state: "readyForPickup", pickupNumber: "123" },
+        { state: "readyForPickup", pickupNumber: "789" }
       ]);
+    });
+  });
+
+  describe("sortByPickupNumber", () => {
+    it("should sort reservations by pickup number alphanumerically", () => {
+      const mockList: ReservationType[] = [
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 20",
+          pickupDeadline: "2023-02-01"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 3",
+          pickupDeadline: "2023-02-02"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 100",
+          pickupDeadline: "2023-02-03"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 5",
+          pickupDeadline: "2023-02-04"
+        }
+      ];
+
+      const result = sortByPickupNumber(mockList);
+
+      expect(result).toEqual([
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 3",
+          pickupDeadline: "2023-02-02"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 5",
+          pickupDeadline: "2023-02-04"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 20",
+          pickupDeadline: "2023-02-01"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 100",
+          pickupDeadline: "2023-02-03"
+        }
+      ]);
+    });
+
+    it("should handle mixed alphanumeric pickup numbers correctly", () => {
+      const mockList: ReservationType[] = [
+        { state: "readyForPickup", pickupNumber: "B10" },
+        { state: "readyForPickup", pickupNumber: "A2" },
+        { state: "readyForPickup", pickupNumber: "10" },
+        { state: "readyForPickup", pickupNumber: "2" },
+        { state: "readyForPickup", pickupNumber: "A10" }
+      ];
+
+      const result = sortByPickupNumber(mockList);
+
+      expect(result).toEqual([
+        { state: "readyForPickup", pickupNumber: "2" },
+        { state: "readyForPickup", pickupNumber: "10" },
+        { state: "readyForPickup", pickupNumber: "A2" },
+        { state: "readyForPickup", pickupNumber: "A10" },
+        { state: "readyForPickup", pickupNumber: "B10" }
+      ]);
+    });
+
+    it("should handle empty or missing pickup numbers and sort by date", () => {
+      const mockList: ReservationType[] = [
+        {
+          state: "readyForPickup",
+          pickupNumber: "5",
+          pickupDeadline: "2023-02-05"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "",
+          pickupDeadline: "2023-02-03"
+        },
+        { state: "readyForPickup", pickupDeadline: "2023-02-01" },
+        {
+          state: "readyForPickup",
+          pickupNumber: "3",
+          pickupDeadline: "2023-02-04"
+        }
+      ];
+
+      const result = sortByPickupNumber(mockList);
+
+      // Empty and undefined should come first (sorted by date), then sorted numbers
+      expect(result[0].pickupNumber).toBeUndefined();
+      expect(result[0].pickupDeadline).toBe("2023-02-01");
+      expect(result[1].pickupNumber).toBe("");
+      expect(result[1].pickupDeadline).toBe("2023-02-03");
+      expect(result[2].pickupNumber).toBe("3");
+      expect(result[3].pickupNumber).toBe("5");
+    });
+
+    it("should sort by pickup deadline when pickup numbers are the same", () => {
+      const mockList: ReservationType[] = [
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 10",
+          pickupDeadline: "2023-02-05"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 10",
+          pickupDeadline: "2023-02-03"
+        },
+        {
+          state: "readyForPickup",
+          pickupNumber: "Reserveringshylde 10",
+          pickupDeadline: "2023-02-04"
+        }
+      ];
+
+      const result = sortByPickupNumber(mockList);
+
+      // Same pickup number, so should sort by deadline
+      expect(result[0].pickupDeadline).toBe("2023-02-03");
+      expect(result[1].pickupDeadline).toBe("2023-02-04");
+      expect(result[2].pickupDeadline).toBe("2023-02-05");
+    });
+
+    it("should not mutate the original array", () => {
+      const mockList: ReservationType[] = [
+        { state: "readyForPickup", pickupNumber: "B" },
+        { state: "readyForPickup", pickupNumber: "A" }
+      ];
+
+      const originalOrder = [...mockList];
+      sortByPickupNumber(mockList);
+
+      // Original array should remain unchanged
+      expect(mockList).toEqual(originalOrder);
     });
   });
 }

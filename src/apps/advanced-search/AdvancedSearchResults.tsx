@@ -4,7 +4,7 @@ import { useCopyToClipboard, usePrevious } from "react-use";
 import CheckIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/collection/Check.svg";
 import clsx from "clsx";
 import { useText } from "../../core/utils/text";
-import useGetCleanBranches from "../../core/utils/branches";
+import useGetSearchBranches from "../../core/utils/branches";
 import { Work } from "../../core/utils/types/entities";
 import {
   ComplexSearchWithPaginationQuery,
@@ -12,7 +12,7 @@ import {
   useComplexSearchWithPaginationQuery
 } from "../../core/dbc-gateway/generated/graphql";
 import usePager from "../../components/result-pager/use-pager";
-import SearchResultList from "../../components/card-item-list/SearchResultList";
+import SearchResultList from "../search-result/SearchResultList";
 import SearchResultZeroHits from "../search-result/search-result-zero-hits";
 import { currentLocationWithParametersUrl } from "../../core/utils/helpers/url";
 import { LocationFilter } from "./LocationFilter";
@@ -22,6 +22,7 @@ import {
   AdvancedSortMapStrings,
   FirstAccessionOperatorFilter
 } from "./types";
+import ContentListPage from "../../components/content-list/ContentListPage";
 
 interface AdvancedSearchResultProps {
   q: string;
@@ -58,7 +59,7 @@ const AdvancedSearchResult: React.FC<AdvancedSearchResultProps> = ({
 }) => {
   const t = useText();
   const [copiedLinkToSearch, setCopiedLinkToSearch] = useState<boolean>(false);
-  const cleanBranches = useGetCleanBranches();
+  const cleanBranches = useGetSearchBranches();
   const [resultItems, setResultItems] = useState<Work[]>([]);
   const [hitcount, setHitCount] = useState<number>(0);
   const { PagerComponent, page, resetPage } = usePager({
@@ -176,22 +177,25 @@ const AdvancedSearchResult: React.FC<AdvancedSearchResultProps> = ({
   return (
     <>
       {!showContentOnly && <div className="advanced-search__divider" />}
-      <section className="content-list-page">
-        <h2
-          className="content-list-page__heading"
-          /* ID is used to scroll to the results upon hitting the search button. */
-          id="advanced-search-result"
-          aria-live="polite"
-        >
-          {isLoading && <span>{t("loadingResultsText")}</span>}
-          {shouldShowResultHeadline && (
-            <span>
-              {t("showingMaterialsText", {
-                placeholders: { "@hitcount": hitcount }
-              })}
-            </span>
-          )}
-        </h2>
+
+      <ContentListPage
+        title={
+          <>
+            {isLoading && <span>{t("loadingResultsText")}</span>}
+            {shouldShowResultHeadline && (
+              <span>
+                {t("searchShowingMaterialsText", {
+                  placeholders: { "@hitcount": hitcount }
+                })}
+              </span>
+            )}
+          </>
+        }
+        headingLevel="h2"
+        // ID is used to scroll to the results upon hitting the search button.
+        headingId="advanced-search-result"
+        headingAriaLive="polite"
+      >
         {!showContentOnly && (
           <div className="content-list-page__subheading">
             <button
@@ -228,7 +232,7 @@ const AdvancedSearchResult: React.FC<AdvancedSearchResultProps> = ({
           </>
         )}
         {!isLoading && hitcount === 0 && <SearchResultZeroHits />}
-      </section>
+      </ContentListPage>
     </>
   );
 };

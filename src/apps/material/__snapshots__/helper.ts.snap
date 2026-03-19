@@ -29,7 +29,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         {
           "__typename": "Person",
           "display": "Isaac Asimov",
-          "nameSort": "Asimov, Isaac",
         },
       ],
       "dateFirstEdition": null,
@@ -49,6 +48,7 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "hostPublication": null,
       "identifiers": [
         {
+          "type": "ISBN",
           "value": "0-19-423069-4",
         },
       ],
@@ -61,7 +61,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         ],
         "notes": [],
       },
-      "manifestationParts": null,
       "materialTypes": [
         {
           "materialTypeSpecific": {
@@ -85,6 +84,9 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "source": [
         "Bibliotekskatalog",
       ],
+      "subjects": {
+        "all": [],
+      },
       "titles": {
         "main": [
           "I, Robot (Oxford bookworms library, ved Rowena Akinyemi)",
@@ -128,7 +130,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         {
           "__typename": "Person",
           "display": "Isaac Asimov",
-          "nameSort": "Asimov, Isaac",
         },
       ],
       "dateFirstEdition": null,
@@ -146,6 +147,7 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "hostPublication": null,
       "identifiers": [
         {
+          "type": "ISBN",
           "value": "9780553900330",
         },
       ],
@@ -158,7 +160,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         ],
         "notes": [],
       },
-      "manifestationParts": null,
       "materialTypes": [
         {
           "materialTypeSpecific": {
@@ -184,6 +185,9 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "source": [
         "eReolen Global",
       ],
+      "subjects": {
+        "all": [],
+      },
       "titles": {
         "main": [
           "I, Robot",
@@ -225,7 +229,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         {
           "__typename": "Person",
           "display": "Isaac Asimov",
-          "nameSort": "Asimov, Isaac",
         },
         {
           "__typename": "Person",
@@ -247,6 +250,7 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "hostPublication": null,
       "identifiers": [
         {
+          "type": "ISBN",
           "value": "9780739346273",
         },
       ],
@@ -259,7 +263,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         ],
         "notes": [],
       },
-      "manifestationParts": null,
       "materialTypes": [
         {
           "materialTypeSpecific": {
@@ -287,6 +290,9 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "source": [
         "eReolen Global",
       ],
+      "subjects": {
+        "all": [],
+      },
       "titles": {
         "main": [
           "I, Robot",
@@ -323,7 +329,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         {
           "__typename": "Person",
           "display": "Isaac Asimov",
-          "nameSort": "Asimov, Isaac",
         },
         {
           "__typename": "Person",
@@ -350,6 +355,7 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "hostPublication": null,
       "identifiers": [
         {
+          "type": "ISBN",
           "value": "9780230026810",
         },
         {
@@ -365,7 +371,6 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
         ],
         "notes": [],
       },
-      "manifestationParts": null,
       "materialTypes": [
         {
           "materialTypeSpecific": {
@@ -401,6 +406,9 @@ exports[`divideManifestationsByMaterialType > should divide manifestations by ma
       "source": [
         "Bibliotekskatalog",
       ],
+      "subjects": {
+        "all": [],
+      },
       "titles": {
         "main": [
           "I, Robot (Ved Tricia Reilly)",

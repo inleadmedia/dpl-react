@@ -15,11 +15,11 @@ import {
   removeQueryParametersFromUrl,
   setQueryParametersInUrl
 } from "../../core/utils/helpers/url";
+
 import { FacetFieldEnum, SearchSortingOption } from "../../core/dbc-gateway/generated/graphql";
-import { mapFacetToFilter } from "./helper";
+import { getAllFilterPathsAsString, mapFacetToFilter } from "./helper";
 import { useEventStatistics } from "../../core/statistics/useStatistics";
 import { statistics } from "../../core/statistics/statistics";
-import { getAllFilterPathsAsString } from "../../components/facet-browser/helper";
 
 const useFilterHandler = () => {
   const { track } = useEventStatistics();

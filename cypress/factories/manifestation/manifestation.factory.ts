@@ -4,7 +4,8 @@ import {
   WorkMediumFragment,
   FictionNonfictionCodeEnum,
   AccessTypeCodeEnum,
-  ChildOrAdultCodeEnum
+  ChildOrAdultCodeEnum,
+  IdentifierTypeEnum
 } from "../../../src/core/dbc-gateway/generated/graphql";
 
 // Use the fragment-narrowed type to match exactly what WorkMedium expects
@@ -16,6 +17,9 @@ export const manifestationFactory = Factory.define<ManifestationForWorkMedium>(
     pid: "870970-basis:52557240",
     genreAndForm: ["romaner", "slægtsromaner"],
     source: ["Bibliotekskatalog"],
+    subjects: {
+      all: []
+    },
     languages: {
       main: [
         {
@@ -43,13 +47,13 @@ export const manifestationFactory = Factory.define<ManifestationForWorkMedium>(
     creators: [
       {
         __typename: "Person" as const,
-        display: "Lucinda Riley",
-        nameSort: "riley lucinda"
+        display: "Lucinda Riley"
       }
     ],
     publisher: ["Cicero"],
     identifiers: [
       {
+        type: IdentifierTypeEnum.Isbn,
         value: "9788763844116"
       }
     ],
@@ -91,7 +95,6 @@ export const manifestationFactory = Factory.define<ManifestationForWorkMedium>(
       numberOfPages: 523
     },
     hostPublication: null,
-    manifestationParts: null,
     accessTypes: [
       {
         code: AccessTypeCodeEnum.Physical
@@ -103,7 +106,10 @@ export const manifestationFactory = Factory.define<ManifestationForWorkMedium>(
         loanIsPossible: true
       }
     ],
-    shelfmark: null,
+    shelfmark: {
+      shelfmark: "shelfmark",
+      postfix: "postfix"
+    },
     workYear: null,
     catalogueCodes: {
       nationalBibliography: ["DBF201835"],

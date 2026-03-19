@@ -8,7 +8,10 @@ import DisclosureControllable from "../../components/Disclosures/DisclosureContr
 import DisclosureSummary from "../../components/Disclosures/DisclosureSummary";
 import DigitalModal from "../../components/material/digital-modal/DigitalModal";
 import InfomediaModal from "../../components/material/infomedia/InfomediaModal";
-import { hasCorrectAccess } from "../../components/material/material-buttons/helper";
+import {
+  hasCorrectAccess,
+  hasCorrectAccessType
+} from "../../components/material/material-buttons/helper";
 import MaterialAdditionalDescription from "../../components/material/MaterialAdditionalDescription";
 import MaterialDescription from "../../components/material/MaterialDescription";
 import MaterialDetailsList from "../../components/material/MaterialDetailsList";
@@ -572,8 +575,14 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
           isGlobalMaterial={workType === "global"}
           isAvailable={isAvailable}
         >
-          {manifestations.map((manifestation) => (
-            <>
+          {manifestations.map((manifestation) =>
+            hasCorrectAccessType(AccessTypeCodeEnum.Online, [manifestation]) ? (
+              <OnlineInternalModal
+                key={manifestation.pid}
+                workId={wid}
+                selectedManifestations={[manifestation]}
+              />
+            ) : (
               <ReservationFindOnShelfModals
                 key={manifestation.pid}
                 patron={userData?.patron}
@@ -582,12 +591,8 @@ const Material: React.FC<MaterialProps> = ({ wid }) => {
                 work={work}
                 setSelectedPeriodical={setSelectedPeriodical}
               />
-              <OnlineInternalModal
-                workId={wid}
-                selectedManifestations={[manifestation]}
-              />
-            </>
-          ))}
+            )
+          )}
           {infomediaIds.length > 0 && !isAnonymous() && !isUserBlocked && (
             <InfomediaModal
               selectedManifestations={selectedManifestations}

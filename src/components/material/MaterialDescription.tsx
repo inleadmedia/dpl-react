@@ -2,14 +2,17 @@ import React from "react";
 import {
   getUniqueMovies,
   getDbcVerifiedSubjectsFirst,
+  getLocalAgencySubjects,
   materialContainsDanish
 } from "../../apps/material/helper";
 import {
+  constructAdvancedSearchSubjectUrl,
   constructDK5SearchUrl,
   constructMaterialUrl,
   constructSearchUrl,
   constructSubjectSearchUrl
 } from "../../core/utils/helpers/url";
+import { useConfig } from "../../core/utils/config";
 import { useText } from "../../core/utils/text";
 import { Work } from "../../core/utils/types/entities";
 import { Pid, WorkId } from "../../core/utils/types/ids";
@@ -17,6 +20,7 @@ import { useUrls } from "../../core/utils/url";
 import HorizontalTermLine from "../horizontal-term-line/HorizontalTermLine";
 import { materialIsFiction } from "../../core/utils/helpers/general";
 import SeriesList from "../card-item-list/card-list-item/series-list";
+import MaterialContents from "./MaterialContents/MaterialContents";
 
 export interface MaterialDescriptionProps {
   pid: Pid;
@@ -27,9 +31,12 @@ export interface MaterialDescriptionProps {
 const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customFields }) => {
   const t = useText();
   const u = useUrls();
+  const config = useConfig();
   const searchUrl = u("searchUrl");
+  const advancedSearchUrl = u("advancedSearchUrl");
   const materialUrl = u("materialUrl");
-  const { fictionNonfiction, series, subjects, relations, dk5MainEntry } = work;
+
+  const { fictionNonfiction, series, subjects, relations, dk5MainEntry, manifestations } = work;
   let descriptionTermFields = React.useMemo(() => {
     return Object.values(customFields || {}).map((fieldData: any) => {
       if (fieldData.label === "body")
@@ -57,6 +64,10 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
     return (overrideData.getter(work) || []).filter(Boolean).join("\n");
   }, [customFields, work]);
 
+  const localSubjectsAgencyIds = config("localSubjectsAgencyIdsConfig", {
+    transformer: "stringToArray"
+  });
+
   const isFiction = materialIsFiction(work);
 
   // Show DK5 for all non-fiction works OR fiction works in non-Danish languages
@@ -75,10 +86,22 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
       })) ??
     [];
 
-  const subjectsList = getDbcVerifiedSubjectsFirst(subjects).map((item) => ({
+  const dbcSubjects = getDbcVerifiedSubjectsFirst(subjects).map((item) => ({
     url: constructSubjectSearchUrl(searchUrl, item),
     term: item
   }));
+
+  const localSubjects = getLocalAgencySubjects(
+    manifestations.all,
+    localSubjectsAgencyIds
+  )
+    .filter((item) => !dbcSubjects.some((dbc) => dbc.term === item))
+    .map((item) => ({
+      url: constructAdvancedSearchSubjectUrl(advancedSearchUrl, item),
+      term: item
+    }));
+
+  const subjectsList = [...localSubjects, ...dbcSubjects];
 
   const filmAdaptationsList = getUniqueMovies(relations).map((item) => {
     return {
@@ -146,19 +169,24 @@ const MaterialDescription: React.FC<MaterialDescriptionProps> = ({ work, customF
   });
 
   descriptionTermFields = Object.values(knownFileds).concat(descriptionTermFields).filter(Boolean);
+  const bestRepresentationContents =
+    work.manifestations.bestRepresentation?.contents;
 
   return (
     <section className="material-description" data-cy="material-description">
       <>
-        {work.abstract && (
+        {work.abstract && work.abstract[0] && (
           <>
-            <h2 className="text-header-h4 pb-24">
+            <h2 className="material-description__heading">
               {t("descriptionHeadlineText")}
             </h2>
-            <p className="text-body-large material-description__content">
+            <p className="material-description__content">
               { descriptionOverride === null ? work.abstract[0] : descriptionOverride }
             </p>
           </>
+        )}
+        {bestRepresentationContents && (
+          <MaterialContents contents={bestRepresentationContents} />
         )}
         <div className="material-description__links mt-32">
           <SeriesList

@@ -46,6 +46,11 @@ fragment ManifestationsSimpleFields on Manifestation {
   pid
   genreAndForm
   source
+  subjects {
+    all {
+      display
+    }
+  }
   ...WithLanguages
   titles {
     main
@@ -62,11 +67,11 @@ fragment ManifestationsSimpleFields on Manifestation {
   }
   creators {
     display
-    nameSort
     __typename
   }
   publisher
   identifiers {
+    type
     value
   }
   contributors {
@@ -80,9 +85,38 @@ fragment ManifestationsSimpleFields on Manifestation {
   contents {
     heading
     type
+    raw
     entries {
       title {
         display
+      }
+      creators {
+        persons {
+          display
+          firstName
+          lastName
+          attributeToName
+        }
+        corporations {
+          display
+          main
+        }
+      }
+      contributors
+      playingTime
+      sublevel {
+        title {
+          display
+        }
+        contributors
+        playingTime
+        sublevel {
+          title {
+            display
+          }
+          contributors
+          playingTime
+        }
       }
     }
   }
@@ -161,6 +195,7 @@ fragment ManifestationsSimpleFields on Manifestation {
 
 fragment ManifestationReviewFields on Manifestation {
   pid
+  recordCreationDate
   creators {
     display
   }
@@ -242,12 +277,6 @@ fragment WorkSmall on Work {
   titles {
     full
     original
-    tvSeries {
-      title
-      season {
-        display
-      }
-    }
   }
   abstract
   creators {
@@ -269,12 +298,12 @@ fragment WorkSmall on Work {
 fragment WorkMedium on Work {
   ...WorkSmall
   materialTypes {
+    materialTypeGeneral {
+      code
+    }
     materialTypeSpecific {
       display
     }
-  }
-  creators {
-    nameSort
   }
   mainLanguages {
     display

@@ -15,21 +15,12 @@ export interface FindOnShelfManifestationListItemProps {
   title: string;
   publicationYear: string | null;
   numberAvailable: number;
-  author: string;
   holdingData?: HoldingDataInterface;
 }
 
 const FindOnShelfManifestationListItem: FC<
   FindOnShelfManifestationListItemProps
-> = ({
-  shelfmark,
-  locationArray,
-  title,
-  publicationYear,
-  numberAvailable,
-  author,
-  holdingData
-}) => {
+> = ({ shelfmark, locationArray, title, publicationYear, numberAvailable, holdingData }) => {
   const t = useText();
   const [wayfinderLink, setWayfinderLink] = useState<
     WayfinderReaponse | Record<string, never>
@@ -67,15 +58,6 @@ const FindOnShelfManifestationListItem: FC<
       { placementText.length !== 0 ? <span className="find-on-shelf__item-location-delimiter"> · </span> : null }
       <span className="find-on-shelf__item-location-shefmark">
         {shelfmark.shelfmark} {shelfmark.postfix}
-      </span>
-    </>);
-  }
-
-  if (placementText.length !== 0 && author) {
-    placementText.push(<>
-      <span className="find-on-shelf__item-location-delimiter"> · </span>
-      <span className="find-on-shelf__item-location-author">
-        {author}
       </span>
     </>);
   }

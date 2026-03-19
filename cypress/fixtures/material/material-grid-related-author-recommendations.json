@@ -136,13 +136,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763861649"
                   }
                 ],
@@ -178,7 +178,6 @@
                   "numberOfPages": 727
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -234,13 +233,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Gyldendal"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788702343755"
                   }
                 ],
@@ -293,7 +292,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -344,13 +342,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Gyldendal"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788702343755"
                 }
               ],
@@ -403,7 +401,6 @@
                 "numberOfPages": null
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -453,13 +450,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763861649"
                 }
               ],
@@ -495,7 +492,6 @@
                 "numberOfPages": 727
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -663,18 +659,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   },
                   {
                     "display": "Harry Whittaker",
-                    "nameSort": "whittaker harry",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763865708"
                   }
                 ],
@@ -710,7 +705,6 @@
                   "numberOfPages": 656
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -769,18 +763,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   },
                   {
                     "display": "Harry Whittaker",
-                    "nameSort": "whittaker harry",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Gyldendal"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788702411799"
                   }
                 ],
@@ -833,7 +826,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -888,18 +880,17 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 },
                 {
                   "display": "Harry Whittaker",
-                  "nameSort": "whittaker harry",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Gyldendal"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788702411799"
                 }
               ],
@@ -952,7 +943,6 @@
                 "numberOfPages": null
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -1006,18 +996,17 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 },
                 {
                   "display": "Harry Whittaker",
-                  "nameSort": "whittaker harry",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763865708"
                 }
               ],
@@ -1053,7 +1042,6 @@
                 "numberOfPages": 656
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -1212,16 +1200,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763844123"
                   },
                   {
+                    "type": "ISBN",
                     "value": "9788763844123"
                   }
                 ],
@@ -1254,7 +1243,6 @@
                 "notes": [],
                 "physicalDescription": null,
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "ONLINE"
@@ -1311,13 +1299,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763849630"
                   }
                 ],
@@ -1353,7 +1341,6 @@
                   "numberOfPages": 523
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -1403,13 +1390,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763844116"
                   }
                 ],
@@ -1445,7 +1432,6 @@
                   "numberOfPages": 523
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -1495,13 +1481,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Rosinante"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763850636"
                   }
                 ],
@@ -1554,7 +1540,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -1605,13 +1590,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763849630"
                 }
               ],
@@ -1647,7 +1632,6 @@
                 "numberOfPages": 523
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -1697,13 +1681,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763849630"
                 }
               ],
@@ -1739,7 +1723,6 @@
                 "numberOfPages": 523
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -1893,16 +1876,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763854474"
                   },
                   {
+                    "type": "ISBN",
                     "value": "9788763854474"
                   }
                 ],
@@ -1939,7 +1923,6 @@
                 ],
                 "physicalDescription": null,
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "ONLINE"
@@ -1991,13 +1974,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763854467"
                   }
                 ],
@@ -2037,7 +2020,6 @@
                   "numberOfPages": 587
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -2087,13 +2069,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero", "AV Forlaget Den Grimme Ælling"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763899796"
                   }
                 ],
@@ -2149,7 +2131,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -2199,13 +2180,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763862653"
                   }
                 ],
@@ -2245,7 +2226,6 @@
                   "numberOfPages": 587
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -2296,13 +2276,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763862653"
                 }
               ],
@@ -2342,7 +2322,6 @@
                 "numberOfPages": 587
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -2392,13 +2371,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763862653"
                 }
               ],
@@ -2438,7 +2417,6 @@
                 "numberOfPages": 587
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -2592,13 +2570,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Gyldendal"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763864695"
                   }
                 ],
@@ -2654,7 +2632,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -2704,16 +2681,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763864671"
                   },
                   {
+                    "type": "ISBN",
                     "value": "9788763864671"
                   }
                 ],
@@ -2750,7 +2728,6 @@
                 ],
                 "physicalDescription": null,
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "ONLINE"
@@ -2807,13 +2784,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763861182"
                   }
                 ],
@@ -2853,7 +2830,6 @@
                   "numberOfPages": 757
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -2904,13 +2880,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Gyldendal"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763864695"
                 }
               ],
@@ -2966,7 +2942,6 @@
                 "numberOfPages": null
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -3016,13 +2991,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763861182"
                 }
               ],
@@ -3062,7 +3037,6 @@
                 "numberOfPages": 757
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -3216,13 +3190,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero", "AV Forlaget Den Grimme Ælling"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763897174"
                   }
                 ],
@@ -3278,7 +3252,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -3328,16 +3301,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763859059"
                   },
                   {
+                    "type": "ISBN",
                     "value": "9788763859059"
                   }
                 ],
@@ -3374,7 +3348,6 @@
                 ],
                 "physicalDescription": null,
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "ONLINE"
@@ -3426,13 +3399,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763855099"
                   }
                 ],
@@ -3472,7 +3445,6 @@
                   "numberOfPages": 636
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -3523,13 +3495,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero", "AV Forlaget Den Grimme Ælling"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763897174"
                 }
               ],
@@ -3585,7 +3557,6 @@
                 "numberOfPages": null
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -3635,13 +3606,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763855099"
                 }
               ],
@@ -3681,7 +3652,6 @@
                 "numberOfPages": 636
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -3835,13 +3805,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763899628"
                   }
                 ],
@@ -3897,7 +3867,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -3947,16 +3916,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763844147"
                   },
                   {
+                    "type": "ISBN",
                     "value": "9788763844147"
                   }
                 ],
@@ -3993,7 +3963,6 @@
                 ],
                 "physicalDescription": null,
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "ONLINE"
@@ -4050,13 +4019,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763844130"
                   }
                 ],
@@ -4096,7 +4065,6 @@
                   "numberOfPages": 581
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -4147,13 +4115,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763899628"
                 }
               ],
@@ -4209,7 +4177,6 @@
                 "numberOfPages": null
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -4259,13 +4226,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763844130"
                 }
               ],
@@ -4305,7 +4272,6 @@
                 "numberOfPages": 581
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -4459,16 +4425,17 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763852470"
                   },
                   {
+                    "type": "ISBN",
                     "value": "9788763852470"
                   }
                 ],
@@ -4505,7 +4472,6 @@
                 ],
                 "physicalDescription": null,
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "ONLINE"
@@ -4562,13 +4528,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero", "AV Forlaget Den Grimme Ælling"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763899390"
                   }
                 ],
@@ -4624,7 +4590,6 @@
                   "numberOfPages": null
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -4674,13 +4639,13 @@
                 "creators": [
                   {
                     "display": "Lucinda Riley",
-                    "nameSort": "riley lucinda",
                     "__typename": "Person"
                   }
                 ],
                 "publisher": ["Cicero"],
                 "identifiers": [
                   {
+                    "type": "ISBN",
                     "value": "9788763850209"
                   }
                 ],
@@ -4720,7 +4685,6 @@
                   "numberOfPages": 567
                 },
                 "hostPublication": null,
-                "manifestationParts": null,
                 "accessTypes": [
                   {
                     "code": "PHYSICAL"
@@ -4771,13 +4735,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero", "AV Forlaget Den Grimme Ælling"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763899390"
                 }
               ],
@@ -4833,7 +4797,6 @@
                 "numberOfPages": null
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"
@@ -4883,13 +4846,13 @@
               "creators": [
                 {
                   "display": "Lucinda Riley",
-                  "nameSort": "riley lucinda",
                   "__typename": "Person"
                 }
               ],
               "publisher": ["Cicero"],
               "identifiers": [
                 {
+                  "type": "ISBN",
                   "value": "9788763850209"
                 }
               ],
@@ -4929,7 +4892,6 @@
                 "numberOfPages": 567
               },
               "hostPublication": null,
-              "manifestationParts": null,
               "accessTypes": [
                 {
                   "code": "PHYSICAL"

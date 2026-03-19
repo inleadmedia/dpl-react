@@ -16,7 +16,7 @@ import fetchDigitalMaterial from "../../../loan-list/materials/utils/digital-mat
 import PhysicalListDetails from "./physical-list-details";
 import { useConfig } from "../../../../core/utils/config";
 import MaterialButtonLoading from "../../../../components/material/material-buttons/generic/MaterialButtonLoading";
-import useGetWorkUrlFromPublizonIdentifier from "../../../../core/utils/useGetWorkUrlFromPublizonIdentifier";
+import useWorkUrl from "../../../../core/utils/useWorkUrl";
 
 export interface ReservationDetailsProps {
   reservation: ReservationType;
@@ -43,8 +43,11 @@ const ReservationDetails: FC<ReservationDetailsProps & MaterialProps> = ({
     (state === readyForPickupState && allowRemoveReadyReservations) ||
     state !== readyForPickupState;
 
-  const { workUrl, isLoading } =
-    useGetWorkUrlFromPublizonIdentifier(identifier);
+  const { workUrl, isLoading } = useWorkUrl({
+    identifier,
+    pid,
+    materialType
+  });
 
   return (
     <div className="modal-details__container">
@@ -60,6 +63,7 @@ const ReservationDetails: FC<ReservationDetailsProps & MaterialProps> = ({
             materialType={materialType}
             series={material.series}
             work={material}
+            workUrl={workUrl}
           >
             {state === readyForPickupState && (
               <div className="status-label status-label--info">

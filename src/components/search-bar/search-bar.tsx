@@ -27,6 +27,7 @@ export interface SearchBarProps {
   onBlur?: () => void;
   initialBranchId?: string;
   onBranchChange?: (branchId: string) => void;
+  advancedSearchUrl: URL;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -41,7 +42,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   redirectUrl,
   onBlur,
   initialBranchId,
-  onBranchChange
+  onBranchChange,
+  advancedSearchUrl
 }) => {
   const t = useText();
   const handleDropdownMenu = () => {
@@ -69,102 +71,107 @@ const SearchBar: React.FC<SearchBarProps> = ({
   }, [document.querySelector("[data-branches-config]")]);
 
   return (
-    <div className="header__menu-search">
-      <label
-        className="hide-visually"
-        // TODO: Explicitly define prop types for better clarity
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...getLabelProps()}
-      >
-        {t("searchHeaderInputLabelText")}
-      </label>
-      <input
-        required
-        pattern=".*\S+.*"
-        title={t("searchNoValidCharactersErrorText")}
-        name="q"
-        className="header__menu-search-input text-body-medium-regular"
-        data-cy={dataCy}
-        type="text"
-        placeholder={t("inputPlaceholderText")}
-        aria-label={t("inputPlaceholderText")}
-        onKeyUp={(e) => {
-          // Only redirect if there is no selected item in autosuggest + query has length above 0 characters
-          if (e.key === "Enter" && qWithoutQuery === q && !!q.length) {
-            redirectTo(redirectUrl);
-          }
-        }}
-        // TODO: Explicitly define prop types for better clarity
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...getInputProps({
-          onBlur: onBlur,
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            setQWithoutQuery(e.target.value);
-          }
-        })}
-      />
-      {/* eslint-enable react/jsx-props-no-spreading */}
-      {
-        branches.length > 0
-          ?
-            <select
-              className="header__menu-search-branch-select"
-              defaultValue={ initialBranchId || "" }
-              onChange={ (event) => {
-                if (onBranchChange)
-                  onBranchChange(event?.target?.value || "");
-              }}
-            >
-              <option value="">{ t("searchInAllBranchesText") }</option>
-              { branches.map((branch: any) => {
-                return <option key={ branch.branchId } value={ branch.branchId }>{ branch.title }</option>
-              }) }
-            </select>
-          : null
-      }
-      <input
-        type="image"
-        src={searchIcon}
-        alt={t("searchHeaderIconAltText")}
-        className="header__menu-search-icon"
-        onClick={() => {
-          // Only redirect if there is no selected item in autosuggest + query has length above 0 characters
-          if (qWithoutQuery === q && !!q.length) {
-            redirectTo(redirectUrl);
-          }
-        }}
-        onKeyUp={(e) => {
-          // Only redirect if there is no selected item in autosuggest + query has length above 0 characters
-          if (e.key === "Enter" && qWithoutQuery === q && !!q.length) {
-            redirectTo(redirectUrl);
-          }
-        }}
-      />
-      <input
-        type="image"
-        src={expandIcon}
-        alt={t("searchHeaderDropdownText")}
-        className={clsx("header__menu-dropdown-icon", {
-          "header__menu-dropdown-icon--expanded": isHeaderDropdownOpen
-        })}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          handleDropdownMenu();
-        }}
-        onKeyUp={(e) => {
-          if (e.key === "Enter" || e.key === "ArrowDown") {
+    <>
+      <form className="header__menu-search">
+        <label
+          className="hide-visually"
+          // TODO: Explicitly define prop types for better clarity
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...getLabelProps()}
+        >
+          {t("searchHeaderInputLabelText")}
+        </label>
+        <input
+          required
+          pattern=".*\S+.*"
+          title={t("searchNoValidCharactersErrorText")}
+          name="q"
+          className="header__menu-search-input text-body-medium-regular"
+          data-cy={dataCy}
+          type="text"
+          placeholder={t("inputPlaceholderText")}
+          aria-label={t("inputPlaceholderText")}
+          onKeyUp={(e) => {
+            // Only redirect if there is no selected item in autosuggest + query has length above 0 characters
+            if (e.key === "Enter" && qWithoutQuery === q && !!q.length) {
+              redirectTo(redirectUrl);
+            }
+          }}
+          // TODO: Explicitly define prop types for better clarity
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...getInputProps({
+            onBlur: onBlur,
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+              setQWithoutQuery(e.target.value);
+            }
+          })}
+        />
+        {/* eslint-enable react/jsx-props-no-spreading */}
+        {
+          branches.length > 0
+            ?
+              <select
+                className="header__menu-search-branch-select"
+                defaultValue={ initialBranchId || "" }
+                onChange={ (event) => {
+                  if (onBranchChange)
+                    onBranchChange(event?.target?.value || "");
+                }}
+              >
+                <option value="">{ t("searchInAllBranchesText") }</option>
+                { branches.map((branch: any) => {
+                  return <option key={ branch.branchId } value={ branch.branchId }>{ branch.title }</option>
+                }) }
+              </select>
+            : null
+        }
+        <input
+          type="image"
+          src={searchIcon}
+          alt={t("searchHeaderIconAltText")}
+          className="header__menu-search-icon"
+          onClick={() => {
+            // Only redirect if there is no selected item in autosuggest + query has length above 0 characters
+            if (qWithoutQuery === q && !!q.length) {
+              redirectTo(redirectUrl);
+            }
+          }}
+          onKeyUp={(e) => {
+            // Only redirect if there is no selected item in autosuggest + query has length above 0 characters
+            if (e.key === "Enter" && qWithoutQuery === q && !!q.length) {
+              redirectTo(redirectUrl);
+            }
+          }}
+        />
+        <input
+          type="image"
+          src={expandIcon}
+          alt={t("searchHeaderDropdownText")}
+          className={clsx("header__menu-dropdown-icon", {
+            "header__menu-dropdown-icon--expanded": isHeaderDropdownOpen
+          })}
+          onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             handleDropdownMenu();
-          }
-        }}
-        tabIndex={0}
-        aria-label={t("searchHeaderDropdownText")}
-        data-cy="search-header-dropdown-icon"
-        aria-expanded={isHeaderDropdownOpen}
-      />
-    </div>
+          }}
+          onKeyUp={(e) => {
+            if (e.key === "Enter" || e.key === "ArrowDown") {
+              e.preventDefault();
+              e.stopPropagation();
+              handleDropdownMenu();
+            }
+          }}
+          tabIndex={0}
+          aria-label={t("searchHeaderDropdownText")}
+          data-cy="search-header-dropdown-icon"
+          aria-expanded={isHeaderDropdownOpen}
+        />
+      </form>
+      <a className="header__advanced-desktop" href={String(advancedSearchUrl)}>
+        {t("headerDropdownItemAdvancedSearchText")}
+      </a>
+    </>
   );
 };
 

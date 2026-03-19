@@ -3,6 +3,8 @@ import { withConfig } from "../../core/utils/config";
 import { withText } from "../../core/utils/text";
 import { useUrls, withUrls } from "../../core/utils/url";
 import { GlobalEntryTextProps } from "../../core/storybook/globalTextArgs";
+import { DataforsyningenArgs } from "../../core/storybook/dataforsyningenArgs";
+import { BranchAddressSearchArgs } from "../../core/storybook/branchAddressSearchArgs";
 import { isUnregistered } from "../../core/utils/helpers/user";
 import { redirectTo } from "../../core/utils/helpers/url";
 import CreatePatron from "./CreatePatron";
@@ -52,11 +54,25 @@ interface CreatePatronTextProps {
   postRegisterRedirectInfoTopText: string;
   postRegisterRedirectInfoBottomText: string;
   postRegisterRedirectButtonText: string;
+
+  librarySelectEmptyStateText: string;
+  findLibraryDialogTitleText: string;
+  findLibraryDialogSuggestionsListLabelText: string;
+
+  geoLocationErrorNotSupportedText: string;
+  geoLocationErrorPermissionDeniedText: string;
+  geoLocationErrorPositionUnavailableText: string;
+  geoLocationErrorTimeoutText: string;
+  geoLocationErrorDefaultText: string;
+
+  reverseGeocodeErrorDefaultText: string;
 }
 
 export interface CreatePatronProps
   extends CreatePatronConfigProps,
     GlobalEntryTextProps,
+    DataforsyningenArgs,
+    BranchAddressSearchArgs,
     CreatePatronUrlProps,
     CreatePatronTextProps {
   fakeCpr?: string;
