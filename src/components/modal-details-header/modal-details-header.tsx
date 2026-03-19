@@ -29,7 +29,7 @@ const ModalDetailsHeader: FC<ModalDetailsHeaderProps> = ({
   periodical,
   series,
   children,
-  work
+  work,
   workUrl
 }) => {
   const coverIds = [pid || isbnForCover];

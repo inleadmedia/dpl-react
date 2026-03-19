@@ -12,6 +12,7 @@ import { Autosuggest } from "../../components/autosuggest/autosuggest";
 import { Suggestion } from "../../core/utils/types/autosuggest";
 import { useUrls } from "../../core/utils/url";
 import {
+  constructAdvancedSearchUrl,
   constructCreatorSearchUrl,
   constructMaterialUrl,
   constructSearchUrl,

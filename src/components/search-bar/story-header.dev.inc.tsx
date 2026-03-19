@@ -1,4 +1,5 @@
 import * as React from "react";
+import searchIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-search.svg";
 import menuIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-menu.svg";
 import profileIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-profile.svg";
 import heartIcon from "@danskernesdigitalebibliotek/dpl-design-system/build/icons/basic/icon-heart.svg";
