@@ -71,7 +71,6 @@ export type AdvancedSearchRowUpdateRowAspect =
 
 export type AdvancedSearchQuery = {
   rows: AdvancedSearchRowData[];
-  filters: AdvancedSearchFilterData;
   branchId?: string;
 };
 
