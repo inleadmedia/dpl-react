@@ -1,4 +1,3 @@
-import querystring from "querystring";
 import React, { useEffect, useState } from "react";
 import { useCombobox, UseComboboxStateChange } from "downshift";
 import { useClickAway } from "react-use";
@@ -18,6 +17,7 @@ import {
   constructSearchUrl,
   constructSearchUrlWithFilter,
   constructSubjectSearchUrl,
+  getUrlQueryParam,
   redirectTo
 } from "../../core/utils/helpers/url";
 import { WorkId } from "../../core/utils/types/ids";
@@ -34,25 +34,16 @@ import HeaderDropdown from "../../components/header-dropdown/HeaderDropdown";
 import useFilterHandler from "../search-result/useFilterHandler";
 import { cleanCreatorName } from "../../core/utils/helpers/material";
 
-const initialQueryParams: any = querystring.parse(window.location.search.split("?")[1] || "");
-if ("q" in initialQueryParams) {
-  try {
-    initialQueryParams.q = decodeURIComponent(initialQueryParams.q);
-  } catch (error){}
-}
-
-const initialSearchQuery: string = (initialQueryParams.q || "").toString();
-const initialBranchId: string = (initialQueryParams.branchId || "").toString();
-
 const SearchHeader: React.FC = () => {
   const t = useText();
   const u = useUrls();
   const searchUrl = u("searchUrl");
   const materialUrl = u("materialUrl");
   const advancedSearchUrl = u("advancedSearchUrl");
+  const initialQuery = getInitialSearchQuery();
+  const initialBranchId = getUrlQueryParam("branchId") || "";
   const [searchBranch, setSearchBranch] = useState<string>(initialBranchId);
-  const [queryModified, setQueryModified] = useState<boolean>(false);
-  const [q, setQ] = useState<string>(initialSearchQuery);
+  const [q, setQ] = useState<string>(initialQuery);
   const [qWithoutQuery, setQWithoutQuery] = useState<string>(q);
   const [suggestItems, setSuggestItems] = useState<
     SuggestionsFromQueryStringQuery["localSuggest"]["result"] | []
@@ -126,12 +117,12 @@ const SearchHeader: React.FC = () => {
   }
 
   // Autosuggest opening and closing based on input text length and user interaction.
+  // hasUserTyped already prevents showing on page load, so no need to compare against initialSearchQuery.
   useEffect(() => {
     if (
       hasUserTyped &&
       suggestItems.length > 0 &&
-      (status === "success" || status === "loading") &&
-      (qWithoutQuery !== initialSearchQuery || queryModified)
+      (status === "success" || status === "loading")
     ) {
       setIsAutosuggestOpen(true);
     } else {
@@ -389,13 +380,13 @@ const SearchHeader: React.FC = () => {
           qWithoutQuery={qWithoutQuery}
           setQWithoutQuery={(query: string) => {
             setQWithoutQuery(query);
-            setQueryModified(true);
+            setQ(query);
+            setHasUserTyped(true);
           }}
           isHeaderDropdownOpen={isHeaderDropdownOpen}
           setIsHeaderDropdownOpen={setIsHeaderDropdownOpen}
           advancedSearchUrl={advancedSearchUrl}
           redirectUrl={redirectUrl}
-          onBlur={() => setTimeout(() => setIsAutosuggestOpen(false), 100) }
           initialBranchId={ searchBranch }
           onBranchChange={ setSearchBranch }
         />
