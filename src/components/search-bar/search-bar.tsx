@@ -151,7 +151,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
             "header__menu-dropdown-icon--expanded": isHeaderDropdownOpen
           })}
           onClick={(e) => {
->>>>>>> 3e9bb2c48... Make 'advanced search' entry visually clearer DDFSAL-406
             e.preventDefault();
             e.stopPropagation();
             handleDropdownMenu();
