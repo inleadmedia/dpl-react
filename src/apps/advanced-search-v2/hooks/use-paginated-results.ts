@@ -70,6 +70,7 @@ export const usePaginatedResults = ({
       offset: page * pageSize,
       limit: pageSize,
       filters: {
+        ...(!onShelf && { branchId: cleanBranches }),
         ...(onShelf && {
           status: [HoldingsStatusEnum.Onshelf],
           branchId: cleanBranches

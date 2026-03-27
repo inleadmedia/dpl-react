@@ -250,6 +250,7 @@ if (typeof window === "object" && process.env.USE_DEVELOPMENT_OPTIONS === "true"
     branchId:"DK-830480",
     title:"Aarhus"
   }];
+
   const blacklistedSearchBranches = "DK-830480";
 
   document.body.setAttribute("data-show-search-sorting", showSearchSorting);
