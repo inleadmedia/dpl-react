@@ -79,4 +79,4 @@ export const SEARCH_TERM_OPTIONS: SearchTermItem[] = [
     placeholderKey: "advancedSearchPlaceholderIsbnText",
     disableSuggest: true
   }
-].concat(extendedComplexSearchOptions);
+].concat(extendedComplexSearchOptions || []);
