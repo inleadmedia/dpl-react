@@ -1,18 +1,39 @@
-import type { Meta, StoryFn } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
-import DemoWayfinder, { DemoWayfinderLinkProps } from "./demo-wayfinder.entry";
-import globalTextArgs from "../../core/storybook/globalTextArgs";
+import DemoWayfinder from "./demo-wayfinder.entry";
+import serviceUrlArgs, {
+  argTypes as serviceUrlArgTypes
+} from "../../core/storybook/serviceUrlArgs";
+import globalTextArgs, {
+  argTypes as globalTextArgTypes
+} from "../../core/storybook/globalTextArgs";
+import globalConfigArgs, {
+  argTypes as globalConfigArgTypes
+} from "../../core/storybook/globalConfigArgs";
+import mappArgs, {
+  argTypes as mappArgTypes
+} from "../../core/storybook/mappArgs";
 
 const meta: Meta<typeof DemoWayfinder> = {
   title: "Apps / Demo wayfinder",
   component: DemoWayfinder,
   argTypes: {
-    ...globalTextArgs
+    ...serviceUrlArgTypes,
+    ...globalTextArgTypes,
+    ...globalConfigArgTypes,
+    ...mappArgTypes
   }
 } as Meta<typeof DemoWayfinder>;
 
 export default meta;
 
-export const App: StoryFn<typeof DemoWayfinder> = (props: DemoWayfinderLinkProps) => {
-  return <DemoWayfinder {...props} />;
+type Story = StoryObj<typeof DemoWayfinder>;
+
+export const Default: Story = {
+  args: {
+    ...serviceUrlArgs,
+    ...globalTextArgs,
+    ...globalConfigArgs,
+    ...mappArgs
+  }
 };
