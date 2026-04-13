@@ -8,8 +8,12 @@ export type AdvancedSearchBranchSelectProps = {
   onChange?: (branchId: string) => void;
 };
 
-const AdvancedSearchBranchSelect: React.FC<AdvancedSearchBranchSelectProps> = ({ onChange, branchId }) => {
-  const t = useText();
+export type Branch = {
+  branchId?: string
+  title?: string
+};
+
+export function useCMSBranches() {
   const branches = useMemo(() => {
     let branchSelectorEnabled = (document.querySelector("[data-show-search-branch-selection]")?.getAttribute("data-show-search-branch-selection") || "") === "true";
     if (branchSelectorEnabled === false)
@@ -29,6 +33,13 @@ const AdvancedSearchBranchSelect: React.FC<AdvancedSearchBranchSelectProps> = ({
 
     return branchesForSelect;
   }, [document.querySelector("[data-branches-config]")]);
+
+  return branches;
+}
+
+const AdvancedSearchBranchSelect: React.FC<AdvancedSearchBranchSelectProps> = ({ onChange, branchId }) => {
+  const t = useText();
+  const branches = useCMSBranches();
 
   if (branches.length === 0)
     return null;

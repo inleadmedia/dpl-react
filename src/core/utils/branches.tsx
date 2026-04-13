@@ -82,7 +82,7 @@ export const useGetBranches = (
 };
 
 const useGetSearchBranches = () => {
-  const branches = useGetBranches("blacklistedSearchBranchesConfig", true);
+  const branches = useGetBranches("blacklistedSearchBranchesConfig", false);
   const cleanBranches = cleanBranchesId(branches);
   return cleanBranches;
 };
