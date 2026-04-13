@@ -183,7 +183,7 @@ export const useGetWork = (
     let systemAgency: string = "";
     try {
       // @ts-ignore-next-line
-      systemAgency = JSON.parse(document.querySelector("[data-agency-config]").getAttribute("data-agency-config"))?.id || "";
+      systemAgency = JSON.parse(document.querySelector("[data-agency-config]")?.getAttribute("data-agency-config") || "{}")?.id || "";
     } catch (error) {
       console.warn("Cannot parse agency config!", error);
     }

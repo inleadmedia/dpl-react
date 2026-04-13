@@ -118,6 +118,7 @@ const envOptions = {
   [serviceUrlKeys.fbi]: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next-present/graphql",
   [serviceUrlKeys.fbiLocal]: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next/graphql",
   [serviceUrlKeys.fbiGlobal]: process.env.GRAPHQL_API_BASEURL ?? "https://temp.fbi-api.dbc.dk/next-present/graphql",
+  [serviceUrlKeys.wayfinder]: process.env.WAYFINDER_BASEURL,
   developmentOptions: process.env.USE_DEVELOPMENT_OPTIONS,
   userinfoUrl: "https://login.bib.dk/userinfo"
 };

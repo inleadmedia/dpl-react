@@ -66,7 +66,7 @@ function stripPunctuationAndSpaces(string: string) {
 }
 
 // @ts-ignore-next-line
-const systemAgency = JSON.parse(document.querySelector("[data-agency-config]").getAttribute("data-agency-config"))?.id || "";
+const systemAgency = JSON.parse(document.querySelector("[data-agency-config]")?.getAttribute("data-agency-config") || "{}")?.id || "";
 
 function extendedFieldsDataGetter(pointers: string[], materialData: any, options: any) {
   options = options || {};
