@@ -111,7 +111,7 @@ const Translations: React.FC = () => {
     document.body.appendChild(addScript);
 
     window.googleTranslateElementInit = googleTranslateElementInit;
-  });
+  }, []);
 
   return (
     <div className="header__translations">
