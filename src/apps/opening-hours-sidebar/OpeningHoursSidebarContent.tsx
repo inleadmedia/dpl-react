@@ -28,7 +28,7 @@ const OpeningHoursSidebarContent: FC<{ libraries: LibraryType[] }> = ({
 
       {
         libraries.map(({ branch_id, name, openingHoursData, link }, i) => {
-          const expanded = i === 0 || expandedLibraries.some(expandedBranchId => expandedBranchId == branch_id);
+          const expanded = expandedLibraries.length === 0 ? i === 0 : expandedLibraries.some(expandedBranchId => expandedBranchId == branch_id);
           return <DisclosureControllable
             showContent={ expanded }
             key={branch_id}
