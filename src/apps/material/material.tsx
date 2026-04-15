@@ -69,7 +69,7 @@ function stripPunctuationAndSpaces(string: string) {
 }
 
 // @ts-ignore-next-line
-const systemAgency = JSON.parse(document.querySelector("[data-agency-config]").getAttribute("data-agency-config"))?.id || "";
+const systemAgency = JSON.parse(document.querySelector("[data-agency-config]")?.getAttribute("data-agency-config") || "{}")?.id || "";
 
 function pointerToFilter(pointer: string) {
   if (pointer.includes("[") === false)
