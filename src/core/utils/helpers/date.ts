@@ -106,6 +106,10 @@ export const formatWeekday = (date: string | Date) => {
   return dayjs(date).format(dateFormatWeekday);
 };
 
+export const formatFullMonthDay = (date: string | Date) => {
+  return dayjs(date).format("DD MMMM");
+};
+
 export const formatDateForAPI = (date: Date): string => {
   return dayjs(date).format(dateFormatDayjs);
 };
